@@ -2,17 +2,17 @@ namespace Vinder.IdentityProvider.Domain.Repositories;
 
 public interface IRepository<TEntity> where TEntity : Entity
 {
-    Task<TEntity> InsertAsync(
+    public Task<TEntity> InsertAsync(
         TEntity entity,
         CancellationToken cancellation = default
     );
 
-    Task<TEntity> UpdateAsync(
+    public Task<TEntity> UpdateAsync(
         TEntity entity,
         CancellationToken cancellation = default
     );
 
-    Task<bool> DeleteAsync(
+    public Task<bool> DeleteAsync(
         TEntity entity,
         CancellationToken cancellation = default
     );
