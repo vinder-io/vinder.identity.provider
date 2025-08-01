@@ -1,0 +1,1 @@
+global using Vinder.IdentityProvider.Domain.Entities;
