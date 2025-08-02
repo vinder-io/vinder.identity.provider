@@ -1,13 +1,15 @@
 namespace Vinder.IdentityProvider.TestSuite.IntegrationTests.Repositories;
 
-public sealed class UserRepositoryTests : IClassFixture<MongoDatabaseFixture>
+public sealed class UserRepositoryTests : IClassFixture<MongoDatabaseFixture>, IAsyncLifetime
 {
     private readonly IUserRepository _userRepository;
     private readonly IMongoDatabase _database;
+    private readonly MongoDatabaseFixture _mongoFixture;
     private readonly Fixture _fixture = new();
 
     public UserRepositoryTests(MongoDatabaseFixture fixture)
     {
+        _mongoFixture = fixture;
         _database = fixture.Database;
         _userRepository = new UserRepository(_database);
     }
@@ -242,5 +244,11 @@ public sealed class UserRepositoryTests : IClassFixture<MongoDatabaseFixture>
 
         /* assert: expected count of users for tenant*/
         Assert.Equal(expectedCount, filteredCount);
+    }
+
+    public async Task DisposeAsync() => await Task.CompletedTask;
+    public async Task InitializeAsync()
+    {
+        await _mongoFixture.CleanDatabaseAsync();
     }
 }
