@@ -36,6 +36,16 @@ public sealed class PermissionFiltersBuilder
         return this;
     }
 
+    public PermissionFiltersBuilder WithIsDeleted(bool? isDeleted)
+    {
+        if (isDeleted.HasValue)
+        {
+            _filters.IsDeleted = isDeleted;
+        }
+
+        return this;
+    }
+
     public PermissionFiltersBuilder WithPageSize(int? pageSize)
     {
         if (pageSize.HasValue && pageSize > 0)
