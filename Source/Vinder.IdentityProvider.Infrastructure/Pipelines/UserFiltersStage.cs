@@ -19,9 +19,13 @@ public static class UserFiltersStage
             MatchIfNotEmptyGuid(DocumentFields.User.TenantId, filters.TenantId)
         };
 
-        if (filters.IsDeleted.HasValue && filters.IsDeleted is true)
+        if (!filters.IsDeleted.HasValue)
         {
-            filterDefinitions.Add(Builders<BsonDocument>.Filter.Eq(DocumentFields.User.IsDeleted, true));
+            filterDefinitions.Add(Builders<BsonDocument>.Filter.Eq(DocumentFields.User.IsDeleted, false));
+        }
+        else
+        {
+            filterDefinitions.Add(Builders<BsonDocument>.Filter.Eq(DocumentFields.User.IsDeleted, filters.IsDeleted.Value));
         }
 
         return Builders<BsonDocument>.Filter.And(filterDefinitions);
