@@ -14,16 +14,6 @@ public static class MongoSerializer
 
         _registered = true;
 
-        if (!BsonClassMap.IsClassMapRegistered(typeof(Entity)))
-        {
-            BsonClassMap.RegisterClassMap<Entity>(mapper =>
-            {
-                var serializer = new GuidSerializer(GuidRepresentation.Standard);
-
-                mapper.AutoMap();
-                mapper.MapMember(entity => entity.Id)
-                    .SetSerializer(serializer);
-            });
-        }
+        BsonSerializer.RegisterSerializer(new GuidSerializer(GuidRepresentation.Standard));
     }
 }
