@@ -26,6 +26,14 @@ public static class DocumentFields
         public const string Name = nameof(Domain.Entities.PermissionGroup.Name);
     }
 
+    public static class Tenant
+    {
+        public const string Name = nameof(Domain.Entities.Tenant.Name);
+        public const string ClientId = nameof(Domain.Entities.Tenant.ClientId);
+        public const string IsDeleted = nameof(Domain.Entities.Tenant.ClientId);
+        public const string Id = "_id";
+    }
+
     public static class SecurityToken
     {
         public const string Value = nameof(Domain.Entities.SecurityToken.Value);
