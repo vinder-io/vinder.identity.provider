@@ -14,8 +14,10 @@ public static class TokenFiltersStage
     {
         var filterDefinitions = new List<FilterDefinition<BsonDocument>>
         {
+            MatchIfNotEmpty(DocumentFields.SecurityToken.Value, filters.Value),
+            MatchIfNotEmptyEnum(DocumentFields.SecurityToken.Type, filters.Type),
             MatchIfNotEmptyGuid(DocumentFields.SecurityToken.UserId, filters.UserId),
-            MatchIfNotEmptyGuid(DocumentFields.SecurityToken.TenantId, filters.TenantId)
+            MatchIfNotEmptyGuid(DocumentFields.SecurityToken.TenantId, filters.TenantId),
         };
 
         if (!filters.IsDeleted.HasValue)
@@ -30,10 +32,25 @@ public static class TokenFiltersStage
         return Builders<BsonDocument>.Filter.And(filterDefinitions);
     }
 
+    private static FilterDefinition<BsonDocument> MatchIfNotEmpty(string field, string? value)
+    {
+        return string.IsNullOrWhiteSpace(value)
+            ? FilterDefinition<BsonDocument>.Empty
+            : Builders<BsonDocument>.Filter.Eq(field, BsonValue.Create(value));
+    }
+
     private static FilterDefinition<BsonDocument> MatchIfNotEmptyGuid(string field, Guid? value)
     {
         return !value.HasValue || value == Guid.Empty
             ? FilterDefinition<BsonDocument>.Empty
             : Builders<BsonDocument>.Filter.Eq(field, new BsonBinaryData(value.Value, GuidRepresentation.Standard));
+    }
+
+    private static FilterDefinition<BsonDocument> MatchIfNotEmptyEnum<TEnum>(string field, TEnum? value)
+        where TEnum : struct, Enum
+    {
+        return value.HasValue
+            ? Builders<BsonDocument>.Filter.Eq(field, Convert.ToInt32(value.Value))
+            : FilterDefinition<BsonDocument>.Empty;
     }
 }
