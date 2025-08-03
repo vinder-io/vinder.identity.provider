@@ -65,8 +65,10 @@ public sealed class JwtSecurityTokenService(ISettings settings, ITokenRepository
         var securityToken = new SecurityToken
         {
             Type = TokenType.Refresh,
+            UserId = user.Id,
+            TenantId = user.TenantId,
             Value = tokenString,
-            ExpiresAt = tokenDescriptor.Expires.Value
+            ExpiresAt = tokenDescriptor.Expires.Value,
         };
 
         return Task.FromResult(Result<SecurityToken>.Success(securityToken));
