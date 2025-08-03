@@ -41,6 +41,7 @@ public static class DocumentFields
         public const string Type = nameof(Domain.Entities.SecurityToken.Type);
         public const string UserId = nameof(Domain.Entities.SecurityToken.UserId);
         public const string TenantId = nameof(Domain.Entities.SecurityToken.TenantId);
+        public const string IsDeleted = nameof(Domain.Entities.SecurityToken.IsDeleted);
         public const string Id = "_id";
     }
 }
