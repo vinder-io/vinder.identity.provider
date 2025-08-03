@@ -46,6 +46,17 @@ public sealed class TokenFiltersBuilder
         return this;
     }
 
+    public TokenFiltersBuilder WithIsDeleted(bool? isDeleted)
+    {
+        if (isDeleted.HasValue)
+        {
+            _filters.IsDeleted = isDeleted;
+        }
+
+        return this;
+    }
+
+
     public TokenFiltersBuilder WithPageNumber(int? pageNumber)
     {
         if (pageNumber.HasValue && pageNumber > 0)
