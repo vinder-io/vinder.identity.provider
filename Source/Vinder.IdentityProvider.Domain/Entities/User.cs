@@ -8,6 +8,6 @@ public sealed class User : Entity
     public string PasswordHash { get; set; } = default!;
 
     public ICollection<Permission> Permissions { get; set; } = [];
-    public ICollection<PermissionGroup> Groups { get; set; } = [];
+    public ICollection<Group> Groups { get; set; } = [];
     public ICollection<SecurityToken> Tokens { get; set; } = [];
 }

@@ -19,11 +19,11 @@ public static class DocumentFields
         public const string Id = "_id";
     }
 
-    public static class PermissionGroup
+    public static class Group
     {
         public const string Id = "_id";
-        public const string TenantId = nameof(Domain.Entities.PermissionGroup.TenantId);
-        public const string Name = nameof(Domain.Entities.PermissionGroup.Name);
+        public const string TenantId = nameof(Domain.Entities.Group.TenantId);
+        public const string Name = nameof(Domain.Entities.Group.Name);
     }
 
     public static class Tenant

@@ -1,6 +1,6 @@
 namespace Vinder.IdentityProvider.Domain.Entities;
 
-public sealed class PermissionGroup : Entity
+public sealed class Group : Entity
 {
     public Guid TenantId { get; set; }
 

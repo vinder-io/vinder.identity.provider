@@ -10,5 +10,5 @@ public sealed class Tenant : Entity
 
     public ICollection<User> Users { get; set; } = [];
     public ICollection<Permission> Permissions { get; set; } = [];
-    public ICollection<PermissionGroup> Groups { get; set; } = [];
+    public ICollection<Group> Groups { get; set; } = [];
 }
