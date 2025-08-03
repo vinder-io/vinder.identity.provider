@@ -13,6 +13,7 @@
 
   <ItemGroup>
     <PackageReference Include="MongoDB.Driver" Version="3.4.2" />
+    <PackageReference Include="System.IdentityModel.Tokens.Jwt" Version="8.13.0" />
   </ItemGroup>
 
 </Project>
