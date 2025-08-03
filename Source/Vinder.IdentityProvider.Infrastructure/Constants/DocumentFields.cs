@@ -30,7 +30,7 @@ public static class DocumentFields
     {
         public const string Name = nameof(Domain.Entities.Tenant.Name);
         public const string ClientId = nameof(Domain.Entities.Tenant.ClientId);
-        public const string IsDeleted = nameof(Domain.Entities.Tenant.ClientId);
+        public const string IsDeleted = nameof(Domain.Entities.Tenant.IsDeleted);
         public const string Id = "_id";
     }
 
