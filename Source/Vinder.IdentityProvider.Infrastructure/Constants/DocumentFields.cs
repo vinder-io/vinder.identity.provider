@@ -22,8 +22,9 @@ public static class DocumentFields
     public static class Group
     {
         public const string Id = "_id";
-        public const string TenantId = nameof(Domain.Entities.Group.TenantId);
         public const string Name = nameof(Domain.Entities.Group.Name);
+        public const string TenantId = nameof(Domain.Entities.Group.TenantId);
+        public const string IsDeleted = nameof(Domain.Entities.Group.IsDeleted);
     }
 
     public static class Tenant
