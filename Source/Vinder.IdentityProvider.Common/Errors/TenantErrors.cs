@@ -9,6 +9,11 @@ public static class TenantErrors
         Description: "No HTTP context available to retrieve tenant information."
     );
 
+    public static readonly Error TenantDoesNotExist = new(
+        Code: "#VINDER-IDP-ERR-TNT-404",
+        Description: "The specified tenant does not exist."
+    );
+
     public static readonly Error TenantHeaderMissing = new(
         Code: "#VINDER-IDP-ERR-TNT-400",
         Description: "Tenant header is missing from the HTTP request."
