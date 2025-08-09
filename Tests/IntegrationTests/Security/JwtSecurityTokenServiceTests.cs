@@ -1,4 +1,10 @@
+using System.IdentityModel.Tokens.Jwt;
+using System.Security.Claims;
 using System.Security.Cryptography;
+using System.Text;
+
+using Microsoft.IdentityModel.Tokens;
+
 using Vinder.IdentityProvider.Common.Configuration;
 using Vinder.IdentityProvider.Common.Errors;
 using Vinder.IdentityProvider.Infrastructure.Security;
@@ -48,6 +54,20 @@ public sealed class JwtSecurityTokenServiceTests : IClassFixture<MongoDatabaseFi
         var validationResult = await _jwtSecurityTokenService.ValidateTokenAsync(result.Data);
 
         Assert.True(validationResult.IsSuccess);
+
+        /* assert: token claims must be correct */
+        var handler = new JwtSecurityTokenHandler();
+        var jwtToken = handler.ReadJwtToken(result.Data.Value);
+
+        var claims = jwtToken.Claims.ToList();
+
+        Assert.Contains(claims, claim => claim.Type == JwtRegisteredClaimNames.Sub && claim.Value == user.Id.ToString());
+        Assert.Contains(claims, claim => claim.Type == JwtRegisteredClaimNames.PreferredUsername && claim.Value == user.Username);
+
+        foreach (var permission in user.Permissions)
+        {
+            Assert.Contains(claims, claim => claim.Type == "role" && claim.Value == permission.Name);
+        }
     }
 
     [Fact(DisplayName = "[infrastructure] - when generating a refresh token, then it must be valid and contain correct claims and be persisted")]
@@ -82,10 +102,23 @@ public sealed class JwtSecurityTokenServiceTests : IClassFixture<MongoDatabaseFi
     public async Task WhenValidatingExpiredToken_ThenItMustReturnTokenExpiredError()
     {
         /* arrange: create an expired token */
-        var expiredToken = new SecurityToken
+        var tokenHandler = new JwtSecurityTokenHandler();
+        var securityKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(_settings.Security.SecretKey));
+        var credentials = new SigningCredentials(securityKey, SecurityAlgorithms.HmacSha256);
+
+        var tokenDescriptor = new SecurityTokenDescriptor
         {
-            Value = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiIxMjM0NTY3ODkwIiwibmFtZSI6IkpvaG4gRG9lIiwiaWF0IjoxNTE2MjM5MDIyLCJleHAiOjE1MTYyMzkwMjJ9.N-y_y_y_y_y_y_y_y_y_y_y_y_y_y_y_y_y_y_y_y_y_y_y_y_y_y_y_y_y_y_y_y", // This is a dummy expired token
-            ExpiresAt = DateTime.UtcNow.AddMinutes(-1)
+            Subject = new ClaimsIdentity([new Claim(JwtRegisteredClaimNames.Sub, Guid.NewGuid().ToString())]),
+            NotBefore = DateTime.UtcNow.AddMinutes(-2),
+            Expires = DateTime.UtcNow.AddMinutes(-1),
+            SigningCredentials = credentials
+        };
+
+        var token = tokenHandler.CreateToken(tokenDescriptor);
+        var expiredToken = new Domain.Entities.SecurityToken
+        {
+            Value = tokenHandler.WriteToken(token),
+            ExpiresAt = tokenDescriptor.Expires.Value
         };
 
         /* act: validate the expired token */
@@ -100,7 +133,7 @@ public sealed class JwtSecurityTokenServiceTests : IClassFixture<MongoDatabaseFi
     public async Task WhenValidatingTokenWithInvalidFormat_ThenItMustReturnInvalidTokenFormatError()
     {
         /* arrange: create a token with invalid format */
-        var invalidFormatToken = new SecurityToken
+        var invalidFormatToken = new Domain.Entities.SecurityToken
         {
             Value = "invalid-token-format",
             ExpiresAt = DateTime.UtcNow.AddMinutes(15)
@@ -150,7 +183,7 @@ public sealed class JwtSecurityTokenServiceTests : IClassFixture<MongoDatabaseFi
     public async Task WhenRevokingNonExistentRefreshToken_ThenItMustReturnInvalidRefreshTokenError()
     {
         /* arrange: create a non-existent refresh token */
-        var nonExistentToken = _fixture.Create<SecurityToken>();
+        var nonExistentToken = _fixture.Create<Domain.Entities.SecurityToken>();
 
         /* act: revoke the non-existent refresh token */
         var revokeResult = await _jwtSecurityTokenService.RevokeRefreshTokenAsync(nonExistentToken);
