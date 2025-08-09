@@ -4,7 +4,7 @@ public sealed class TenantRepository(IMongoDatabase database) :
     BaseRepository<Tenant>(database, Collections.Tenants),
     ITenantRepository
 {
-    public async Task<IReadOnlyCollection<Tenant>> GetTenantsAsync(TenantFilters filters, CancellationToken cancellation)
+    public async Task<IReadOnlyCollection<Tenant>> GetTenantsAsync(TenantFilters filters, CancellationToken cancellation = default)
     {
         var pipeline = PipelineDefinitionBuilder
             .For<Tenant>()

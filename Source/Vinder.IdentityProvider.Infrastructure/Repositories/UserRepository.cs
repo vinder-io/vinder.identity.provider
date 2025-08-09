@@ -4,7 +4,7 @@ public sealed class UserRepository(IMongoDatabase database) :
     BaseRepository<User>(database, Collections.Users),
     IUserRepository
 {
-    public async Task<IReadOnlyCollection<User>> GetUsersAsync(UserFilters filters, CancellationToken cancellation)
+    public async Task<IReadOnlyCollection<User>> GetUsersAsync(UserFilters filters, CancellationToken cancellation = default)
     {
         var pipeline = PipelineDefinitionBuilder
             .For<User>()
