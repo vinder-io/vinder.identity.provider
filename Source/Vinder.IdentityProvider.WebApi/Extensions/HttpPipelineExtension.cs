@@ -10,6 +10,7 @@ public static class HttpPipelineExtension
         app.UseRouting();
         app.UseCors();
 
+        app.UseTenantMiddleware();
         app.UseAuthentication();
         app.UseAuthorization();
 
