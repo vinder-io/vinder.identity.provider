@@ -4,7 +4,7 @@ public sealed class PermissionRepository(IMongoDatabase database) :
     BaseRepository<Permission>(database, Collections.Permissions),
     IPermissionRepository
 {
-    public async Task<IReadOnlyCollection<Permission>> GetPermissionsAsync(PermissionFilters filters, CancellationToken cancellation)
+    public async Task<IReadOnlyCollection<Permission>> GetPermissionsAsync(PermissionFilters filters, CancellationToken cancellation = default)
     {
         var pipeline = PipelineDefinitionBuilder
             .For<Permission>()
