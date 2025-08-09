@@ -8,6 +8,7 @@ public static class WebInfrastructureExtension
         services.AddControllers();
         services.AddEndpointsApiExplorer();
         services.AddCorsConfiguration();
+        services.AddJwtAuthentication();
 
         if (environment.IsDevelopment())
         {
