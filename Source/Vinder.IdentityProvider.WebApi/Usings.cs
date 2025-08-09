@@ -2,6 +2,8 @@
 
 global using System.Diagnostics.CodeAnalysis;
 global using System.Text;
+global using System.Text.Json;
+global using System.Net.Mime;
 
 /* global usings for Microsoft namespaces here */
 
