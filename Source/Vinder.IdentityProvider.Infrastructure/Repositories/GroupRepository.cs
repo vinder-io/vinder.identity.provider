@@ -4,7 +4,7 @@ public sealed class GroupRepository(IMongoDatabase database) :
     BaseRepository<Group>(database, Collections.Groups),
     IGroupRepository
 {
-    public async Task<IReadOnlyCollection<Group>> GetGroupsAsync(GroupFilters filters, CancellationToken cancellation)
+    public async Task<IReadOnlyCollection<Group>> GetGroupsAsync(GroupFilters filters, CancellationToken cancellation = default)
     {
         var pipeline = PipelineDefinitionBuilder
             .For<Group>()
