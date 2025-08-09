@@ -1,6 +1,3 @@
-using System.IdentityModel.Tokens.Jwt;
-using System.Security.Claims;
-
 namespace Vinder.IdentityProvider.Infrastructure.Security;
 
 public sealed class ClaimsBuilder
