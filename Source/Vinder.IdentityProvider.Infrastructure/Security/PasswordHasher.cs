@@ -1,6 +1,3 @@
-using System.Security.Cryptography;
-using Vinder.IdentityProvider.Application.Services;
-
 namespace Vinder.IdentityProvider.Infrastructure.Security;
 
 public sealed class PasswordHasher : IPasswordHasher
