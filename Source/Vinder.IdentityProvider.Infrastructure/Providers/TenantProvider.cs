@@ -1,37 +1,14 @@
-using Microsoft.AspNetCore.Http;
-
 namespace Vinder.IdentityProvider.Infrastructure.Providers;
 
-public sealed class TenantProvider(IHttpContextAccessor contextAccessor) : ITenantProvider
+public sealed class TenantProvider : ITenantProvider
 {
-    private readonly IHttpContextAccessor _contextAccessor = contextAccessor;
     private Tenant? _currentTenant;
     public string? Tenant => _currentTenant?.Name;
 
-    public async Task<Result<Tenant>> GetCurrentTenantAsync()
-    {
-        if (_currentTenant is not null)
-        {
-            return await Task.FromResult(Result<Tenant>.Success(_currentTenant));
-        }
+    #pragma warning disable S1121 // sonarqube(csharpsquid:S1121)
+    public async Task SetTenantAsync(Tenant tenant, CancellationToken cancellation = default) =>
+        await Task.FromResult(_currentTenant = tenant);
 
-        var httpContext = _contextAccessor.HttpContext;
-        if (httpContext is null)
-        {
-            return await Task.FromResult(Result<Tenant>.Failure(TenantErrors.HttpContextUnavailable));
-        }
-
-        var tenantName = httpContext.Items["TenantName"] as string;
-        if (string.IsNullOrEmpty(tenantName))
-        {
-            return await Task.FromResult(Result<Tenant>.Failure(TenantErrors.TenantHeaderMissing));
-        }
-
-        _currentTenant = new Tenant
-        {
-            Name = tenantName,
-        };
-
-        return await Task.FromResult(Result<Tenant>.Success(_currentTenant));
-    }
+    public async Task<Tenant> GetCurrentTenantAsync(CancellationToken cancellation = default) =>
+        await Task.FromResult(_currentTenant!);
 }
