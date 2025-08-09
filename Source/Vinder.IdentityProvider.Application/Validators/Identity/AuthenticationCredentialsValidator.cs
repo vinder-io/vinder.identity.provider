@@ -21,7 +21,6 @@ public sealed class AuthenticationCredentialsValidator :
             .MaximumLength(200)
             .WithMessage("Password must be at most 200 characters long.")
             .Must(password => !string.IsNullOrWhiteSpace(password))
-            .WithMessage("Password cannot be whitespace only.")
-            .Matches(@"^[\x21-\x7E]+$").WithMessage("Password contains invalid characters.");
+            .WithMessage("Password cannot be whitespace only.");
     }
 }
