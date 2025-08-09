@@ -15,6 +15,7 @@ global using Vinder.IdentityProvider.Domain.Filters.Builders;
 global using Vinder.IdentityProvider.Infrastructure.Constants;
 global using Vinder.IdentityProvider.Infrastructure.Pipelines;
 
+global using Vinder.IdentityProvider.Application.Payloads.Identity;
 global using Vinder.IdentityProvider.Application.Services;
 
 global using Vinder.IdentityProvider.Common.Configuration;
