@@ -4,7 +4,7 @@ public sealed class TokenRepository(IMongoDatabase database) :
     BaseRepository<SecurityToken>(database, Collections.Tokens),
     ITokenRepository
 {
-    public async Task<IReadOnlyCollection<SecurityToken>> GetTokensAsync(TokenFilters filters, CancellationToken cancellation)
+    public async Task<IReadOnlyCollection<SecurityToken>> GetTokensAsync(TokenFilters filters, CancellationToken cancellation = default)
     {
         var pipeline = PipelineDefinitionBuilder
             .For<SecurityToken>()
