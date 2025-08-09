@@ -11,13 +11,14 @@ public sealed class IdentityController(IMediator mediator) : ControllerBase
 
         return result switch
         {
-            { IsSuccess: true } => Ok(result.Data),
+            { IsSuccess: true } =>
+                StatusCode(StatusCodes.Status200OK,result.Data),
 
             { IsFailure: true } when result.Error == AuthenticationErrors.InvalidCredentials =>
-                Unauthorized(result.Error),
+                StatusCode(StatusCodes.Status401Unauthorized, result.Error),
 
             { IsFailure: true } when result.Error == AuthenticationErrors.UserNotFound =>
-                NotFound(result.Error),
+                StatusCode(StatusCodes.Status404NotFound, result.Error),
         };
     }
 }
