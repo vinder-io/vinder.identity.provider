@@ -39,7 +39,7 @@ public sealed class JwtSecurityTokenService(ISettings settings, ITokenRepository
         return Task.FromResult(Result<SecurityToken>.Success(securityToken));
     }
 
-    public Task<Result<SecurityToken>> GenerateRefreshTokenAsync(User user, CancellationToken cancellation = default)
+    public async Task<Result<SecurityToken>> GenerateRefreshTokenAsync(User user, CancellationToken cancellation = default)
     {
         var tokenHandler = new JwtSecurityTokenHandler();
         var claims = new ClaimsBuilder()
@@ -71,7 +71,9 @@ public sealed class JwtSecurityTokenService(ISettings settings, ITokenRepository
             ExpiresAt = tokenDescriptor.Expires.Value,
         };
 
-        return Task.FromResult(Result<SecurityToken>.Success(securityToken));
+        await repository.InsertAsync(securityToken, cancellation);
+
+        return Result<SecurityToken>.Success(securityToken);
     }
 
     public Task<Result> ValidateTokenAsync(SecurityToken token)
