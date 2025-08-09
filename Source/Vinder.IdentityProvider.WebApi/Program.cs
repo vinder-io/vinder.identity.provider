@@ -2,24 +2,22 @@ namespace Vinder.IdentityProvider.WebApi;
 
 internal static class Program
 {
-    private static void Main(string[] args)
+    private static async Task Main(string[] args)
     {
         var builder = WebApplication.CreateBuilder(args);
 
-        builder.Services.AddControllers();
-        builder.Services.AddOpenApi();
+        var environment = builder.Environment;
+        var configuration = builder.Configuration;
+
+        builder.Services.AddInfrastructure(configuration, environment);
+        builder.Services.AddWebComposition(environment);
+
+        builder.Configuration.AddEnvironmentVariables();
 
         var app = builder.Build();
 
-        if (app.Environment.IsDevelopment())
-        {
-            app.MapOpenApi();
-        }
+        app.UseHttpPipeline();
 
-        app.UseHttpsRedirection();
-        app.UseAuthorization();
-
-        app.MapControllers();
-        app.Run();
+        await app.RunAsync();
     }
 }
