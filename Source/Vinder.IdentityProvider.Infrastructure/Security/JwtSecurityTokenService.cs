@@ -122,7 +122,7 @@ public sealed class JwtSecurityTokenService(ISettings settings, ITokenRepository
 
         if (existingToken is null)
         {
-            return Result.Failure(AuthenticationErrors.InvalidRefreshToken);
+            return Result.Failure(AuthenticationErrors.LogoutFailed);
         }
 
         existingToken.Revoked = true;
