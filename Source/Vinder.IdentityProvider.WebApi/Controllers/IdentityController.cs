@@ -5,6 +5,7 @@ namespace Vinder.IdentityProvider.WebApi.Controllers;
 public sealed class IdentityController(IMediator mediator) : ControllerBase
 {
     [HttpPost("authenticate")]
+    [TenantRequired]
     public async Task<IActionResult> AuthenticateAsync(AuthenticationCredentials request, CancellationToken cancellation)
     {
         var result = await mediator.Send(request, cancellation);
@@ -12,7 +13,7 @@ public sealed class IdentityController(IMediator mediator) : ControllerBase
         return result switch
         {
             { IsSuccess: true } =>
-                StatusCode(StatusCodes.Status200OK,result.Data),
+                StatusCode(StatusCodes.Status200OK, result.Data),
 
             { IsFailure: true } when result.Error == AuthenticationErrors.InvalidCredentials =>
                 StatusCode(StatusCodes.Status401Unauthorized, result.Error),
