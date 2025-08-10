@@ -34,6 +34,16 @@ public static class AuthenticationErrors
         Description: "The provided credentials are invalid."
     );
 
+    public static readonly Error ClientNotFound = new(
+        Code: "#VINDER-IDP-ERR-AUT-408",
+        Description: "The client was not found."
+    );
+
+    public static readonly Error InvalidClientCredentials = new(
+        Code: "#VINDER-IDP-ERR-AUT-403",
+        Description: "The provided client credentials are invalid."
+    );
+
     public static readonly Error UserNotFound = new(
         Code: "#VINDER-IDP-ERR-AUT-404",
         Description: "The user was not found."
