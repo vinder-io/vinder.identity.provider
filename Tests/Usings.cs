@@ -6,6 +6,7 @@ global using Vinder.IdentityProvider.Domain.Repositories;
 
 global using Vinder.IdentityProvider.Application.Services;
 global using Vinder.IdentityProvider.Application.Payloads.Identity;
+global using Vinder.IdentityProvider.Application.Providers;
 
 global using Vinder.IdentityProvider.Infrastructure.Repositories;
 global using Vinder.IdentityProvider.Infrastructure.Security;
@@ -21,3 +22,4 @@ global using DotNet.Testcontainers.Builders;
 global using DotNet.Testcontainers.Containers;
 global using MongoDB.Driver;
 global using AutoFixture;
+global using Moq;
