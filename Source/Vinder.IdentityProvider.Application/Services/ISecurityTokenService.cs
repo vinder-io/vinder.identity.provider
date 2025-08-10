@@ -7,6 +7,11 @@ public interface ISecurityTokenService
         CancellationToken cancellation = default
     );
 
+    public Task<Result<SecurityToken>> GenerateAccessTokenAsync(
+        Tenant tenant,
+        CancellationToken cancellation = default
+    );
+
     public Task<Result<SecurityToken>> GenerateRefreshTokenAsync(
         User user,
         CancellationToken cancellation = default
