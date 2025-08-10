@@ -17,6 +17,24 @@ public sealed class ClaimsBuilder
         return this;
     }
 
+    public ClaimsBuilder WithClientId(string clientId)
+    {
+        _claims.Add(new Claim(IdentityClaimNames.ClientId, clientId));
+        return this;
+    }
+
+    public ClaimsBuilder WithTenantId(string tenantId)
+    {
+        _claims.Add(new Claim(IdentityClaimNames.TenantId, tenantId));
+        return this;
+    }
+
+    public ClaimsBuilder WithTenantName(string tenantName)
+    {
+        _claims.Add(new Claim(IdentityClaimNames.TenantName, tenantName));
+        return this;
+    }
+
     public ClaimsBuilder WithPermissions(IEnumerable<Permission> permissions)
     {
         foreach (var permission in permissions)
