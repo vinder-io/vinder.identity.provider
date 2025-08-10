@@ -41,7 +41,7 @@ public sealed class IdentityController(IMediator mediator) : ControllerBase
 
     [HttpPost("refresh-token")]
     [TenantRequired]
-    public async Task<IActionResult> RefreshTokenAysnc(SessionTokenRenewal request, CancellationToken cancellation)
+    public async Task<IActionResult> RefreshTokenAsync(SessionTokenRenewal request, CancellationToken cancellation)
     {
         var result = await mediator.Send(request, cancellation);
 
