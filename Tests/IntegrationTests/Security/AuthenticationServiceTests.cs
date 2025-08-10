@@ -12,13 +12,14 @@ public sealed class AuthenticationServiceTests : IClassFixture<MongoDatabaseFixt
     private readonly MongoDatabaseFixture _mongoFixture;
     private readonly AuthenticationService _authenticationService;
     private readonly Fixture _fixture = new();
+    private readonly Mock<ITenantProvider> _tenantProvider = new();
 
     public AuthenticationServiceTests(MongoDatabaseFixture mongoFixture)
     {
         _mongoFixture = mongoFixture;
         _database = mongoFixture.Database;
 
-        _userRepository = new UserRepository(_database);
+        _userRepository = new UserRepository(_database, _tenantProvider.Object);
         _passwordHasher = new PasswordHasher();
 
         var tokenRepository = new TokenRepository(_database);
@@ -41,9 +42,15 @@ public sealed class AuthenticationServiceTests : IClassFixture<MongoDatabaseFixt
     public async Task WhenValidCredentialsAreProvided_ThenReturnsAccessAndRefreshTokens()
     {
         /* arrange: create a user with a known password and insert into repository */
+        var tenant = _fixture.Create<Tenant>();
+
+        _tenantProvider.Setup(provider => provider.GetCurrentTenant())
+            .Returns(tenant);
+
         var plainPassword = "My$ecureP@ssw0rd";
         var user = _fixture.Build<User>()
             .With(user => user.PasswordHash, await _passwordHasher.HashPasswordAsync(plainPassword))
+            .With(user => user.TenantId, tenant.Id)
             .With(user => user.IsDeleted, false)
             .Create();
 
@@ -70,10 +77,16 @@ public sealed class AuthenticationServiceTests : IClassFixture<MongoDatabaseFixt
     public async Task AuthenticateAsync_InvalidPassword_ReturnsInvalidCredentialsError()
     {
         /* arrange: create a user with a known password */
+        var tenant = _fixture.Create<Tenant>();
+
+        _tenantProvider.Setup(provider => provider.GetCurrentTenant())
+            .Returns(tenant);
+
         var plainPassword = "My$ecureP@ssw0rd";
         var user = _fixture.Build<User>()
             .With(user => user.PasswordHash, await _passwordHasher.HashPasswordAsync(plainPassword))
             .With(user => user.IsDeleted, false)
+            .With(user => user.TenantId, tenant.Id)
             .Create();
 
         await _userRepository.InsertAsync(user);
@@ -95,6 +108,11 @@ public sealed class AuthenticationServiceTests : IClassFixture<MongoDatabaseFixt
     [Fact(DisplayName = "[security] - when user does not exist, then returns user not found error (#VINDER-IDP-ERR-AUT-404)")]
     public async Task WhenUserDoesNotExist_ThenReturnsUserNotFoundError()
     {
+        var tenant = _fixture.Create<Tenant>();
+
+        _tenantProvider.Setup(provider => provider.GetCurrentTenant())
+            .Returns(tenant);
+
         /* arrange: create credentials with a username that does not exist */
         var credentials = new AuthenticationCredentials
         {

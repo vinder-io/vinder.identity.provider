@@ -5,22 +5,29 @@ public sealed class UserRepositoryTests : IClassFixture<MongoDatabaseFixture>, I
     private readonly IUserRepository _userRepository;
     private readonly IMongoDatabase _database;
     private readonly MongoDatabaseFixture _mongoFixture;
+    private readonly Mock<ITenantProvider> _tenantProvider = new();
     private readonly Fixture _fixture = new();
 
     public UserRepositoryTests(MongoDatabaseFixture fixture)
     {
         _mongoFixture = fixture;
         _database = fixture.Database;
-        _userRepository = new UserRepository(_database);
+        _userRepository = new UserRepository(_database, _tenantProvider.Object);
     }
 
     [Fact(DisplayName = "[infrastructure] - when inserting a user, then it must persist in the database")]
     public async Task WhenInsertingAUser_ThenItMustPersistInTheDatabase()
     {
         /* arrange: create user and matching filter */
+        var tenant = _fixture.Create<Tenant>();
+
+        _tenantProvider.Setup(provider => provider.GetCurrentTenant())
+            .Returns(tenant);
+
         var user = _fixture.Build<User>()
             .With(user => user.Username, "richard.garcia@coding.com")
             .With(user => user.IsDeleted, false)
+            .With(user => user.TenantId, tenant.Id)
             .Create();
 
         var filters = new UserFiltersBuilder()
@@ -43,9 +50,15 @@ public sealed class UserRepositoryTests : IClassFixture<MongoDatabaseFixture>, I
     public async Task WhenUpdatingAUser_ThenUpdatedFieldsMustPersist()
     {
         /* arrange: create and insert user */
+        var tenant = _fixture.Create<Tenant>();
+
+        _tenantProvider.Setup(provider => provider.GetCurrentTenant())
+            .Returns(tenant);
+
         var user = _fixture.Build<User>()
             .With(user => user.Username, "update.test@coding.com")
             .With(user => user.IsDeleted, false)
+            .With(user => user.TenantId, tenant.Id)
             .Create();
 
         await _userRepository.InsertAsync(user);
@@ -75,9 +88,15 @@ public sealed class UserRepositoryTests : IClassFixture<MongoDatabaseFixture>, I
     public async Task WhenDeletingAUser_ThenItMustBeMarkedDeletedAndExcludedFromResults()
     {
         /* arrange: create and insert user */
+        var tenant = _fixture.Create<Tenant>();
+
+        _tenantProvider.Setup(provider => provider.GetCurrentTenant())
+            .Returns(tenant);
+
         var user = _fixture.Build<User>()
             .With(user => user.Username, "delete.test@coding.com")
             .With(user => user.IsDeleted, false)
+            .With(user => user.TenantId, tenant.Id)
             .Create();
 
         await _userRepository.InsertAsync(user);
@@ -114,14 +133,21 @@ public sealed class UserRepositoryTests : IClassFixture<MongoDatabaseFixture>, I
     public async Task WhenFilteringUsers_ThenItMustReturnOnlyMatchingUsers()
     {
         /* arrange: insert two users with different usernamess */
+        var tenant = _fixture.Create<Tenant>();
+
+        _tenantProvider.Setup(provider => provider.GetCurrentTenant())
+            .Returns(tenant);
+
         var user1 = _fixture.Build<User>()
             .With(user => user.Username, "filter1@coding.com")
             .With(user => user.IsDeleted, false)
+            .With(user => user.TenantId, tenant.Id)
             .Create();
 
         var user2 = _fixture.Build<User>()
             .With(user => user.Username, "filter2@coding.com")
             .With(user => user.IsDeleted, false)
+            .With(user => user.TenantId, tenant.Id)
             .Create();
 
         await _userRepository.InsertAsync(user1);
@@ -143,10 +169,16 @@ public sealed class UserRepositoryTests : IClassFixture<MongoDatabaseFixture>, I
     public async Task WhenPaginatingTenUsers_ThenItMustReturnFiveUsersPerPage()
     {
         /* arrange: create and insert 10 users, all not deleted */
+        var tenant = _fixture.Create<Tenant>();
+
+        _tenantProvider.Setup(provider => provider.GetCurrentTenant())
+            .Returns(tenant);
+
         var users = Enumerable.Range(1, 10)
             .Select(index => _fixture.Build<User>()
             .With(user => user.Username, $"user.{index}@coding.com")
             .With(user => user.IsDeleted, false)
+            .With(user => user.TenantId, tenant.Id)
             .Create())
             .ToList();
 
@@ -184,18 +216,21 @@ public sealed class UserRepositoryTests : IClassFixture<MongoDatabaseFixture>, I
     public async Task WhenFilteringUsersByTenantId_ThenOnlyUsersFromThatTenantAreReturned()
     {
         /* arrange: create tenant and user with tenant id */
-        var tenantId = Guid.NewGuid();
+        var tenant = _fixture.Create<Tenant>();
+
+        _tenantProvider.Setup(provider => provider.GetCurrentTenant())
+            .Returns(tenant);
 
         var user = _fixture.Build<User>()
             .With(user => user.Username, "richard.garcia@coding.com")
-            .With(user => user.TenantId, tenantId)
+            .With(user => user.TenantId, tenant.Id)
             .With(user => user.IsDeleted, false)
             .Create();
 
         await _userRepository.InsertAsync(user);
 
         var filters = new UserFiltersBuilder()
-            .WithTenantId(tenantId)
+            .WithTenantId(tenant.Id)
             .WithUsername(user.Username)
             .Build();
 
@@ -208,22 +243,25 @@ public sealed class UserRepositoryTests : IClassFixture<MongoDatabaseFixture>, I
 
         Assert.Equal(user.Id, retrievedUser.Id);
         Assert.Equal(user.Username, retrievedUser.Username);
-        Assert.Equal(tenantId, retrievedUser.TenantId);
+        Assert.Equal(tenant.Id, retrievedUser.TenantId);
     }
 
     [Fact(DisplayName = "[infrastructure] - when counting users with filters, then count must reflect filtered records")]
     public async Task WhenCountingUsersWithFilters_ThenCountMustReflectFilteredRecords()
     {
         /* arrange: create 10 users with varied tenantId, username and IsDeleted */
-        var tenantId1 = Guid.NewGuid();
-        var tenantId2 = Guid.NewGuid();
+        var tenant1 = _fixture.Create<Tenant>();
+        var tenant2 = _fixture.Create<Tenant>();
+
+        _tenantProvider.Setup(provider => provider.GetCurrentTenant())
+            .Returns(tenant1);
 
         var users = new List<User>();
 
         for (int index = 0; index < 10; index++)
         {
             var user = _fixture.Build<User>()
-                .With(user => user.TenantId, index < 5 ? tenantId1 : tenantId2) // first 5 tenant1, last 5 tenant2
+                .With(user => user.TenantId, index < 5 ? tenant1.Id : tenant2.Id) // first 5 tenant1, last 5 tenant2
                 .With(user => user.Username, $"user{index}@example.com")
                 .With(user => user.IsDeleted, index % 3 == 0) // every third user is deleted
                 .Create();
@@ -235,12 +273,12 @@ public sealed class UserRepositoryTests : IClassFixture<MongoDatabaseFixture>, I
 
         /* act: count users filtered by tenant1 and IsDeleted = false */
         var filters = new UserFiltersBuilder()
-            .WithTenantId(tenantId1)
+            .WithTenantId(tenant1.Id)
             .WithIsDeleted(false)
             .Build();
 
         var filteredCount = await _userRepository.CountAsync(filters);
-        var expectedCount = users.Count(user => user.TenantId == tenantId1 && !user.IsDeleted);
+        var expectedCount = users.Count(user => user.TenantId == tenant1.Id && !user.IsDeleted);
 
         /* assert: expected count of users for tenant*/
         Assert.Equal(expectedCount, filteredCount);
