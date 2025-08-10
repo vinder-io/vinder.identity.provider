@@ -38,4 +38,32 @@ public sealed class IdentityController(IMediator mediator) : ControllerBase
                 StatusCode(StatusCodes.Status404NotFound, result.Error),
         };
     }
+
+    [HttpPost("refresh-token")]
+    [TenantRequired]
+    public async Task<IActionResult> RefreshTokenAysnc(SessionTokenRenewal request, CancellationToken cancellation)
+    {
+        var result = await mediator.Send(request, cancellation);
+
+        return result switch
+        {
+            { IsSuccess: true } =>
+                StatusCode(StatusCodes.Status200OK, result.Data),
+
+            { IsFailure: true } when result.Error == AuthenticationErrors.InvalidRefreshToken =>
+                StatusCode(StatusCodes.Status400BadRequest, result.Error),
+
+            { IsFailure: true } when result.Error == AuthenticationErrors.TokenExpired =>
+                StatusCode(StatusCodes.Status401Unauthorized, result.Error),
+
+            { IsFailure: true } when result.Error == AuthenticationErrors.InvalidSignature =>
+                StatusCode(StatusCodes.Status401Unauthorized, result.Error),
+
+            { IsFailure: true } when result.Error == AuthenticationErrors.InvalidTokenFormat =>
+                StatusCode(StatusCodes.Status401Unauthorized, result.Error),
+
+            { IsFailure: true } when result.Error == AuthenticationErrors.UserNotFound =>
+                StatusCode(StatusCodes.Status404NotFound, result.Error),
+        };
+    }
 }
