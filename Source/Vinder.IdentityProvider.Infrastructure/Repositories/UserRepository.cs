@@ -1,6 +1,6 @@
 namespace Vinder.IdentityProvider.Infrastructure.Repositories;
 
-public sealed class UserRepository(IMongoDatabase database) :
+public sealed class UserRepository(IMongoDatabase database, ITenantProvider tenantProvider) :
     BaseRepository<User>(database, Collections.Users),
     IUserRepository
 {
@@ -9,7 +9,7 @@ public sealed class UserRepository(IMongoDatabase database) :
         var pipeline = PipelineDefinitionBuilder
             .For<User>()
             .As<User, User, BsonDocument>()
-            .FilterUsers(filters)
+            .FilterUsers(filters, tenantProvider)
             .Paginate(filters);
 
         var options = new AggregateOptions { AllowDiskUse = true };
@@ -28,7 +28,7 @@ public sealed class UserRepository(IMongoDatabase database) :
         var pipeline = PipelineDefinitionBuilder
             .For<User>()
             .As<User, User, BsonDocument>()
-            .FilterUsers(filters)
+            .FilterUsers(filters, tenantProvider)
             .Count();
 
         var aggregation = await _collection.AggregateAsync(pipeline, cancellationToken: cancellation);
