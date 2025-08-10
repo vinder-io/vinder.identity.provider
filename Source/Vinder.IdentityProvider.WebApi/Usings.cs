@@ -23,6 +23,7 @@ global using Vinder.IdentityProvider.Common.Errors;
 
 global using Vinder.IdentityProvider.Application.Payloads.Identity;
 global using Vinder.IdentityProvider.Application.Providers;
+global using Vinder.IdentityProvider.Application.Services;
 
 global using Vinder.IdentityProvider.Infrastructure.IoC.Extensions;
 global using Vinder.IdentityProvider.WebApi.Extensions;
