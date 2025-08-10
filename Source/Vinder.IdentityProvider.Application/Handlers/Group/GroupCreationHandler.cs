@@ -1,6 +1,6 @@
 namespace Vinder.IdentityProvider.Application.Handlers.Group;
 
-public sealed class GroupForCreationHandler(IGroupRepository groupRepository, ITenantProvider tenantProvider) :
+public sealed class GroupCreationHandler(IGroupRepository groupRepository, ITenantProvider tenantProvider) :
     IRequestHandler<GroupForCreation, Result<GroupDetails>>
 {
     public async Task<Result<GroupDetails>> Handle(GroupForCreation request, CancellationToken cancellationToken)
