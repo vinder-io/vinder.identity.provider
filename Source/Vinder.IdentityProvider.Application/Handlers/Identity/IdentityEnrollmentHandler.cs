@@ -1,8 +1,3 @@
-using Vinder.IdentityProvider.Application.Providers;
-using Vinder.IdentityProvider.Common.Errors;
-using Vinder.IdentityProvider.Domain.Filters.Builders;
-using Vinder.IdentityProvider.Domain.Repositories;
-
 namespace Vinder.IdentityProvider.Application.Handlers.Identity;
 
 public sealed class IdentityEnrollmentHandler(
