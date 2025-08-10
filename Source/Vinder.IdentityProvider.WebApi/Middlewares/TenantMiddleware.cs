@@ -1,24 +1,14 @@
 namespace Vinder.IdentityProvider.WebApi.Middlewares;
 
-public sealed class TenantMiddleware
+public sealed class TenantMiddleware(IMemoryCache cache, RequestDelegate next)
 {
-    private readonly ITenantRepository _tenantRepository;
-    private readonly ITenantProvider _tenantProvider;
-    private readonly IMemoryCache _memoryCache;
-    private readonly RequestDelegate _next;
-
-    public TenantMiddleware(ITenantRepository repository, ITenantProvider provider, IMemoryCache memoryCache, RequestDelegate next)
-    {
-        _tenantRepository = repository;
-        _tenantProvider = provider;
-        _memoryCache = memoryCache;
-        _next = next;
-    }
-
     public async Task InvokeAsync(HttpContext context)
     {
+        var tenantRepository = context.RequestServices.GetRequiredService<ITenantRepository>();
+        var tenantProvider = context.RequestServices.GetRequiredService<ITenantProvider>();
+
         var tenantHeaderKey = context.Request.Headers.Keys
-            .FirstOrDefault(key => string.Equals(key, "X-Tenant", StringComparison.OrdinalIgnoreCase));
+            .FirstOrDefault(key => string.Equals(key, "x-tenant", StringComparison.OrdinalIgnoreCase));
 
         if (tenantHeaderKey == null || string.IsNullOrWhiteSpace(context.Request.Headers[tenantHeaderKey]))
         {
@@ -28,11 +18,8 @@ public sealed class TenantMiddleware
             var error = TenantErrors.TenantHeaderMissing;
             var response = JsonSerializer.Serialize(new
             {
-                error = new
-                {
-                    code = error.Code,
-                    description = error.Description
-                }
+                code = error.Code,
+                description = error.Description
             });
 
             await context.Response.WriteAsync(response);
@@ -42,13 +29,13 @@ public sealed class TenantMiddleware
         var tenantName = context.Request.Headers[tenantHeaderKey].ToString();
         var cacheKey = $"tenant:{tenantName}";
 
-        if (!_memoryCache.TryGetValue(cacheKey, out Tenant? tenant))
+        if (!cache.TryGetValue(cacheKey, out Tenant? tenant))
         {
             var filters = new TenantFiltersBuilder()
                 .WithName(tenantName)
                 .Build();
 
-            var tenants = await _tenantRepository.GetTenantsAsync(filters, context.RequestAborted);
+            var tenants = await tenantRepository.GetTenantsAsync(filters, context.RequestAborted);
 
             tenant = tenants.FirstOrDefault();
 
@@ -60,11 +47,8 @@ public sealed class TenantMiddleware
                 var error = TenantErrors.TenantDoesNotExist;
                 var response = JsonSerializer.Serialize(new
                 {
-                    error = new
-                    {
-                        code = error.Code,
-                        description = error.Description
-                    }
+                    code = error.Code,
+                    description = error.Description
                 });
 
                 await context.Response.WriteAsync(response);
@@ -74,12 +58,12 @@ public sealed class TenantMiddleware
             var cacheOptions = new MemoryCacheEntryOptions()
                 .SetSlidingExpiration(TimeSpan.FromDays(10));
 
-            _memoryCache.Set(cacheKey, tenant, cacheOptions);
+            cache.Set(cacheKey, tenant, cacheOptions);
         }
 
         context.Items["TenantName"] = tenant?.Name;
 
-        await _tenantProvider.SetTenantAsync(tenant!);
-        await _next(context);
+        await tenantProvider.SetTenantAsync(tenant!);
+        await next(context);
     }
 }
