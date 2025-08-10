@@ -5,12 +5,9 @@ public sealed class SessionTokenRenewalHandler(IUserRepository userRepository, I
 {
     public async Task<Result<AuthenticationResult>> Handle(SessionTokenRenewal request, CancellationToken cancellationToken)
     {
-        var refreshToken = new SecurityToken
-        {
-            Value = request.RefreshToken
-        };
-
+        var refreshToken = TokenMapper.AsRefreshToken(request.RefreshToken);
         var validationResult = await tokenService.ValidateRefreshTokenAsync(refreshToken, cancellationToken);
+
         if (validationResult.IsFailure)
         {
             return Result<AuthenticationResult>.Failure(validationResult.Error);

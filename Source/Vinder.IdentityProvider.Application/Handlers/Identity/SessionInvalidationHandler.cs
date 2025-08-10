@@ -5,12 +5,9 @@ public sealed class SessionInvalidationHandler(ISecurityTokenService tokenServic
 {
     public async Task<Result> Handle(SessionInvalidation request, CancellationToken cancellationToken)
     {
-        var refreshToken = new SecurityToken
-        {
-            Value = request.RefreshToken
-        };
-
+        var refreshToken = TokenMapper.AsRefreshToken(request.RefreshToken);
         var validationResult = await tokenService.ValidateRefreshTokenAsync(refreshToken, cancellationToken);
+
         if (validationResult.IsFailure)
         {
             return Result.Failure(validationResult.Error);
