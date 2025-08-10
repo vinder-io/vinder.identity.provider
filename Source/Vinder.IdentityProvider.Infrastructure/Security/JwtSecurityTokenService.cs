@@ -39,6 +39,39 @@ public sealed class JwtSecurityTokenService(ISettings settings, ITokenRepository
         return Task.FromResult(Result<SecurityToken>.Success(securityToken));
     }
 
+    public Task<Result<SecurityToken>> GenerateAccessTokenAsync(Tenant tenant, CancellationToken cancellation = default)
+    {
+        var tokenHandler = new JwtSecurityTokenHandler();
+        var claims = new ClaimsBuilder()
+            .WithTenantId(tenant.Id.ToString())
+            .WithTenantName(tenant.Name)
+            .WithClientId(tenant.ClientId)
+            .WithPermissions(tenant.Permissions)
+            .Build();
+
+        var securityKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(settings.Security.SecretKey));
+        var credentials = new SigningCredentials(securityKey, SecurityAlgorithms.HmacSha256);
+
+        var claimsIdentity = new ClaimsIdentity(claims);
+        var tokenDescriptor = new SecurityTokenDescriptor
+        {
+            Subject = claimsIdentity,
+            SigningCredentials = credentials,
+            Expires = DateTime.UtcNow.Add(_refreshTokenDuration)
+        };
+
+        var token = tokenHandler.CreateToken(tokenDescriptor);
+        var tokenString = tokenHandler.WriteToken(token);
+
+        var securityToken = new SecurityToken
+        {
+            Value = tokenString,
+            ExpiresAt = tokenDescriptor.Expires.Value,
+        };
+
+        return Task.FromResult(Result<SecurityToken>.Success(securityToken));
+    }
+
     public async Task<Result<SecurityToken>> GenerateRefreshTokenAsync(User user, CancellationToken cancellation = default)
     {
         var tokenHandler = new JwtSecurityTokenHandler();
