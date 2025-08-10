@@ -9,6 +9,7 @@ global using System.Net.Mime;
 
 global using Microsoft.AspNetCore.Mvc;
 global using Microsoft.Extensions.Caching.Memory;
+global using Microsoft.AspNetCore.Authorization;
 global using Microsoft.AspNetCore.Authentication.JwtBearer;
 global using Microsoft.IdentityModel.Tokens;
 
@@ -18,10 +19,13 @@ global using Vinder.IdentityProvider.Domain.Entities;
 global using Vinder.IdentityProvider.Domain.Filters.Builders;
 global using Vinder.IdentityProvider.Domain.Repositories;
 
+global using Vinder.IdentityProvider.Common.Constants;
 global using Vinder.IdentityProvider.Common.Configuration;
 global using Vinder.IdentityProvider.Common.Errors;
 
 global using Vinder.IdentityProvider.Application.Payloads.Identity;
+global using Vinder.IdentityProvider.Application.Payloads.Group;
+
 global using Vinder.IdentityProvider.Application.Providers;
 global using Vinder.IdentityProvider.Application.Services;
 
