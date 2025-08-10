@@ -1,10 +1,15 @@
+using Vinder.IdentityProvider.Application.Providers;
 using Vinder.IdentityProvider.Common.Errors;
 using Vinder.IdentityProvider.Domain.Filters.Builders;
 using Vinder.IdentityProvider.Domain.Repositories;
 
 namespace Vinder.IdentityProvider.Application.Handlers.Identity;
 
-public sealed class IdentityEnrollmentHandler(IUserRepository userRepository, IPasswordHasher passwordHasher) : IRequestHandler<IdentityEnrollmentCredentials, Result>
+public sealed class IdentityEnrollmentHandler(
+    IUserRepository userRepository,
+    IPasswordHasher passwordHasher,
+    ITenantProvider tenantProvider
+) : IRequestHandler<IdentityEnrollmentCredentials, Result>
 {
     public async Task<Result> Handle(IdentityEnrollmentCredentials request, CancellationToken cancellationToken)
     {
@@ -20,9 +25,11 @@ public sealed class IdentityEnrollmentHandler(IUserRepository userRepository, IP
             return Result.Failure(IdentityErrors.UserAlreadyExists);
         }
 
+        var tenant = tenantProvider.GetCurrentTenant();
         var identity = new User
         {
             Username = request.Username,
+            TenantId = tenant.Id,
             PasswordHash = await passwordHasher.HashPasswordAsync(request.Password)
         };
 
