@@ -87,6 +87,9 @@ public sealed class IdentityController(IMediator mediator) : ControllerBase
             { IsFailure: true } when result.Error == AuthenticationErrors.InvalidSignature =>
                 StatusCode(StatusCodes.Status401Unauthorized, result.Error),
 
+            { IsFailure: true } when result.Error == AuthenticationErrors.LogoutFailed =>
+                StatusCode(StatusCodes.Status401Unauthorized, result.Error),
+
             { IsFailure: true } when result.Error == AuthenticationErrors.InvalidTokenFormat =>
                 StatusCode(StatusCodes.Status401Unauthorized, result.Error),
         };
