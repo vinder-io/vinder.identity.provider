@@ -24,4 +24,14 @@ Errors in this category are related to user authentication and token validation 
 
 ---
 
-This section will grow as new authentication-related errors are introduced. Always refer to the error code for precise diagnostics and troubleshooting.
+- Contextual information about when and why the error might occur
+
+# Tenant Errors
+
+Errors in this category are related to issues with tenant identification and validation in the HTTP request context. Each error code starting with `#VINDER-IDP-ERR-TNT-XXX` indicates a problem encountered during tenant resolution and middleware processing.
+
+| Error Code                | Description                                      | When it Occurs                                          | How to Handle / Fix                                             |
+|---------------------------|------------------------------------------------|--------------------------------------------------------|----------------------------------------------------------------|
+| `#VINDER-IDP-ERR-TNT-400` | Tenant header is missing from the HTTP request | When the incoming request does not include the tenant header (`X-Tenant`) | Ensure the client sends the tenant header in each request       |
+| `#VINDER-IDP-ERR-TNT-404` | The specified tenant does not exist             | When the tenant header value does not match any tenant in the system | Verify tenant name correctness or register the tenant           |
+| `#VINDER-IDP-ERR-TNT-500` | No HTTP context available to retrieve tenant information | When code runs outside of an HTTP context (e.g., background jobs like Hangfire) where `HttpContext` is not available | Ensure tenant resolution logic accounts for non-HTTP scenarios, e.g., pass tenant info explicitly in background job parameters |
