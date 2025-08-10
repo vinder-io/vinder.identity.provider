@@ -21,12 +21,9 @@ public sealed class IdentityEnrollmentHandler(
         }
 
         var tenant = tenantProvider.GetCurrentTenant();
-        var identity = new User
-        {
-            Username = request.Username,
-            TenantId = tenant.Id,
-            PasswordHash = await passwordHasher.HashPasswordAsync(request.Password)
-        };
+        var identity = UserMapper.AsUser(request, tenant.Id);
+
+        identity.PasswordHash = await passwordHasher.HashPasswordAsync(request.Password);
 
         await userRepository.InsertAsync(identity, cancellationToken);
 
