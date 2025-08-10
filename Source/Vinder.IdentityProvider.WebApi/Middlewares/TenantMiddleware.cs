@@ -4,6 +4,15 @@ public sealed class TenantMiddleware(IMemoryCache cache, RequestDelegate next)
 {
     public async Task InvokeAsync(HttpContext context)
     {
+        var endpoint = context.GetEndpoint();
+        var requiresTenant = endpoint?.Metadata.GetMetadata<TenantRequiredAttribute>() != null;
+
+        if (!requiresTenant)
+        {
+            await next(context);
+            return;
+        }
+
         var tenantRepository = context.RequestServices.GetRequiredService<ITenantRepository>();
         var tenantProvider = context.RequestServices.GetRequiredService<ITenantProvider>();
 
