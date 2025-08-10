@@ -8,5 +8,6 @@ public static class ApplicationServicesExtension
         services.AddScoped<IPasswordHasher, PasswordHasher>();
         services.AddScoped<IAuthenticationService, AuthenticationService>();
         services.AddScoped<ISecurityTokenService, JwtSecurityTokenService>();
+        services.AddScoped<ITenantProvider, TenantProvider>();
     }
 }
