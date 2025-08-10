@@ -4,19 +4,21 @@ public static class UserFiltersStage
 {
     public static PipelineDefinition<User, BsonDocument> FilterUsers(
         this PipelineDefinition<User, BsonDocument> pipeline,
-        UserFilters filters)
+        UserFilters filters,
+        ITenantProvider tenantProvider)
     {
-        var specifications = BuildMatchFilter(filters);
+        var specifications = BuildMatchFilter(filters, tenantProvider);
         return pipeline.Match(specifications);
     }
 
-    private static FilterDefinition<BsonDocument> BuildMatchFilter(UserFilters filters)
+    private static FilterDefinition<BsonDocument> BuildMatchFilter(UserFilters filters, ITenantProvider tenantProvider)
     {
+        var tenant = tenantProvider.GetCurrentTenant();
         var filterDefinitions = new List<FilterDefinition<BsonDocument>>
         {
             MatchIfNotEmpty(DocumentFields.User.Username, filters.Username),
             MatchIfNotEmptyGuid(DocumentFields.User.Id, filters.UserId),
-            MatchIfNotEmptyGuid(DocumentFields.User.TenantId, filters.TenantId)
+            MatchIfNotEmptyGuid(DocumentFields.User.TenantId, tenant.Id)
         };
 
         if (!filters.IsDeleted.HasValue)
