@@ -27,6 +27,7 @@ global using Vinder.IdentityProvider.Application.Providers;
 global using Vinder.IdentityProvider.Infrastructure.IoC.Extensions;
 global using Vinder.IdentityProvider.WebApi.Extensions;
 global using Vinder.IdentityProvider.WebApi.Middlewares;
+global using Vinder.IdentityProvider.WebApi.Attributes;
 
 
 /* global usings for third-party namespaces here */
