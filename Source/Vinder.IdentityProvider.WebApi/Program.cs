@@ -18,6 +18,7 @@ internal static class Program
 
         app.UseHttpPipeline();
 
+        await app.UseBootstrapperAsync();
         await app.RunAsync();
     }
 }
