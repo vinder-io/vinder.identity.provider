@@ -8,6 +8,18 @@ public sealed class GroupCreationHandler(IGroupRepository groupRepository, ITena
         var tenant = tenantProvider.GetCurrentTenant();
         var group = GroupMapper.AsGroup(request, tenant);
 
+        var filters = new GroupFiltersBuilder()
+            .WithName(group.Name)
+            .Build();
+
+        var groups = await groupRepository.GetGroupsAsync(filters, cancellation: cancellationToken);
+        var existingGroup = groups.FirstOrDefault();
+
+        if (existingGroup is not null)
+        {
+            return Result<GroupDetails>.Failure(GroupErrors.GroupAlreadyExists);
+        }
+
         await groupRepository.InsertAsync(group, cancellation: cancellationToken);
 
         return Result<GroupDetails>.Success(GroupMapper.AsResponse(group));
