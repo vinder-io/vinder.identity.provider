@@ -62,8 +62,8 @@ public sealed class TenantMiddleware(IMemoryCache cache, RequestDelegate next)
         }
 
         context.Items["TenantName"] = tenant?.Name;
+        tenantProvider.SetTenant(tenant!);
 
-        await tenantProvider.SetTenantAsync(tenant!);
         await next(context);
     }
 }
