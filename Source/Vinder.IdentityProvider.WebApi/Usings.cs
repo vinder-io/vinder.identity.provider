@@ -3,11 +3,13 @@
 global using System.Diagnostics.CodeAnalysis;
 global using System.Text;
 global using System.Text.Json;
+global using System.Text.RegularExpressions;
 global using System.Net.Mime;
 
 /* global usings for Microsoft namespaces here */
 
 global using Microsoft.AspNetCore.Mvc;
+global using Microsoft.AspNetCore.Mvc.ModelBinding;
 global using Microsoft.Extensions.Caching.Memory;
 global using Microsoft.AspNetCore.Authorization;
 global using Microsoft.AspNetCore.Authentication.JwtBearer;
@@ -33,6 +35,7 @@ global using Vinder.IdentityProvider.Infrastructure.IoC.Extensions;
 global using Vinder.IdentityProvider.WebApi.Extensions;
 global using Vinder.IdentityProvider.WebApi.Middlewares;
 global using Vinder.IdentityProvider.WebApi.Attributes;
+global using Vinder.IdentityProvider.WebApi.Binders;
 
 
 /* global usings for third-party namespaces here */
