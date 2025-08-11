@@ -20,7 +20,7 @@ public sealed class ClientAuthenticationHandler(
             return Result<ClientAuthenticationResult>.Failure(AuthenticationErrors.ClientNotFound);
         }
 
-        var passwordIsValid = await passwordHasher.VerifyPasswordAsync(tenant.SecretHash, request.ClientId + tenant.Name);
+        var passwordIsValid = await passwordHasher.VerifyPasswordAsync(request.ClientId + tenant.Name, tenant.SecretHash);
         if (!passwordIsValid)
         {
             return Result<ClientAuthenticationResult>.Failure(AuthenticationErrors.InvalidClientCredentials);
