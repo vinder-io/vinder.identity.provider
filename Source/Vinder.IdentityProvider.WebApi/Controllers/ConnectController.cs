@@ -6,7 +6,7 @@ public sealed class ConnectController(IMediator mediator) : ControllerBase
 {
     [HttpPost("token")]
     public async Task<IActionResult> AuthenticateClientAsync(
-        [FromForm] ClientAuthenticationCredentials request,
+        [FromSnakeCaseForm] ClientAuthenticationCredentials request,
         CancellationToken cancellation
     )
     {
