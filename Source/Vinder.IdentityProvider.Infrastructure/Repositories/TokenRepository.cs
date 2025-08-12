@@ -1,6 +1,6 @@
 namespace Vinder.IdentityProvider.Infrastructure.Repositories;
 
-public sealed class TokenRepository(IMongoDatabase database) :
+public sealed class TokenRepository(IMongoDatabase database, ITenantProvider tenantProvider) :
     BaseRepository<SecurityToken>(database, Collections.Tokens),
     ITokenRepository
 {
@@ -9,7 +9,7 @@ public sealed class TokenRepository(IMongoDatabase database) :
         var pipeline = PipelineDefinitionBuilder
             .For<SecurityToken>()
             .As<SecurityToken, SecurityToken, BsonDocument>()
-            .FilterTokens(filters)
+            .FilterTokens(filters, tenantProvider)
             .Paginate(filters);
 
         var options = new AggregateOptions { AllowDiskUse = true };
@@ -28,7 +28,7 @@ public sealed class TokenRepository(IMongoDatabase database) :
         var pipeline = PipelineDefinitionBuilder
             .For<SecurityToken>()
             .As<SecurityToken, SecurityToken, BsonDocument>()
-            .FilterTokens(filters)
+            .FilterTokens(filters, tenantProvider)
             .Count();
 
         var aggregation = await _collection.AggregateAsync(pipeline, cancellationToken: cancellation);
