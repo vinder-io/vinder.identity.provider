@@ -4,20 +4,22 @@ public static class TokenFiltersStage
 {
     public static PipelineDefinition<SecurityToken, BsonDocument> FilterTokens(
         this PipelineDefinition<SecurityToken, BsonDocument> pipeline,
-        TokenFilters filters)
+        TokenFilters filters,
+        ITenantProvider tenantProvider)
     {
-        var specifications = BuildMatchFilter(filters);
+        var specifications = BuildMatchFilter(filters, tenantProvider);
         return pipeline.Match(specifications);
     }
 
-    private static FilterDefinition<BsonDocument> BuildMatchFilter(TokenFilters filters)
+    private static FilterDefinition<BsonDocument> BuildMatchFilter(TokenFilters filters, ITenantProvider tenantProvider)
     {
+        var tenant = tenantProvider.GetCurrentTenant();
         var filterDefinitions = new List<FilterDefinition<BsonDocument>>
         {
             MatchIfNotEmpty(DocumentFields.SecurityToken.Value, filters.Value),
             MatchIfNotEmptyEnum(DocumentFields.SecurityToken.Type, filters.Type),
             MatchIfNotEmptyGuid(DocumentFields.SecurityToken.UserId, filters.UserId),
-            MatchIfNotEmptyGuid(DocumentFields.SecurityToken.TenantId, filters.TenantId),
+            MatchIfNotEmptyGuid(DocumentFields.SecurityToken.TenantId, tenant.Id),
         };
 
         if (!filters.IsDeleted.HasValue)
