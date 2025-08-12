@@ -13,6 +13,8 @@ public static class ValidationExtension
         services.AddTransient<IValidator<AuthenticationCredentials>, AuthenticationCredentialsValidator>();
         services.AddTransient<IValidator<ClientAuthenticationCredentials>, ClientAuthenticationCredentialsValidator>();
         services.AddTransient<IValidator<IdentityEnrollmentCredentials>, IdentityEnrollmentCredentialsValidator>();
+
         services.AddTransient<IValidator<GroupForCreation>, GroupCreationValidator>();
+        services.AddTransient<IValidator<AssignGroupPermission>, AssignGroupPermissionValidator>();
     }
 }
