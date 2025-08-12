@@ -28,7 +28,7 @@ public sealed class GroupsController(IMediator mediator) : ControllerBase
         return result switch
         {
             { IsSuccess: true } =>
-                StatusCode(StatusCodes.Status201Created),
+                StatusCode(StatusCodes.Status201Created, result.Data),
 
             { IsFailure: true } when result.Error == GroupErrors.GroupAlreadyExists =>
                 StatusCode(StatusCodes.Status409Conflict, result.Error),
