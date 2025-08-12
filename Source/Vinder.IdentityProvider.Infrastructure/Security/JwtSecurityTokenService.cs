@@ -57,7 +57,7 @@ public sealed class JwtSecurityTokenService(ISettings settings, ITokenRepository
         {
             Subject = claimsIdentity,
             SigningCredentials = credentials,
-            Expires = DateTime.UtcNow.Add(_refreshTokenDuration)
+            Expires = DateTime.UtcNow.Add(_accessTokenDuration)
         };
 
         var token = tokenHandler.CreateToken(tokenDescriptor);
