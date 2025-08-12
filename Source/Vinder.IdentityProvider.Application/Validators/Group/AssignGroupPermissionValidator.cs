@@ -1,0 +1,19 @@
+namespace Vinder.IdentityProvider.Application.Validators.Group;
+
+public sealed class AssignGroupPermissionValidator : AbstractValidator<AssignGroupPermission>
+{
+    public AssignGroupPermissionValidator()
+    {
+        RuleFor(request => request.GroupId)
+            .NotEmpty()
+            .WithMessage("Group ID must not be empty.");
+
+        RuleFor(request => request.PermissionName)
+            .NotEmpty()
+            .WithMessage("Permission name must not be empty.")
+            .MinimumLength(3)
+            .WithMessage("Permission name must be at least 3 characters long.")
+            .MaximumLength(200)
+            .WithMessage("Permission name must be at most 200 characters long.");
+    }
+}
