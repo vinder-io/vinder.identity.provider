@@ -5,22 +5,29 @@ public sealed class PermissionRepositoryTests : IClassFixture<MongoDatabaseFixtu
     private readonly IPermissionRepository _permissionRepository;
     private readonly IMongoDatabase _database;
     private readonly MongoDatabaseFixture _mongoFixture;
+    private readonly Mock<ITenantProvider> _tenantProvider = new();
     private readonly Fixture _fixture = new();
 
     public PermissionRepositoryTests(MongoDatabaseFixture fixture)
     {
         _mongoFixture = fixture;
         _database = fixture.Database;
-        _permissionRepository = new PermissionRepository(_database);
+        _permissionRepository = new PermissionRepository(_database, _tenantProvider.Object);
     }
 
     [Fact(DisplayName = "[infrastructure] - when inserting a permission, then it must persist in the database")]
     public async Task WhenInsertingAPermission_ThenItMustPersistInTheDatabase()
     {
         /* arrange: create permission and matching filter */
+        var tenant = _fixture.Create<Tenant>();
+
+        _tenantProvider.Setup(provider => provider.GetCurrentTenant())
+            .Returns(tenant);
+
         var permission = _fixture.Build<Permission>()
             .With(permission => permission.Name, "read:users")
             .With(permission => permission.IsDeleted, false)
+            .With(permission => permission.TenantId, tenant.Id)
             .Create();
 
         var filters = new PermissionFiltersBuilder()
@@ -44,9 +51,15 @@ public sealed class PermissionRepositoryTests : IClassFixture<MongoDatabaseFixtu
     public async Task WhenUpdatingAPermission_ThenUpdatedFieldsMustPersist()
     {
         /* arrange: create and insert permission */
+        var tenant = _fixture.Create<Tenant>();
+
+        _tenantProvider.Setup(provider => provider.GetCurrentTenant())
+            .Returns(tenant);
+
         var permission = _fixture.Build<Permission>()
             .With(permission => permission.Name, "update.test")
             .With(permission => permission.IsDeleted, false)
+            .With(permission => permission.TenantId, tenant.Id)
             .Create();
 
         await _permissionRepository.InsertAsync(permission);
@@ -76,9 +89,15 @@ public sealed class PermissionRepositoryTests : IClassFixture<MongoDatabaseFixtu
     public async Task WhenDeletingAPermission_ThenItMustBeMarkedDeletedAndExcludedFromResults()
     {
         /* arrange: create and insert permission */
+        var tenant = _fixture.Create<Tenant>();
+
+        _tenantProvider.Setup(provider => provider.GetCurrentTenant())
+            .Returns(tenant);
+
         var permission = _fixture.Build<Permission>()
             .With(permission => permission.Name, "delete.test")
             .With(permission => permission.IsDeleted, false)
+            .With(permission => permission.TenantId, tenant.Id)
             .Create();
 
         await _permissionRepository.InsertAsync(permission);
@@ -115,13 +134,20 @@ public sealed class PermissionRepositoryTests : IClassFixture<MongoDatabaseFixtu
     public async Task WhenFilteringPermissions_ThenItMustReturnOnlyMatchingPermissions()
     {
         /* arrange: insert two permissions with different names */
+        var tenant = _fixture.Create<Tenant>();
+
+        _tenantProvider.Setup(provider => provider.GetCurrentTenant())
+            .Returns(tenant);
+
         var permission1 = _fixture.Build<Permission>()
             .With(permission => permission.Name, "filter1")
             .With(permission => permission.IsDeleted, false)
+            .With(permission => permission.TenantId, tenant.Id)
             .Create();
 
         var permission2 = _fixture.Build<Permission>()
             .With(permission => permission.Name, "filter2")
+            .With(permission => permission.TenantId, tenant.Id)
             .With(permission => permission.IsDeleted, false)
             .Create();
 
@@ -144,10 +170,16 @@ public sealed class PermissionRepositoryTests : IClassFixture<MongoDatabaseFixtu
     public async Task WhenPaginatingTenPermissions_ThenItMustReturnFivePermissionsPerPage()
     {
         /* arrange: create and insert 10 permissions, all not deleted */
+        var tenant = _fixture.Create<Tenant>();
+
+        _tenantProvider.Setup(provider => provider.GetCurrentTenant())
+            .Returns(tenant);
+
         var permissions = Enumerable.Range(1, 10)
             .Select(index => _fixture.Build<Permission>()
             .With(permission => permission.Name, $"permission.{index}")
             .With(permission => permission.IsDeleted, false)
+            .With(permission => permission.TenantId, tenant.Id)
             .Create())
             .ToList();
 
@@ -185,10 +217,16 @@ public sealed class PermissionRepositoryTests : IClassFixture<MongoDatabaseFixtu
     public async Task WhenCountingTenPermissionsWithIsDeletedFalse_ThenItMustReturnTen()
     {
         /* arrange: create and insert 10 permissions, all not deleted */
+        var tenant = _fixture.Create<Tenant>();
+
+        _tenantProvider.Setup(provider => provider.GetCurrentTenant())
+            .Returns(tenant);
+
         var permissions = Enumerable.Range(1, 10)
             .Select(index => _fixture.Build<Permission>()
             .With(permission => permission.Name, $"permission.{index}")
             .With(permission => permission.IsDeleted, false)
+            .With(permission => permission.TenantId, tenant.Id)
             .Create())
             .ToList();
 
