@@ -13,7 +13,8 @@ public static class GroupMapper
     public static GroupDetails AsResponse(Group group) => new()
     {
         Id = group.Id.ToString(),
-        Name = group.Name
+        Name = group.Name,
+        Permissions = [.. group.Permissions.Select(group => PermissionMapper.AsResponse(group))]
     };
 
     public static GroupFilters AsFilters(GroupsFetchParameters parameters) => new()
