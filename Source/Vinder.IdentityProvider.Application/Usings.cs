@@ -1,3 +1,7 @@
+/* global usings for System namespaces here */
+
+global using System.Text.Json.Serialization;
+
 /* global usings for Vinder namespaces here */
 
 global using Vinder.IdentityProvider.Common.Results;
@@ -10,6 +14,7 @@ global using Vinder.IdentityProvider.Domain.Repositories;
 global using Vinder.IdentityProvider.Application.Payloads.Common;
 global using Vinder.IdentityProvider.Application.Payloads.Identity;
 global using Vinder.IdentityProvider.Application.Payloads.Group;
+global using Vinder.IdentityProvider.Application.Payloads.Permission;
 
 global using Vinder.IdentityProvider.Application.Services;
 global using Vinder.IdentityProvider.Application.Providers;
