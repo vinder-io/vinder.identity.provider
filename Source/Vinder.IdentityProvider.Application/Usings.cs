@@ -7,6 +7,7 @@ global using Vinder.IdentityProvider.Domain.Entities;
 global using Vinder.IdentityProvider.Domain.Filters.Builders;
 global using Vinder.IdentityProvider.Domain.Repositories;
 
+global using Vinder.IdentityProvider.Application.Payloads.Common;
 global using Vinder.IdentityProvider.Application.Payloads.Identity;
 global using Vinder.IdentityProvider.Application.Payloads.Group;
 
