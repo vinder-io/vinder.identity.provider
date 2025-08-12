@@ -1,6 +1,6 @@
 namespace Vinder.IdentityProvider.Infrastructure.Repositories;
 
-public sealed class PermissionRepository(IMongoDatabase database) :
+public sealed class PermissionRepository(IMongoDatabase database, ITenantProvider tenantProvider) :
     BaseRepository<Permission>(database, Collections.Permissions),
     IPermissionRepository
 {
@@ -9,7 +9,7 @@ public sealed class PermissionRepository(IMongoDatabase database) :
         var pipeline = PipelineDefinitionBuilder
             .For<Permission>()
             .As<Permission, Permission, BsonDocument>()
-            .FilterPermissions(filters)
+            .FilterPermissions(filters, tenantProvider)
             .Paginate(filters);
 
         var options = new AggregateOptions { AllowDiskUse = true };
@@ -28,7 +28,7 @@ public sealed class PermissionRepository(IMongoDatabase database) :
         var pipeline = PipelineDefinitionBuilder
             .For<Permission>()
             .As<Permission, Permission, BsonDocument>()
-            .FilterPermissions(filters)
+            .FilterPermissions(filters, tenantProvider)
             .Count();
 
         var aggregation = await _collection.AggregateAsync(pipeline, cancellationToken: cancellation);
