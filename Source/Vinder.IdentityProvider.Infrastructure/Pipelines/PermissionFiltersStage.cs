@@ -4,18 +4,20 @@ public static class PermissionFiltersStage
 {
     public static PipelineDefinition<Permission, BsonDocument> FilterPermissions(
         this PipelineDefinition<Permission, BsonDocument> pipeline,
-        PermissionFilters filters)
+        PermissionFilters filters,
+        ITenantProvider tenantProvider)
     {
-        var specifications = BuildMatchFilter(filters);
+        var specifications = BuildMatchFilter(filters, tenantProvider);
         return pipeline.Match(specifications);
     }
 
-    private static FilterDefinition<BsonDocument> BuildMatchFilter(PermissionFilters filters)
+    private static FilterDefinition<BsonDocument> BuildMatchFilter(PermissionFilters filters, ITenantProvider tenantProvider)
     {
+        var tenant = tenantProvider.GetCurrentTenant();
         var filterDefinitions = new List<FilterDefinition<BsonDocument>>
         {
             MatchIfNotEmpty(DocumentFields.Permission.Name, filters.Name),
-            MatchIfNotEmptyGuid(DocumentFields.Permission.TenantId, filters.TenantId)
+            MatchIfNotEmptyGuid(DocumentFields.Permission.TenantId, tenant.Id)
         };
 
         if (!filters.IsDeleted.HasValue)
