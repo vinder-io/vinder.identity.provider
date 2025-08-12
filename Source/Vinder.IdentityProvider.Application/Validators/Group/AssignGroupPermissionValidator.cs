@@ -4,10 +4,6 @@ public sealed class AssignGroupPermissionValidator : AbstractValidator<AssignGro
 {
     public AssignGroupPermissionValidator()
     {
-        RuleFor(request => request.GroupId)
-            .NotEmpty()
-            .WithMessage("Group ID must not be empty.");
-
         RuleFor(request => request.PermissionName)
             .NotEmpty()
             .WithMessage("Permission name must not be empty.")
