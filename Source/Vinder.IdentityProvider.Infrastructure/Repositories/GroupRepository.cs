@@ -1,6 +1,6 @@
 namespace Vinder.IdentityProvider.Infrastructure.Repositories;
 
-public sealed class GroupRepository(IMongoDatabase database) :
+public sealed class GroupRepository(IMongoDatabase database, ITenantProvider tenantProvider) :
     BaseRepository<Group>(database, Collections.Groups),
     IGroupRepository
 {
@@ -9,7 +9,7 @@ public sealed class GroupRepository(IMongoDatabase database) :
         var pipeline = PipelineDefinitionBuilder
             .For<Group>()
             .As<Group, Group, BsonDocument>()
-            .FilterGroups(filters)
+            .FilterGroups(filters, tenantProvider)
             .Paginate(filters);
 
         var options = new AggregateOptions { AllowDiskUse = true };
@@ -28,7 +28,7 @@ public sealed class GroupRepository(IMongoDatabase database) :
         var pipeline = PipelineDefinitionBuilder
             .For<Group>()
             .As<Group, Group, BsonDocument>()
-            .FilterGroups(filters)
+            .FilterGroups(filters, tenantProvider)
             .Count();
 
         var aggregation = await _collection.AggregateAsync(pipeline, cancellationToken: cancellation);
