@@ -4,19 +4,20 @@ public static class GroupFiltersStage
 {
     public static PipelineDefinition<Group, BsonDocument> FilterGroups(
         this PipelineDefinition<Group, BsonDocument> pipeline,
-        GroupFilters filters)
+        GroupFilters filters, ITenantProvider tenantProvider)
     {
-        var specifications = BuildMatchFilter(filters);
+        var specifications = BuildMatchFilter(filters, tenantProvider);
         return pipeline.Match(specifications);
     }
 
-    private static FilterDefinition<BsonDocument> BuildMatchFilter(GroupFilters filters)
+    private static FilterDefinition<BsonDocument> BuildMatchFilter(GroupFilters filters, ITenantProvider tenantProvider)
     {
+        var tenant = tenantProvider.GetCurrentTenant();
         var filterDefinitions = new List<FilterDefinition<BsonDocument>>
         {
             MatchIfNotEmpty(DocumentFields.Group.Name, filters.Name),
             MatchIfNotEmptyGuid(DocumentFields.Group.Id, filters.Id),
-            MatchIfNotEmptyGuid(DocumentFields.Group.TenantId, filters.TenantId),
+            MatchIfNotEmptyGuid(DocumentFields.Group.TenantId, tenant.Id),
         };
 
         if (!filters.IsDeleted.HasValue)
