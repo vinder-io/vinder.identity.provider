@@ -5,22 +5,29 @@ public sealed class TokenRepositoryTests : IClassFixture<MongoDatabaseFixture>, 
     private readonly ITokenRepository _tokenRepository;
     private readonly IMongoDatabase _database;
     private readonly MongoDatabaseFixture _mongoFixture;
+    private readonly Mock<ITenantProvider> _tenantProvider = new();
     private readonly Fixture _fixture = new();
 
     public TokenRepositoryTests(MongoDatabaseFixture fixture)
     {
         _mongoFixture = fixture;
         _database = fixture.Database;
-        _tokenRepository = new TokenRepository(_database);
+        _tokenRepository = new TokenRepository(_database, _tenantProvider.Object);
     }
 
     [Fact(DisplayName = "[infrastructure] - when inserting a token, then it must persist in the database")]
     public async Task WhenInsertingAToken_ThenItMustPersistInTheDatabase()
     {
         /* arrange: create token and matching filter */
+        var tenant = _fixture.Create<Tenant>();
+
+        _tenantProvider.Setup(provider => provider.GetCurrentTenant())
+            .Returns(tenant);
+
         var token = _fixture.Build<SecurityToken>()
             .With(token => token.Value, "some-secret-token")
             .With(token => token.IsDeleted, false)
+            .With(token => token.TenantId, tenant.Id)
             .Create();
 
         var filters = new TokenFiltersBuilder()
@@ -43,9 +50,15 @@ public sealed class TokenRepositoryTests : IClassFixture<MongoDatabaseFixture>, 
     public async Task WhenUpdatingAToken_ThenUpdatedFieldsMustPersist()
     {
         /* arrange: create and insert token */
+        var tenant = _fixture.Create<Tenant>();
+
+        _tenantProvider.Setup(provider => provider.GetCurrentTenant())
+            .Returns(tenant);
+
         var token = _fixture.Build<SecurityToken>()
             .With(token => token.Value, "update.test-token")
             .With(token => token.IsDeleted, false)
+            .With(token => token.TenantId, tenant.Id)
             .Create();
 
         await _tokenRepository.InsertAsync(token);
@@ -75,9 +88,15 @@ public sealed class TokenRepositoryTests : IClassFixture<MongoDatabaseFixture>, 
     public async Task WhenDeletingAToken_ThenItMustBeMarkedDeletedAndExcludedFromResults()
     {
         /* arrange: create and insert token */
+        var tenant = _fixture.Create<Tenant>();
+
+        _tenantProvider.Setup(provider => provider.GetCurrentTenant())
+            .Returns(tenant);
+
         var token = _fixture.Build<SecurityToken>()
             .With(token => token.Value, "delete.test-token")
             .With(token => token.IsDeleted, false)
+            .With(token => token.TenantId, tenant.Id)
             .Create();
 
         await _tokenRepository.InsertAsync(token);
@@ -114,14 +133,21 @@ public sealed class TokenRepositoryTests : IClassFixture<MongoDatabaseFixture>, 
     public async Task WhenFilteringTokens_ThenItMustReturnOnlyMatchingTokens()
     {
         /* arrange: insert two tokens with different values */
+        var tenant = _fixture.Create<Tenant>();
+
+        _tenantProvider.Setup(provider => provider.GetCurrentTenant())
+            .Returns(tenant);
+
         var token1 = _fixture.Build<SecurityToken>()
             .With(token => token.Value, "filter1-token")
             .With(token => token.IsDeleted, false)
+            .With(token => token.TenantId, tenant.Id)
             .Create();
 
         var token2 = _fixture.Build<SecurityToken>()
             .With(token => token.Value, "filter2-token")
             .With(token => token.IsDeleted, false)
+            .With(token => token.TenantId, tenant.Id)
             .Create();
 
         await _tokenRepository.InsertAsync(token1);
@@ -143,10 +169,16 @@ public sealed class TokenRepositoryTests : IClassFixture<MongoDatabaseFixture>, 
     public async Task WhenPaginatingTenTokens_ThenItMustReturnFiveTokensPerPage()
     {
         /* arrange: create and insert 10 tokens, all not deleted */
+        var tenant = _fixture.Create<Tenant>();
+
+        _tenantProvider.Setup(provider => provider.GetCurrentTenant())
+            .Returns(tenant);
+
         var tokens = Enumerable.Range(1, 10)
             .Select(index => _fixture.Build<SecurityToken>()
             .With(token => token.Value, $"token-{index}")
             .With(token => token.IsDeleted, false)
+            .With(token => token.TenantId, tenant.Id)
             .Create())
             .ToList();
 
@@ -184,18 +216,21 @@ public sealed class TokenRepositoryTests : IClassFixture<MongoDatabaseFixture>, 
     public async Task WhenFilteringTokensByTenantId_ThenOnlyTokensFromThatTenantAreReturned()
     {
         /* arrange: create tenant and token with tenant id */
-        var tenantId = Guid.NewGuid();
+        var tenant = _fixture.Create<Tenant>();
+
+        _tenantProvider.Setup(provider => provider.GetCurrentTenant())
+            .Returns(tenant);
 
         var token = _fixture.Build<SecurityToken>()
             .With(token => token.Value, "some-tenant-token")
-            .With(token => token.TenantId, tenantId)
+            .With(token => token.TenantId, tenant.Id)
             .With(token => token.IsDeleted, false)
             .Create();
 
         await _tokenRepository.InsertAsync(token);
 
         var filters = new TokenFiltersBuilder()
-            .WithTenantId(tenantId)
+            .WithTenantId(tenant.Id)
             .WithValue(token.Value)
             .Build();
 
@@ -208,7 +243,7 @@ public sealed class TokenRepositoryTests : IClassFixture<MongoDatabaseFixture>, 
 
         Assert.Equal(token.Id, retrievedToken.Id);
         Assert.Equal(token.Value, retrievedToken.Value);
-        Assert.Equal(tenantId, retrievedToken.TenantId);
+        Assert.Equal(tenant.Id, retrievedToken.TenantId);
     }
 
     [Theory(DisplayName = "[infrastructure] - when filtering tokens by type, then it must return matching tokens")]
@@ -218,9 +253,15 @@ public sealed class TokenRepositoryTests : IClassFixture<MongoDatabaseFixture>, 
     public async Task WhenFilteringTokensByType_ThenItMustReturnOnlyMatchingTokens(TokenType type)
     {
         // arrange: insert one token with the requested type, and one with a different type
+        var tenant = _fixture.Create<Tenant>();
+
+        _tenantProvider.Setup(provider => provider.GetCurrentTenant())
+            .Returns(tenant);
+
         var matchingToken = _fixture.Build<SecurityToken>()
             .With(token => token.Type, type)
             .With(token => token.IsDeleted, false)
+            .With(token => token.TenantId, tenant.Id)
             .Create();
 
         var nonMatchingToken = _fixture.Build<SecurityToken>()
@@ -257,11 +298,16 @@ public sealed class TokenRepositoryTests : IClassFixture<MongoDatabaseFixture>, 
     public async Task WhenFilteringTokensByUserId_ThenOnlyTokensFromThatUserAreReturned()
     {
         /* arrange: create user and token with user id */
+        var tenant = _fixture.Create<Tenant>();
         var userId = Guid.NewGuid();
+
+        _tenantProvider.Setup(provider => provider.GetCurrentTenant())
+            .Returns(tenant);
 
         var token = _fixture.Build<SecurityToken>()
             .With(token => token.Value, "some-user-token")
             .With(token => token.UserId, userId)
+            .With(token => token.TenantId, tenant.Id)
             .With(token => token.IsDeleted, false)
             .Create();
 
@@ -288,8 +334,11 @@ public sealed class TokenRepositoryTests : IClassFixture<MongoDatabaseFixture>, 
     public async Task WhenCountingTokensWithFilters_ThenCountMustReflectFilteredRecords()
     {
         /* arrange: create 10 tokens with varied tenantId, userId and IsDeleted */
-        var tenantId1 = Guid.NewGuid();
+        var tenant = _fixture.Create<Tenant>();
         var tenantId2 = Guid.NewGuid();
+
+        _tenantProvider.Setup(provider => provider.GetCurrentTenant())
+            .Returns(tenant);
 
         var userId1 = Guid.NewGuid();
         var userId2 = Guid.NewGuid();
@@ -299,7 +348,7 @@ public sealed class TokenRepositoryTests : IClassFixture<MongoDatabaseFixture>, 
         for (int index = 0; index < 10; index++)
         {
             var token = _fixture.Build<SecurityToken>()
-                .With(token => token.TenantId, index < 5 ? tenantId1 : tenantId2) // first 5 tenant1, last 5 tenant2
+                .With(token => token.TenantId, index < 5 ? tenant.Id : tenantId2) // first 5 tenant1, last 5 tenant2
                 .With(token => token.UserId, index % 2 == 0 ? userId1 : userId2) // alternate user
                 .With(token => token.Value, $"token{index}")
                 .With(token => token.IsDeleted, index % 3 == 0) // every third token is deleted
@@ -312,12 +361,12 @@ public sealed class TokenRepositoryTests : IClassFixture<MongoDatabaseFixture>, 
 
         /* act: count tokens filtered by tenant1 and IsDeleted = false */
         var filters = new TokenFiltersBuilder()
-            .WithTenantId(tenantId1)
+            .WithTenantId(tenant.Id)
             .WithIsDeleted(false)
             .Build();
 
         var filteredCount = await _tokenRepository.CountAsync(filters);
-        var expectedCount = tokens.Count(token => token.TenantId == tenantId1 && !token.IsDeleted);
+        var expectedCount = tokens.Count(token => token.TenantId == tenant.Id && !token.IsDeleted);
 
         /* assert: expected count of tokens for tenant*/
         Assert.Equal(expectedCount, filteredCount);
