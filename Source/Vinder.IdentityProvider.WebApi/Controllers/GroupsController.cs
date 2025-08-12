@@ -34,4 +34,26 @@ public sealed class GroupsController(IMediator mediator) : ControllerBase
                 StatusCode(StatusCodes.Status409Conflict, result.Error),
         };
     }
+
+    [HttpPost("{id:guid}/permissions")]
+    [Authorize(Roles = Permissions.AssignPermissions)]
+    public async Task<IActionResult> AssignPermissionAsync(Guid id, AssignGroupPermission request, CancellationToken cancellation)
+    {
+        var result = await mediator.Send(request with { GroupId = id }, cancellation);
+
+        return result switch
+        {
+            { IsSuccess: true } =>
+                StatusCode(StatusCodes.Status204NoContent, result.Data),
+
+            { IsFailure: true } when result.Error == GroupErrors.GroupDoesNotExist =>
+                StatusCode(StatusCodes.Status404NotFound, result.Error),
+
+            { IsFailure: true } when result.Error == PermissionErrors.PermissionDoesNotExist =>
+                StatusCode(StatusCodes.Status404NotFound, result.Error),
+
+            { IsFailure: true } when result.Error == GroupErrors.GroupAlreadyHasPermission =>
+                StatusCode(StatusCodes.Status409Conflict, result.Error),
+        };
+    }
 }
