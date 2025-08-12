@@ -22,7 +22,7 @@ public sealed class AuthenticationServiceTests : IClassFixture<MongoDatabaseFixt
         _userRepository = new UserRepository(_database, _tenantProvider.Object);
         _passwordHasher = new PasswordHasher();
 
-        var tokenRepository = new TokenRepository(_database);
+        var tokenRepository = new TokenRepository(_database, _tenantProvider.Object);
 
         var keyBytes = new byte[32];
         var randomNumberGenerator = RandomNumberGenerator.Create();
