@@ -5,22 +5,29 @@ public sealed class GroupRepositoryTests : IClassFixture<MongoDatabaseFixture>, 
     private readonly IGroupRepository _groupRepository;
     private readonly IMongoDatabase _database;
     private readonly MongoDatabaseFixture _mongoFixture;
+    private readonly Mock<ITenantProvider> _tenantProvider = new();
     private readonly Fixture _fixture = new();
 
     public GroupRepositoryTests(MongoDatabaseFixture fixture)
     {
         _mongoFixture = fixture;
         _database = fixture.Database;
-        _groupRepository = new GroupRepository(_database);
+        _groupRepository = new GroupRepository(_database, _tenantProvider.Object);
     }
 
     [Fact(DisplayName = "[infrastructure] - when inserting a group, then it must persist in the database")]
     public async Task WhenInsertingAGroup_ThenItMustPersistInTheDatabase()
     {
         /* arrange: create group and matching filter */
+        var tenant = _fixture.Create<Tenant>();
+
+        _tenantProvider.Setup(provider => provider.GetCurrentTenant())
+            .Returns(tenant);
+
         var group = _fixture.Build<Group>()
             .With(group => group.Name, "read:groups")
             .With(group => group.IsDeleted, false)
+            .With(group => group.TenantId, tenant.Id)
             .Create();
 
         var filters = new GroupFiltersBuilder()
@@ -44,9 +51,15 @@ public sealed class GroupRepositoryTests : IClassFixture<MongoDatabaseFixture>, 
     public async Task WhenUpdatingAGroup_ThenUpdatedFieldsMustPersist()
     {
         /* arrange: create and insert group */
+        var tenant = _fixture.Create<Tenant>();
+
+        _tenantProvider.Setup(provider => provider.GetCurrentTenant())
+            .Returns(tenant);
+
         var group = _fixture.Build<Group>()
             .With(group => group.Name, "update.test")
             .With(group => group.IsDeleted, false)
+            .With(group => group.TenantId, tenant.Id)
             .Create();
 
         await _groupRepository.InsertAsync(group);
@@ -76,9 +89,15 @@ public sealed class GroupRepositoryTests : IClassFixture<MongoDatabaseFixture>, 
     public async Task WhenDeletingAGroup_ThenItMustBeMarkedDeletedAndExcludedFromResults()
     {
         /* arrange: create and insert group */
+        var tenant = _fixture.Create<Tenant>();
+
+        _tenantProvider.Setup(provider => provider.GetCurrentTenant())
+            .Returns(tenant);
+
         var group = _fixture.Build<Group>()
             .With(group => group.Name, "delete.test")
             .With(group => group.IsDeleted, false)
+            .With(group => group.TenantId, tenant.Id)
             .Create();
 
         await _groupRepository.InsertAsync(group);
@@ -115,12 +134,19 @@ public sealed class GroupRepositoryTests : IClassFixture<MongoDatabaseFixture>, 
     public async Task WhenFilteringGroupsById_ThenItMustReturnMatchingGroup()
     {
         /* arrange: insert two groups */
+        var tenant = _fixture.Create<Tenant>();
+
+        _tenantProvider.Setup(provider => provider.GetCurrentTenant())
+            .Returns(tenant);
+
         var group1 = _fixture.Build<Group>()
             .With(group => group.IsDeleted, false)
+            .With(group => group.TenantId, tenant.Id)
             .Create();
 
         var group2 = _fixture.Build<Group>()
             .With(group => group.IsDeleted, false)
+            .With(group => group.TenantId, tenant.Id)
             .Create();
 
         await _groupRepository.InsertAsync(group1);
@@ -142,9 +168,13 @@ public sealed class GroupRepositoryTests : IClassFixture<MongoDatabaseFixture>, 
     public async Task WhenFilteringGroupsByTenantId_ThenItMustReturnMatchingGroups()
     {
         /* arrange: insert two groups with different tenant ids */
-        var tenantId = Guid.NewGuid();
+        var tenant = _fixture.Create<Tenant>();
+
+        _tenantProvider.Setup(provider => provider.GetCurrentTenant())
+            .Returns(tenant);
+
         var group1 = _fixture.Build<Group>()
-            .With(group => group.TenantId, tenantId)
+            .With(group => group.TenantId, tenant.Id)
             .With(group => group.IsDeleted, false)
             .Create();
 
@@ -156,7 +186,7 @@ public sealed class GroupRepositoryTests : IClassFixture<MongoDatabaseFixture>, 
         await _groupRepository.InsertAsync(group2);
 
         var filters = new GroupFiltersBuilder()
-            .WithTenantId(tenantId)
+            .WithTenantId(tenant.Id)
             .Build();
 
         /* act: query groups filtered by tenant id */
@@ -171,14 +201,21 @@ public sealed class GroupRepositoryTests : IClassFixture<MongoDatabaseFixture>, 
     public async Task WhenFilteringGroupsByName_ThenItMustReturnMatchingGroups()
     {
         /* arrange: insert two groups with different names */
+        var tenant = _fixture.Create<Tenant>();
+
+        _tenantProvider.Setup(provider => provider.GetCurrentTenant())
+            .Returns(tenant);
+
         var group1 = _fixture.Build<Group>()
             .With(group => group.Name, "filter1")
             .With(group => group.IsDeleted, false)
+            .With(group => group.TenantId, tenant.Id)
             .Create();
 
         var group2 = _fixture.Build<Group>()
             .With(group => group.Name, "filter2")
             .With(group => group.IsDeleted, false)
+            .With(group => group.TenantId, tenant.Id)
             .Create();
 
         await _groupRepository.InsertAsync(group1);
@@ -200,10 +237,16 @@ public sealed class GroupRepositoryTests : IClassFixture<MongoDatabaseFixture>, 
     public async Task WhenPaginatingTenGroups_ThenItMustReturnFiveGroupsPerPage()
     {
         /* arrange: create and insert 10 groups, all not deleted */
+        var tenant = _fixture.Create<Tenant>();
+
+        _tenantProvider.Setup(provider => provider.GetCurrentTenant())
+            .Returns(tenant);
+
         var groups = Enumerable.Range(1, 10)
             .Select(index => _fixture.Build<Group>()
             .With(group => group.Name, $"group.{index}")
             .With(group => group.IsDeleted, false)
+            .With(group => group.TenantId, tenant.Id)
             .Create())
             .ToList();
 
@@ -241,10 +284,16 @@ public sealed class GroupRepositoryTests : IClassFixture<MongoDatabaseFixture>, 
     public async Task WhenCountingTenGroupsWithIsDeletedFalse_ThenItMustReturnTen()
     {
         /* arrange: create and insert 10 groups, all not deleted */
+        var tenant = _fixture.Create<Tenant>();
+
+        _tenantProvider.Setup(provider => provider.GetCurrentTenant())
+            .Returns(tenant);
+
         var groups = Enumerable.Range(1, 10)
             .Select(index => _fixture.Build<Group>()
             .With(group => group.Name, $"group.{index}")
             .With(group => group.IsDeleted, false)
+            .With(group => group.TenantId, tenant.Id)
             .Create())
             .ToList();
 
@@ -269,10 +318,16 @@ public sealed class GroupRepositoryTests : IClassFixture<MongoDatabaseFixture>, 
     public async Task WhenCountingTenGroupsWithIsDeletedTrue_ThenItMustReturnZero()
     {
         /* arrange: create and insert 10 groups, all not deleted */
+        var tenant = _fixture.Create<Tenant>();
+
+        _tenantProvider.Setup(provider => provider.GetCurrentTenant())
+            .Returns(tenant);
+
         var groups = Enumerable.Range(1, 10)
             .Select(index => _fixture.Build<Group>()
             .With(group => group.Name, $"group.{index}")
             .With(group => group.IsDeleted, false)
+            .With(group => group.TenantId, tenant.Id)
             .Create())
             .ToList();
 
