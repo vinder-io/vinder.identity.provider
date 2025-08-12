@@ -2,12 +2,7 @@ using System.IdentityModel.Tokens.Jwt;
 using System.Security.Claims;
 using System.Security.Cryptography;
 using System.Text;
-
 using Microsoft.IdentityModel.Tokens;
-
-using Vinder.IdentityProvider.Common.Configuration;
-using Vinder.IdentityProvider.Common.Errors;
-using Vinder.IdentityProvider.Infrastructure.Security;
 
 namespace Vinder.IdentityProvider.TestSuite.IntegrationTests.Security;
 
@@ -19,12 +14,13 @@ public sealed class JwtSecurityTokenServiceTests : IClassFixture<MongoDatabaseFi
     private readonly IMongoDatabase _database;
     private readonly MongoDatabaseFixture _mongoFixture;
     private readonly Fixture _fixture = new();
+    private readonly Mock<ITenantProvider> _tenantProvider = new();
 
     public JwtSecurityTokenServiceTests(MongoDatabaseFixture fixture)
     {
         _mongoFixture = fixture;
         _database = fixture.Database;
-        _tokenRepository = new TokenRepository(_database);
+        _tokenRepository = new TokenRepository(_database, _tenantProvider.Object);
 
         var keyBytes = new byte[32];
         var randomNumberGenerator = RandomNumberGenerator.Create();
@@ -43,6 +39,10 @@ public sealed class JwtSecurityTokenServiceTests : IClassFixture<MongoDatabaseFi
     {
         /* arrange: create a user */
         var user = _fixture.Create<User>();
+        var tenant = _fixture.Create<Tenant>();
+
+        _tenantProvider.Setup(provider => provider.GetCurrentTenant())
+            .Returns(tenant);
 
         /* act: generate an access token */
         var result = await _jwtSecurityTokenService.GenerateAccessTokenAsync(user);
@@ -74,7 +74,14 @@ public sealed class JwtSecurityTokenServiceTests : IClassFixture<MongoDatabaseFi
     public async Task WhenGeneratingRefreshToken_ThenItMustBeValidAndContainCorrectClaimsAndBePersisted()
     {
         /* arrange: create a user */
-        var user = _fixture.Create<User>();
+        var tenant = _fixture.Create<Tenant>();
+        var user = _fixture.Build<User>()
+            .With(user => user.IsDeleted, false)
+            .With(user => user.TenantId, tenant.Id)
+            .Create();
+
+        _tenantProvider.Setup(provider => provider.GetCurrentTenant())
+            .Returns(tenant);
 
         /* act: generate a refresh token */
         var result = await _jwtSecurityTokenService.GenerateRefreshTokenAsync(user);
@@ -114,6 +121,11 @@ public sealed class JwtSecurityTokenServiceTests : IClassFixture<MongoDatabaseFi
             SigningCredentials = credentials
         };
 
+        var tenant = _fixture.Create<Tenant>();
+
+        _tenantProvider.Setup(provider => provider.GetCurrentTenant())
+            .Returns(tenant);
+
         var token = tokenHandler.CreateToken(tokenDescriptor);
         var expiredToken = new Domain.Entities.SecurityToken
         {
@@ -151,7 +163,15 @@ public sealed class JwtSecurityTokenServiceTests : IClassFixture<MongoDatabaseFi
     public async Task WhenRevokingRefreshToken_ThenItMustBeMarkedAsRevokedAndDeletedInTheDatabase()
     {
         /* arrange: create and insert a refresh token */
-        var user = _fixture.Create<User>();
+        var tenant = _fixture.Create<Tenant>();
+        var user = _fixture.Build<User>()
+            .With(user => user.IsDeleted, false)
+            .With(user => user.TenantId, tenant.Id)
+            .Create();
+
+        _tenantProvider.Setup(provider => provider.GetCurrentTenant())
+            .Returns(tenant);
+
         var refreshTokenResult = await _jwtSecurityTokenService.GenerateRefreshTokenAsync(user);
 
         Assert.True(refreshTokenResult.IsSuccess);
@@ -183,6 +203,11 @@ public sealed class JwtSecurityTokenServiceTests : IClassFixture<MongoDatabaseFi
     public async Task WhenRevokingNonExistentRefreshToken_ThenItMustReturnInvalidRefreshTokenError()
     {
         /* arrange: create a non-existent refresh token */
+        var tenant = _fixture.Create<Tenant>();
+
+        _tenantProvider.Setup(provider => provider.GetCurrentTenant())
+            .Returns(tenant);
+
         var nonExistentToken = _fixture.Create<Domain.Entities.SecurityToken>();
 
         /* act: revoke the non-existent refresh token */
@@ -198,6 +223,11 @@ public sealed class JwtSecurityTokenServiceTests : IClassFixture<MongoDatabaseFi
     {
         /* arrange: create a valid token */
         var user = _fixture.Create<User>();
+        var tenant = _fixture.Create<Tenant>();
+
+        _tenantProvider.Setup(provider => provider.GetCurrentTenant())
+            .Returns(tenant);
+
         var accessTokenResult = await _jwtSecurityTokenService.GenerateAccessTokenAsync(user);
 
         Assert.True(accessTokenResult.IsSuccess);
@@ -217,6 +247,10 @@ public sealed class JwtSecurityTokenServiceTests : IClassFixture<MongoDatabaseFi
     {
         /* arrange: create a valid token */
         var user = _fixture.Create<User>();
+        var tenant = _fixture.Create<Tenant>();
+
+        _tenantProvider.Setup(provider => provider.GetCurrentTenant())
+            .Returns(tenant);
 
         var refreshTokenResult = await _jwtSecurityTokenService.GenerateRefreshTokenAsync(user);
         var refreshToken = refreshTokenResult.Data;
