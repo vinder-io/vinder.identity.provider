@@ -6,16 +6,16 @@ public static class TenantErrors
 {
     public static readonly Error HttpContextUnavailable = new(
         Code: "#VINDER-IDP-ERR-TNT-500",
-        Description: "No HTTP context available to retrieve tenant information."
+        Description: "No HTTP context available to retrieve tenant information. See https://bit.ly/errors-reference for more details."
     );
 
     public static readonly Error TenantDoesNotExist = new(
         Code: "#VINDER-IDP-ERR-TNT-404",
-        Description: "The specified tenant does not exist."
+        Description: "The specified tenant does not exist. See https://bit.ly/errors-reference for more details."
     );
 
     public static readonly Error TenantHeaderMissing = new(
         Code: "#VINDER-IDP-ERR-TNT-400",
-        Description: "Tenant header is missing from the HTTP request."
+        Description: "Tenant header is missing from the HTTP request. See https://bit.ly/errors-reference for more details."
     );
 }
