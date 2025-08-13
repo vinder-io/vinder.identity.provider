@@ -17,6 +17,9 @@ global using Vinder.IdentityProvider.Application.Services;
 global using Vinder.IdentityProvider.Application.Providers;
 global using Vinder.IdentityProvider.Application.Payloads.Identity;
 global using Vinder.IdentityProvider.Application.Payloads.Group;
+global using Vinder.IdentityProvider.Application.Payloads.Permission;
+
+global using Vinder.IdentityProvider.Application.Validators.Permission;
 global using Vinder.IdentityProvider.Application.Validators.Group;
 global using Vinder.IdentityProvider.Application.Validators.Identity;
 global using Vinder.IdentityProvider.Application.Handlers.Identity;
