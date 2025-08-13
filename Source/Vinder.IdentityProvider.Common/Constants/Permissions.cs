@@ -12,9 +12,11 @@ public static class Permissions
     public const string EditClient = "vinder.default.permissions.client.update";
     public const string ViewClients = "vinder.default.permissions.client.view";
 
+    public const string CreatePermission = "vinder.default.permissions.permissions.create";
     public const string AssignPermissions = "vinder.default.permissions.permissions.assign";
     public const string RevokePermissions = "vinder.default.permissions.permissions.revoke";
     public const string ViewPermissions = "vinder.default.permissions.permissions.view";
+    public const string EditPermission = "vinder.default.permissions.permissions.edit";
 
     public const string CreateTenant = "vinder.default.permissions.tenant.create";
     public const string DeleteTenant = "vinder.default.permissions.tenant.delete";
