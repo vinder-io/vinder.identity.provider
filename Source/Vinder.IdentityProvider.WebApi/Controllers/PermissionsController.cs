@@ -5,6 +5,20 @@ namespace Vinder.IdentityProvider.WebApi.Controllers;
 [Route("api/v1/permissions")]
 public sealed class PermissionsController(IMediator mediator) : ControllerBase
 {
+    [HttpGet]
+    [Authorize]
+    public async Task<IActionResult> GetPermissionsAsync([FromQuery] PermissionsFetchParameters request, CancellationToken cancellation)
+    {
+        var result = await mediator.Send(request, cancellation);
+
+        // we know the switch here is not strictly necessary since we only handle the success case,
+        // but we keep it for consistency with the rest of the codebase and to follow established patterns.
+        return result switch
+        {
+            { IsSuccess: true } => StatusCode(StatusCodes.Status200OK, result.Data),
+        };
+    }
+
     [HttpPost]
     [Authorize(Roles = Permissions.CreatePermission)]
     public async Task<IActionResult> CreatePermissionAsync(PermissionForCreation request, CancellationToken cancellation)
