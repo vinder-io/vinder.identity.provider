@@ -16,6 +16,8 @@ public static class ValidationExtension
 
         services.AddTransient<IValidator<GroupForCreation>, GroupCreationValidator>();
         services.AddTransient<IValidator<AssignGroupPermission>, AssignGroupPermissionValidator>();
+
         services.AddTransient<IValidator<PermissionForCreation>, PermissionCreationValidator>();
+        services.AddTransient<IValidator<PermissionForUpdate>, PermissionUpdateValidator>();
     }
 }
