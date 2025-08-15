@@ -8,6 +8,7 @@ global using Vinder.IdentityProvider.Common.Results;
 global using Vinder.IdentityProvider.Common.Errors;
 
 global using Vinder.IdentityProvider.Domain.Entities;
+global using Vinder.IdentityProvider.Domain.Filters;
 global using Vinder.IdentityProvider.Domain.Filters.Builders;
 global using Vinder.IdentityProvider.Domain.Repositories;
 
