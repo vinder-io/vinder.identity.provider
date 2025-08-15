@@ -34,4 +34,20 @@ public sealed class PermissionsController(IMediator mediator) : ControllerBase
                 StatusCode(StatusCodes.Status409Conflict, result.Error),
         };
     }
+
+    [HttpPut("{id:guid}")]
+    [Authorize(Roles = Permissions.EditPermission)]
+    public async Task<IActionResult> UpdatePermissionAsync(Guid id, PermissionForUpdate request, CancellationToken cancellation)
+    {
+        var result = await mediator.Send(request with { PermissionId = id }, cancellation);
+
+        return result switch
+        {
+            { IsSuccess: true } =>
+                StatusCode(StatusCodes.Status201Created, result.Data),
+
+            { IsFailure: true } when result.Error == PermissionErrors.PermissionDoesNotExist =>
+                StatusCode(StatusCodes.Status404NotFound, result.Error),
+        };
+    }
 }
