@@ -5,7 +5,8 @@ public static class PermissionMapper
     public static PermissionDetails AsResponse(Permission permission) => new()
     {
         Id = permission.Id.ToString(),
-        Name = permission.Name
+        Name = permission.Name,
+        Description = permission.Description
     };
 
     public static PermissionFilters AsFilters(PermissionsFetchParameters parameters) => new()
@@ -24,4 +25,14 @@ public static class PermissionMapper
         Description = permission.Description,
         TenantId = tenant.Id
     };
+
+    public static Permission AsPermission(PermissionForUpdate payload, Permission permission, Tenant tenant)
+    {
+        permission.Name = payload.Name;
+        permission.Description = payload.Description ?? permission.Description;
+        permission.TenantId = tenant.Id;
+        permission.UpdatedAt = DateTime.Now;
+
+        return permission;
+    }
 }
