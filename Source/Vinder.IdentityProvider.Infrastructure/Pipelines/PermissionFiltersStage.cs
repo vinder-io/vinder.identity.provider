@@ -17,7 +17,8 @@ public static class PermissionFiltersStage
         var filterDefinitions = new List<FilterDefinition<BsonDocument>>
         {
             MatchIfNotEmpty(DocumentFields.Permission.Name, filters.Name),
-            MatchIfNotEmptyGuid(DocumentFields.Permission.TenantId, tenant.Id)
+            MatchIfNotEmptyGuid(DocumentFields.Permission.TenantId, tenant.Id),
+            MatchIfNotEmptyGuid(DocumentFields.Permission.Id, filters.PermissionId)
         };
 
         if (!filters.IsDeleted.HasValue)
