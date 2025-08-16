@@ -17,6 +17,7 @@ public static class Permissions
     public const string RevokePermissions = "vinder.default.permissions.permissions.revoke";
     public const string ViewPermissions = "vinder.default.permissions.permissions.view";
     public const string EditPermission = "vinder.default.permissions.permissions.edit";
+    public const string DeletePermission = "vinder.default.permissions.permissions.delete";
 
     public const string CreateTenant = "vinder.default.permissions.tenant.create";
     public const string DeleteTenant = "vinder.default.permissions.tenant.delete";
