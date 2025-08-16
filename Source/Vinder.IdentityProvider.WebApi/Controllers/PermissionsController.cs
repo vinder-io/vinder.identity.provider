@@ -44,9 +44,25 @@ public sealed class PermissionsController(IMediator mediator) : ControllerBase
         return result switch
         {
             { IsSuccess: true } =>
-                StatusCode(StatusCodes.Status201Created, result.Data),
+                StatusCode(StatusCodes.Status200OK, result.Data),
 
             { IsFailure: true } when result.Error == PermissionErrors.PermissionDoesNotExist =>
+                StatusCode(StatusCodes.Status404NotFound, result.Error),
+        };
+    }
+
+    [HttpDelete("{id:guid}")]
+    [Authorize(Roles = Permissions.DeletePermission)]
+    public async Task<IActionResult> DeletePermissionAsync(Guid id, CancellationToken cancellation)
+    {
+        var result = await mediator.Send(new PermissionForDeletion { PermissionId = id }, cancellation);
+
+        return result switch
+        {
+            { IsSuccess: true } =>
+                StatusCode(StatusCodes.Status204NoContent),
+
+            { IsFailure: true } when result.Error == GroupErrors.GroupDoesNotExist =>
                 StatusCode(StatusCodes.Status404NotFound, result.Error),
         };
     }
