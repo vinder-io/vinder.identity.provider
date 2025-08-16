@@ -35,6 +35,22 @@ public sealed class GroupsController(IMediator mediator) : ControllerBase
         };
     }
 
+    [HttpPut("{id:guid}")]
+    [Authorize(Roles = Permissions.EditGroup)]
+    public async Task<IActionResult> UpdateGroupAsync(Guid id, GroupForUpdate request, CancellationToken cancellation)
+    {
+        var result = await mediator.Send(request with { GroupId = id }, cancellation);
+
+        return result switch
+        {
+            { IsSuccess: true } =>
+                StatusCode(StatusCodes.Status200OK, result.Data),
+
+            { IsFailure: true } when result.Error == GroupErrors.GroupDoesNotExist =>
+                StatusCode(StatusCodes.Status404NotFound, result.Error),
+        };
+    }
+
     [HttpPost("{id:guid}/permissions")]
     [Authorize(Roles = Permissions.AssignPermissions)]
     public async Task<IActionResult> AssignPermissionAsync(Guid id, AssignGroupPermission request, CancellationToken cancellation)
