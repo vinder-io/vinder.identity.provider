@@ -47,6 +47,7 @@ public static class BootstrapperExtension
             new() { Name = Permissions.RevokePermissions, TenantId = defaultTenant.Id },
             new() { Name = Permissions.ViewPermissions,   TenantId = defaultTenant.Id },
             new() { Name = Permissions.EditPermission,    TenantId = defaultTenant.Id },
+            new() { Name = Permissions.DeletePermission,  TenantId = defaultTenant.Id }
         ];
 
         tenantProvider.SetTenant(defaultTenant);
