@@ -15,6 +15,7 @@ public static class ValidationExtension
         services.AddTransient<IValidator<IdentityEnrollmentCredentials>, IdentityEnrollmentCredentialsValidator>();
 
         services.AddTransient<IValidator<GroupForCreation>, GroupCreationValidator>();
+        services.AddTransient<IValidator<GroupForUpdate>, GroupUpdateValidator>();
         services.AddTransient<IValidator<AssignGroupPermission>, AssignGroupPermissionValidator>();
 
         services.AddTransient<IValidator<PermissionForCreation>, PermissionCreationValidator>();
