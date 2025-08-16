@@ -26,6 +26,16 @@ public sealed class PermissionFiltersBuilder
         return this;
     }
 
+    public PermissionFiltersBuilder WithPermissionId(Guid? permissionId)
+    {
+        if (permissionId.HasValue && permissionId != Guid.Empty)
+        {
+            _filters.PermissionId = permissionId;
+        }
+
+        return this;
+    }
+
     public PermissionFiltersBuilder WithPageNumber(int? pageNumber)
     {
         if (pageNumber.HasValue && pageNumber > 0)
