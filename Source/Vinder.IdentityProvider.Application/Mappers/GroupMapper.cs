@@ -8,6 +8,12 @@ public static class GroupMapper
         TenantId = tenant.Id
     };
 
+    public static Group AsGroup(GroupForUpdate group, Tenant tenant) => new()
+    {
+        Name = group.Name,
+        TenantId = tenant.Id
+    };
+
     public static GroupDetails AsResponse(Group group) => new()
     {
         Id = group.Id.ToString(),
