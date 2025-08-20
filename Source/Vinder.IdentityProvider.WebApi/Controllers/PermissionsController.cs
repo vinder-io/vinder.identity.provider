@@ -62,7 +62,7 @@ public sealed class PermissionsController(IMediator mediator) : ControllerBase
             { IsSuccess: true } =>
                 StatusCode(StatusCodes.Status204NoContent),
 
-            { IsFailure: true } when result.Error == GroupErrors.GroupDoesNotExist =>
+            { IsFailure: true } when result.Error == PermissionErrors.PermissionDoesNotExist =>
                 StatusCode(StatusCodes.Status404NotFound, result.Error),
         };
     }
