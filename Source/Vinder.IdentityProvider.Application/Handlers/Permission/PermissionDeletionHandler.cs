@@ -13,7 +13,7 @@ public sealed class PermissionDeletionHandler(IPermissionRepository repository) 
 
         if (permission is null)
         {
-            return Result.Failure(GroupErrors.GroupDoesNotExist);
+            return Result.Failure(PermissionErrors.PermissionDoesNotExist);
         }
 
         await repository.DeleteAsync(permission, cancellation: cancellationToken);
