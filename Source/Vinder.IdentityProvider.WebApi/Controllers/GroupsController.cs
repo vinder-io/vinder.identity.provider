@@ -72,4 +72,20 @@ public sealed class GroupsController(IMediator mediator) : ControllerBase
                 StatusCode(StatusCodes.Status409Conflict, result.Error),
         };
     }
+
+    [HttpDelete("{id:guid}")]
+    [Authorize(Roles = Permissions.DeleteGroup)]
+    public async Task<IActionResult> DeleteGroupAsync(Guid id, CancellationToken cancellation)
+    {
+        var result = await mediator.Send(new GroupForDeletion { GroupId = id }, cancellation);
+
+        return result switch
+        {
+            { IsSuccess: true } =>
+                StatusCode(StatusCodes.Status200OK),
+
+            { IsFailure: true } when result.Error == GroupErrors.GroupDoesNotExist =>
+                StatusCode(StatusCodes.Status404NotFound, result.Error),
+        };
+    }
 }
