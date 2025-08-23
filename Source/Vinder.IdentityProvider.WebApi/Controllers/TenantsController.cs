@@ -33,4 +33,20 @@ public sealed class TenantsController(IMediator mediator) : ControllerBase
                 StatusCode(StatusCodes.Status409Conflict, result.Error),
         };
     }
+
+    [HttpPut("{id:guid}")]
+    [Authorize(Roles = Permissions.EditTenant)]
+    public async Task<IActionResult> UpdateTenantAsync(Guid id, TenantForUpdate request, CancellationToken cancellation)
+    {
+        var result = await mediator.Send(request with { TenantId = id }, cancellation);
+
+        return result switch
+        {
+            { IsSuccess: true } =>
+                StatusCode(StatusCodes.Status200OK, result.Data),
+
+            { IsFailure: true } when result.Error == TenantErrors.TenantDoesNotExist =>
+                StatusCode(StatusCodes.Status404NotFound, result.Error),
+        };
+    }
 }
