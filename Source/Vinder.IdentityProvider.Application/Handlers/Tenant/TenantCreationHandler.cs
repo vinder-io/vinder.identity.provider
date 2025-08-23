@@ -38,8 +38,6 @@ public sealed class TenantCreationHandler(
             new() { Name = Permissions.ViewGroups,  TenantId = defaultTenant.Id },
             new() { Name = Permissions.EditGroup,   TenantId = defaultTenant.Id },
 
-            new() { Name = Permissions.EditTenant, TenantId = defaultTenant.Id },
-
             new() { Name = Permissions.CreatePermission,  TenantId = defaultTenant.Id },
             new() { Name = Permissions.AssignPermissions, TenantId = defaultTenant.Id },
             new() { Name = Permissions.RevokePermissions, TenantId = defaultTenant.Id },
