@@ -2,7 +2,6 @@ namespace Vinder.IdentityProvider.Application.Handlers.Identity;
 
 public sealed class ClientAuthenticationHandler(
     ITenantRepository tenantRepository,
-    IPasswordHasher passwordHasher,
     ISecurityTokenService tokenService
 ) : IRequestHandler<ClientAuthenticationCredentials, Result<ClientAuthenticationResult>>
 {
@@ -20,8 +19,7 @@ public sealed class ClientAuthenticationHandler(
             return Result<ClientAuthenticationResult>.Failure(AuthenticationErrors.ClientNotFound);
         }
 
-        var passwordIsValid = await passwordHasher.VerifyPasswordAsync(request.ClientId + tenant.Name, tenant.SecretHash);
-        if (!passwordIsValid)
+        if (request.ClientSecret != tenant.SecretHash)
         {
             return Result<ClientAuthenticationResult>.Failure(AuthenticationErrors.InvalidClientCredentials);
         }
