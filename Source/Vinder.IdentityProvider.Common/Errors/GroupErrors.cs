@@ -18,4 +18,9 @@ public static class GroupErrors
         Code: "#VINDER-IDP-ERR-GRP-404",
         Description: "The group with the specified ID does not exist. See https://bit.ly/errors-reference for more details."
     );
+
+    public static readonly Error PermissionNotAssigned = new(
+        Code: "#VINDER-IDP-ERR-GRP-416",
+        Description: "The group does not have the specified permission assigned. See https://bit.ly/errors-reference for more details."
+    );
 }
