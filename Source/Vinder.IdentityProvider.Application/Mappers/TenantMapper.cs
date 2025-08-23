@@ -10,6 +10,16 @@ public static class TenantMapper
         SecretHash = secretHash
     };
 
+    public static Tenant AsTenant(TenantForUpdate payload, Tenant tenant)
+    {
+        tenant.Name = payload.Name;
+        tenant.Description = payload.Description ?? tenant.Description;
+
+        tenant.MarkAsUpdated();
+
+        return tenant;
+    }
+
     public static TenantDetails AsResponse(Tenant tenant) => new()
     {
         Id = tenant.Id.ToString(),
