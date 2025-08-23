@@ -29,16 +29,19 @@ public sealed class RevokeGroupPermissionHandler(IGroupRepository groupRepositor
             return Result.Failure(PermissionErrors.PermissionDoesNotExist);
         }
 
-        #pragma warning disable S1125
+        #pragma warning disable S1764
 
-        // sonar suggests using "!" instead of "is false",
-        // but we prefer "is false" because it makes the intent more readable.
+        // sonar suggests changing the lambda parameter name to avoid confusion,
+        // but we prefer keeping it as 'permission' for readability. it does not interfere
+        // with the outer variable because C# differentiates the lambda parameter from the argument.
 
-        var permissionIsRemoved = group.Permissions.Remove(permission);
-        if (permissionIsRemoved is false)
+        var permissionToRemove = group.Permissions.FirstOrDefault(permission => permission.Id == permission.Id);
+        if (permissionToRemove is null)
         {
             return Result.Failure(GroupErrors.PermissionNotAssigned);
         }
+
+        group.Permissions.Remove(permissionToRemove);
 
         await groupRepository.UpdateAsync(group, cancellationToken);
 
