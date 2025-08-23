@@ -29,8 +29,8 @@ public sealed class TenantCreationHandler(
             .WithName("master")
             .Build();
 
-        var masterTenants = await repository.GetTenantsAsync(masterFilters, cancellationToken);
-        var defaultTenant = masterTenants.FirstOrDefault()!;
+        var matchingTenants = await repository.GetTenantsAsync(masterFilters, cancellationToken);
+        var defaultTenant = matchingTenants.FirstOrDefault()!;
 
         tenant.Permissions = [
             new() { Name = Permissions.CreateGroup, TenantId = defaultTenant.Id },
