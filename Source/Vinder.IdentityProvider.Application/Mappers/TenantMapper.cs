@@ -17,5 +17,17 @@ public static class TenantMapper
         Description = tenant.Description,
         ClientId = tenant.ClientId,
         ClientSecret = tenant.SecretHash
-    }; 
+    };
+
+    public static TenantFilters AsFilters(TenantFetchParameters parameters) => new()
+    {
+        Id = parameters.Id,
+        ClientId = parameters.ClientId,
+        Name = parameters.Name,
+        PageNumber = parameters.PageNumber,
+        PageSize = parameters.PageSize,
+        IsDeleted = parameters.IncludeDeleted.HasValue
+            ? (bool?)(!parameters.IncludeDeleted.Value)
+            : null
+    };
 }
