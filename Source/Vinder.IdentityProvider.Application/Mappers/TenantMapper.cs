@@ -36,8 +36,6 @@ public static class TenantMapper
         Name = parameters.Name,
         PageNumber = parameters.PageNumber,
         PageSize = parameters.PageSize,
-        IsDeleted = parameters.IncludeDeleted.HasValue
-            ? (bool?)(!parameters.IncludeDeleted.Value)
-            : null
+        IsDeleted = parameters.IncludeDeleted ?? false
     };
 }
