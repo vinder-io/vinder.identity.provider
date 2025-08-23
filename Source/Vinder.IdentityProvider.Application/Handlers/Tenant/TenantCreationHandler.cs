@@ -32,23 +32,16 @@ public sealed class TenantCreationHandler(
         var matchingTenants = await repository.GetTenantsAsync(masterFilters, cancellationToken);
         var defaultTenant = matchingTenants.FirstOrDefault()!;
 
-        tenant.Permissions = [
-            new() { Name = Permissions.CreateGroup, TenantId = defaultTenant.Id },
-            new() { Name = Permissions.DeleteGroup, TenantId = defaultTenant.Id },
-            new() { Name = Permissions.ViewGroups,  TenantId = defaultTenant.Id },
-            new() { Name = Permissions.EditGroup,   TenantId = defaultTenant.Id },
+        var defaultPermissions = DefaultTenantPermissions.InitialPermissions;
 
-            new() { Name = Permissions.DeleteUser, TenantId = defaultTenant.Id },
-            new() { Name = Permissions.EditUser,   TenantId = defaultTenant.Id },
-            new() { Name = Permissions.ViewUsers,  TenantId = defaultTenant.Id },
-
-            new() { Name = Permissions.CreatePermission,  TenantId = defaultTenant.Id },
-            new() { Name = Permissions.AssignPermissions, TenantId = defaultTenant.Id },
-            new() { Name = Permissions.RevokePermissions, TenantId = defaultTenant.Id },
-            new() { Name = Permissions.ViewPermissions,   TenantId = defaultTenant.Id },
-            new() { Name = Permissions.EditPermission,    TenantId = defaultTenant.Id },
-            new() { Name = Permissions.DeletePermission,  TenantId = defaultTenant.Id }
-        ];
+        tenant.Permissions = [.. defaultTenant.Permissions
+            .Where(permission => defaultPermissions.Contains(permission.Name))
+            .Select(permission => new Domain.Entities.Permission
+            {
+                Id = permission.Id,
+                Name = permission.Name,
+                TenantId = tenant.Id,
+            })];
 
         await repository.InsertAsync(tenant, cancellationToken);
 
