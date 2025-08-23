@@ -6,7 +6,7 @@ public sealed class TenantUpdateHandler(ITenantRepository repository) :
     public async Task<Result<TenantDetails>> Handle(TenantForUpdate request, CancellationToken cancellationToken)
     {
         var filters = new TenantFiltersBuilder()
-            .WithName(request.Name)
+            .WithId(request.TenantId)
             .Build();
 
         var tenants = await repository.GetTenantsAsync(filters, cancellation: cancellationToken);
