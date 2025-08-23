@@ -18,4 +18,26 @@ public sealed class UsersController(IMediator mediator) : ControllerBase
             { IsSuccess: true } => StatusCode(StatusCodes.Status200OK, result.Data),
         };
     }
+
+    [HttpPost("{id:guid}/groups")]
+    [Authorize]
+    public async Task<IActionResult> AssignUserToGroupAsync(Guid id, AssignUserToGroup request, CancellationToken cancellation)
+    {
+        var result = await mediator.Send(request with { UserId = id }, cancellation);
+
+        return result switch
+        {
+            { IsSuccess: true } =>
+                StatusCode(StatusCodes.Status204NoContent),
+
+            { IsFailure: true } when result.Error == UserErrors.UserDoesNotExist =>
+                StatusCode(StatusCodes.Status404NotFound, result.Error),
+
+            { IsFailure: true } when result.Error == UserErrors.UserAlreadyInGroup =>
+                StatusCode(StatusCodes.Status409Conflict, result.Error),
+
+            { IsFailure: true } when result.Error == GroupErrors.GroupDoesNotExist =>
+                StatusCode(StatusCodes.Status404NotFound, result.Error),
+        };
+    }
 }
