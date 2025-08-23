@@ -18,4 +18,9 @@ public static class TenantErrors
         Code: "#VINDER-IDP-ERR-TNT-400",
         Description: "Tenant header is missing from the HTTP request. See https://bit.ly/errors-reference for more details."
     );
+
+    public static readonly Error TenantAlreadyExists = new(
+        Code: "#VINDER-IDP-ERR-TNT-409",
+        Description: "A tenant with the same name already exists. See https://bit.ly/errors-reference for more details."
+    );
 }
