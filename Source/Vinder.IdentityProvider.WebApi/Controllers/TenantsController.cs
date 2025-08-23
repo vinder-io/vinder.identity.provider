@@ -49,4 +49,20 @@ public sealed class TenantsController(IMediator mediator) : ControllerBase
                 StatusCode(StatusCodes.Status404NotFound, result.Error),
         };
     }
+
+    [HttpDelete("{id:guid}")]
+    [Authorize(Roles = Permissions.DeleteTenant)]
+    public async Task<IActionResult> DeleteTenantAsync(Guid id, CancellationToken cancellation)
+    {
+        var result = await mediator.Send(new TenantForDeletion { TenantId = id }, cancellation);
+
+        return result switch
+        {
+            { IsSuccess: true } =>
+                StatusCode(StatusCodes.Status204NoContent),
+
+            { IsFailure: true } when result.Error == TenantErrors.TenantDoesNotExist =>
+                StatusCode(StatusCodes.Status404NotFound, result.Error),
+        };
+    }
 }
