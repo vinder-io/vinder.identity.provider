@@ -25,6 +25,29 @@ public sealed class TenantCreationHandler(
             secretHash: clientSecret
         );
 
+        var masterFilters = new TenantFiltersBuilder()
+            .WithName("master")
+            .Build();
+
+        var masterTenants = await repository.GetTenantsAsync(masterFilters, cancellationToken);
+        var defaultTenant = masterTenants.FirstOrDefault()!;
+
+        tenant.Permissions = [
+            new() { Name = Permissions.CreateGroup, TenantId = defaultTenant.Id },
+            new() { Name = Permissions.DeleteGroup, TenantId = defaultTenant.Id },
+            new() { Name = Permissions.ViewGroups,  TenantId = defaultTenant.Id },
+            new() { Name = Permissions.EditGroup,   TenantId = defaultTenant.Id },
+
+            new() { Name = Permissions.EditTenant, TenantId = defaultTenant.Id },
+
+            new() { Name = Permissions.CreatePermission,  TenantId = defaultTenant.Id },
+            new() { Name = Permissions.AssignPermissions, TenantId = defaultTenant.Id },
+            new() { Name = Permissions.RevokePermissions, TenantId = defaultTenant.Id },
+            new() { Name = Permissions.ViewPermissions,   TenantId = defaultTenant.Id },
+            new() { Name = Permissions.EditPermission,    TenantId = defaultTenant.Id },
+            new() { Name = Permissions.DeletePermission,  TenantId = defaultTenant.Id }
+        ];
+
         await repository.InsertAsync(tenant, cancellationToken);
 
         return Result<TenantDetails>.Success(TenantMapper.AsResponse(tenant));
