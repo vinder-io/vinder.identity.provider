@@ -9,5 +9,6 @@ public static class ApplicationServicesExtension
         services.AddScoped<IAuthenticationService, AuthenticationService>();
         services.AddScoped<ISecurityTokenService, JwtSecurityTokenService>();
         services.AddScoped<ITenantProvider, TenantProvider>();
+        services.AddScoped<IClientCredentialsGenerator, ClientCredentialsGenerator>();
     }
 }
