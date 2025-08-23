@@ -32,16 +32,9 @@ public sealed class TenantCreationHandler(
         var matchingTenants = await repository.GetTenantsAsync(masterFilters, cancellationToken);
         var defaultTenant = matchingTenants.FirstOrDefault()!;
 
-        var defaultPermissions = DefaultTenantPermissions.InitialPermissions;
-
-        tenant.Permissions = [.. defaultTenant.Permissions
-            .Where(permission => defaultPermissions.Contains(permission.Name))
-            .Select(permission => new Domain.Entities.Permission
-            {
-                Id = permission.Id,
-                Name = permission.Name,
-                TenantId = tenant.Id,
-            })];
+        tenant.Permissions = defaultTenant.Permissions
+            .Where(permission => DefaultTenantPermissions.InitialPermissions.Contains(permission.Name))
+            .ToList();
 
         await repository.InsertAsync(tenant, cancellationToken);
 
