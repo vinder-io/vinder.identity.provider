@@ -88,4 +88,27 @@ public sealed class GroupsController(IMediator mediator) : ControllerBase
                 StatusCode(StatusCodes.Status404NotFound, result.Error),
         };
     }
+
+    [HttpDelete("{id:guid}/permissions/{permissionId:guid}")]
+    [Authorize(Roles = Permissions.RevokePermissions)]
+    public async Task<IActionResult> RevokePermissionAsync(Guid id, Guid permissionId, CancellationToken cancellation)
+    {
+        var request = new RevokeGroupPermission { GroupId = id, PermissionId = permissionId };
+        var result = await mediator.Send(request, cancellation);
+
+        return result switch
+        {
+            { IsSuccess: true } =>
+                StatusCode(StatusCodes.Status204NoContent),
+
+            { IsFailure: true } when result.Error == GroupErrors.GroupDoesNotExist =>
+                StatusCode(StatusCodes.Status404NotFound, result.Error),
+
+            { IsFailure: true } when result.Error == PermissionErrors.PermissionDoesNotExist =>
+                StatusCode(StatusCodes.Status404NotFound, result.Error),
+
+            { IsFailure: true } when result.Error == GroupErrors.PermissionNotAssigned =>
+                StatusCode(StatusCodes.Status409Conflict, result.Error)
+        };
+    }
 }
