@@ -20,6 +20,8 @@ public static class ValidationExtension
 
         services.AddTransient<IValidator<PermissionForCreation>, PermissionCreationValidator>();
         services.AddTransient<IValidator<PermissionForUpdate>, PermissionUpdateValidator>();
+
         services.AddTransient<IValidator<TenantForCreation>, TenantCreationValidator>();
+        services.AddTransient<IValidator<TenantForUpdate>, TenantUpdateValidator>();
     }
 }
