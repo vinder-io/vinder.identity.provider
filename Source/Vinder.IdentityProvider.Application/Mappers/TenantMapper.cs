@@ -12,6 +12,7 @@ public static class TenantMapper
 
     public static TenantDetails AsResponse(Tenant tenant) => new()
     {
+        Id = tenant.Id.ToString(),
         Name = tenant.Name,
         Description = tenant.Description,
         ClientId = tenant.ClientId,
