@@ -51,6 +51,40 @@ public sealed class GroupsController(IMediator mediator) : ControllerBase
         };
     }
 
+    [HttpDelete("{id:guid}")]
+    [Authorize(Roles = Permissions.DeleteGroup)]
+    public async Task<IActionResult> DeleteGroupAsync(Guid id, CancellationToken cancellation)
+    {
+        var result = await mediator.Send(new GroupForDeletion { GroupId = id }, cancellation);
+
+        return result switch
+        {
+            { IsSuccess: true } =>
+                StatusCode(StatusCodes.Status200OK),
+
+            { IsFailure: true } when result.Error == GroupErrors.GroupDoesNotExist =>
+                StatusCode(StatusCodes.Status404NotFound, result.Error),
+        };
+    }
+
+    [HttpGet("{id:guid}/permissions")]
+    [Authorize(Roles = Permissions.ViewPermissions)]
+    public async Task<IActionResult> GetGroupsPermissionsAsync(
+        [FromRoute] Guid id,
+        [FromQuery] ListGroupAssignedPermissions request, CancellationToken cancellation
+    )
+    {
+        var result = await mediator.Send(request with { GroupId = id }, cancellation);
+
+        return result switch
+        {
+            { IsSuccess: true } => StatusCode(StatusCodes.Status200OK, result.Data),
+
+            { IsFailure: true } when result.Error == GroupErrors.GroupDoesNotExist =>
+                StatusCode(StatusCodes.Status404NotFound, result.Error),
+        };
+    }
+
     [HttpPost("{id:guid}/permissions")]
     [Authorize(Roles = Permissions.AssignPermissions)]
     public async Task<IActionResult> AssignPermissionAsync(Guid id, AssignGroupPermission request, CancellationToken cancellation)
@@ -70,22 +104,6 @@ public sealed class GroupsController(IMediator mediator) : ControllerBase
 
             { IsFailure: true } when result.Error == GroupErrors.GroupAlreadyHasPermission =>
                 StatusCode(StatusCodes.Status409Conflict, result.Error),
-        };
-    }
-
-    [HttpDelete("{id:guid}")]
-    [Authorize(Roles = Permissions.DeleteGroup)]
-    public async Task<IActionResult> DeleteGroupAsync(Guid id, CancellationToken cancellation)
-    {
-        var result = await mediator.Send(new GroupForDeletion { GroupId = id }, cancellation);
-
-        return result switch
-        {
-            { IsSuccess: true } =>
-                StatusCode(StatusCodes.Status200OK),
-
-            { IsFailure: true } when result.Error == GroupErrors.GroupDoesNotExist =>
-                StatusCode(StatusCodes.Status404NotFound, result.Error),
         };
     }
 
