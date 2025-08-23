@@ -7,6 +7,16 @@ public sealed class TenantCreationHandler(
 {
     public async Task<Result<TenantDetails>> Handle(TenantForCreation request, CancellationToken cancellationToken)
     {
+        var filters = new TenantFiltersBuilder()
+            .WithName(request.Name)
+            .Build();
+
+        var tenants = await repository.GetTenantsAsync(filters, cancellationToken);
+        if (tenants.Count > 0)
+        {
+            return Result<TenantDetails>.Failure(TenantErrors.TenantAlreadyExists);
+        }
+
         var (clientId, clientSecret) = await credentialsGenerator.GenerateAsync(request.Name);
 
         var tenant = TenantMapper.AsTenant(
