@@ -32,10 +32,9 @@ public static class BootstrapperExtension
             new() { Name = Permissions.ViewGroups,  TenantId = defaultTenant.Id },
             new() { Name = Permissions.EditGroup,   TenantId = defaultTenant.Id },
 
-            new() { Name = Permissions.CreateClient, TenantId = defaultTenant.Id },
-            new() { Name = Permissions.DeleteClient, TenantId = defaultTenant.Id },
-            new() { Name = Permissions.EditClient,   TenantId = defaultTenant.Id },
-            new() { Name = Permissions.ViewClients,  TenantId = defaultTenant.Id },
+            new() { Name = Permissions.DeleteUser, TenantId = defaultTenant.Id },
+            new() { Name = Permissions.EditUser,   TenantId = defaultTenant.Id },
+            new() { Name = Permissions.ViewUsers,  TenantId = defaultTenant.Id },
 
             new() { Name = Permissions.CreateTenant, TenantId = defaultTenant.Id },
             new() { Name = Permissions.DeleteTenant, TenantId = defaultTenant.Id },
