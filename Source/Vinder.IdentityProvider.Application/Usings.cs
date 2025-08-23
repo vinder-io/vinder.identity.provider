@@ -6,6 +6,7 @@ global using System.Text.Json.Serialization;
 
 global using Vinder.IdentityProvider.Common.Results;
 global using Vinder.IdentityProvider.Common.Errors;
+global using Vinder.IdentityProvider.Common.Constants;
 
 global using Vinder.IdentityProvider.Domain.Entities;
 global using Vinder.IdentityProvider.Domain.Filters;
