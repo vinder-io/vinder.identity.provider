@@ -9,6 +9,11 @@ public static class PermissionMapper
         Description = permission.Description
     };
 
+    public static IReadOnlyCollection<PermissionDetails> AsResponse(IEnumerable<Permission> permissions)
+    {
+        return [.. permissions.Select(PermissionMapper.AsResponse)];
+    }
+
     public static PermissionFilters AsFilters(PermissionsFetchParameters parameters) => new()
     {
         Name = parameters.Name,
