@@ -101,7 +101,7 @@ public sealed class UsersController(IMediator mediator) : ControllerBase
 
     [HttpDelete("{id:guid}/permissions/{permissionId:guid}")]
     [Authorize(Roles = Permissions.RevokePermissions)]
-    public async Task<IActionResult> RevokePermissionAsync(Guid id, Guid permissionId, CancellationToken cancellation)
+    public async Task<IActionResult> RevokeUserPermissionAsync(Guid id, Guid permissionId, CancellationToken cancellation)
     {
         var request = new RevokeUserPermission { UserId = id, PermissionId = permissionId };
         var result = await mediator.Send(request, cancellation);
