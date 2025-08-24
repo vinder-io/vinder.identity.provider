@@ -1,3 +1,16 @@
+# REST API Reference
+
+This document provides a clear reference to consume our REST API, including standardization rules, serialization, and OpenAPI specification.
+
+Our goal is to make it easy for developers to integrate with our Identity Provider without surprises.
+Think of this as your **hands-on guide** to using the API, not just a reference.
+
+## Table of Contents
+
+- [Standardization](#standardization)
+- [JSON Serialization](#json-serialization)
+- [OpenAPI Specification](#openapi-specification)
+
 ## Standardization
 
 Our API is consistent and predictable. When things go well, you’ll always get the **payload** you expect. When something goes wrong, you’ll receive the appropriate **HTTP status code** along with an **error object** — and this object is always present for all expected errors.
