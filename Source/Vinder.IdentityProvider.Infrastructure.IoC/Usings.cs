@@ -19,11 +19,13 @@ global using Vinder.IdentityProvider.Application.Payloads.Identity;
 global using Vinder.IdentityProvider.Application.Payloads.Group;
 global using Vinder.IdentityProvider.Application.Payloads.Permission;
 global using Vinder.IdentityProvider.Application.Payloads.Tenant;
+global using Vinder.IdentityProvider.Application.Payloads.User;
 
 global using Vinder.IdentityProvider.Application.Validators.Permission;
 global using Vinder.IdentityProvider.Application.Validators.Group;
 global using Vinder.IdentityProvider.Application.Validators.Identity;
 global using Vinder.IdentityProvider.Application.Validators.Tenant;
+global using Vinder.IdentityProvider.Application.Validators.User;
 global using Vinder.IdentityProvider.Application.Handlers.Identity;
 
 global using Vinder.IdentityProvider.Infrastructure.Providers;
