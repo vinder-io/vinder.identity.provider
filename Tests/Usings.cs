@@ -1,3 +1,8 @@
+/* global using for System namespaces here */
+
+global using System.Net.Http.Headers;
+global using System.Net.Http.Json;
+
 /* global using for Microsoft namespaces here */
 
 global using Microsoft.AspNetCore.Mvc.Testing;
@@ -10,8 +15,14 @@ global using Vinder.IdentityProvider.Domain.Filters.Builders;
 global using Vinder.IdentityProvider.Domain.Repositories;
 
 global using Vinder.IdentityProvider.Application.Services;
-global using Vinder.IdentityProvider.Application.Payloads.Identity;
 global using Vinder.IdentityProvider.Application.Providers;
+
+global using Vinder.IdentityProvider.Application.Payloads.Common;
+global using Vinder.IdentityProvider.Application.Payloads.Identity;
+global using Vinder.IdentityProvider.Application.Payloads.Group;
+global using Vinder.IdentityProvider.Application.Payloads.Permission;
+global using Vinder.IdentityProvider.Application.Payloads.Tenant;
+global using Vinder.IdentityProvider.Application.Payloads.User;
 
 global using Vinder.IdentityProvider.Infrastructure.Repositories;
 global using Vinder.IdentityProvider.Infrastructure.Security;
@@ -19,6 +30,8 @@ global using Vinder.IdentityProvider.Infrastructure.IoC.Helpers;
 
 global using Vinder.IdentityProvider.Common.Configuration;
 global using Vinder.IdentityProvider.Common.Errors;
+global using Vinder.IdentityProvider.Common.Results;
+global using Vinder.IdentityProvider.Common.Constants;
 global using Vinder.IdentityProvider.WebApi;
 global using Vinder.IdentityProvider.TestSuite.IntegrationTests.Fixtures;
 
