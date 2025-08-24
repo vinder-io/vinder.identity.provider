@@ -17,6 +17,7 @@ internal static class Program
         var app = builder.Build();
 
         app.UseHttpPipeline();
+        app.MapOpenApi();
 
         await app.UseBootstrapperAsync();
         await app.RunAsync();
