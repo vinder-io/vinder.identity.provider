@@ -121,4 +121,27 @@ public sealed class UsersController(IMediator mediator) : ControllerBase
                 StatusCode(StatusCodes.Status409Conflict, result.Error)
         };
     }
+
+    [HttpDelete("{id:guid}/groups/{groupId:guid}")]
+    [Authorize(Roles = Permissions.EditUser)]
+    public async Task<IActionResult> RemoveUserFromGroupAsync(Guid id, Guid groupId, CancellationToken cancellation)
+    {
+        var request = new RemoveUserFromGroup { UserId = id, GroupId = groupId };
+        var result = await mediator.Send(request, cancellation);
+
+        return result switch
+        {
+            { IsSuccess: true } =>
+                StatusCode(StatusCodes.Status204NoContent),
+
+            { IsFailure: true } when result.Error == UserErrors.UserDoesNotExist =>
+                StatusCode(StatusCodes.Status404NotFound, result.Error),
+
+            { IsFailure: true } when result.Error == GroupErrors.GroupDoesNotExist =>
+                StatusCode(StatusCodes.Status404NotFound, result.Error),
+
+            { IsFailure: true } when result.Error == UserErrors.UserNotInGroup =>
+                StatusCode(StatusCodes.Status409Conflict, result.Error)
+        };
+    }
 }
