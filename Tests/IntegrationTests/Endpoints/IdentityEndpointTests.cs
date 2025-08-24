@@ -1,8 +1,7 @@
 namespace Vinder.IdentityProvider.TestSuite.IntegrationTests.Endpoints;
 
-public sealed class IdentityEndpointTests(WebApplicationFixture factory) :
-    IClassFixture<WebApplicationFixture>,
-    IAsyncLifetime
+public sealed class IdentityEndpointTests(IntegrationEnvironmentFixture factory) :
+    IClassFixture<IntegrationEnvironmentFixture>
 {
     [Fact(DisplayName = "[e2e] - when POST identity/authenticate with valid credentials should return access token 'n refresh token")]
     public async Task WhenPostIdentityAuthenticateWithValidCredentials_ShouldReturnAccessTokenAndRefreshToken()
@@ -29,7 +28,4 @@ public sealed class IdentityEndpointTests(WebApplicationFixture factory) :
         Assert.NotEmpty(result.AccessToken);
         Assert.NotEmpty(result.RefreshToken);
     }
-
-    public async Task DisposeAsync() => await factory.DisposeAsync();
-    public async Task InitializeAsync() => await factory.InitializeAsync();
 }
