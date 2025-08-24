@@ -1,3 +1,8 @@
+/* global using for Microsoft namespaces here */
+
+global using Microsoft.AspNetCore.Mvc.Testing;
+global using Microsoft.Extensions.DependencyInjection;
+
 /* global using for Vinder namespaces here */
 
 global using Vinder.IdentityProvider.Domain.Entities;
@@ -14,6 +19,7 @@ global using Vinder.IdentityProvider.Infrastructure.IoC.Helpers;
 
 global using Vinder.IdentityProvider.Common.Configuration;
 global using Vinder.IdentityProvider.Common.Errors;
+global using Vinder.IdentityProvider.WebApi;
 global using Vinder.IdentityProvider.TestSuite.IntegrationTests.Fixtures;
 
 /* global usings for third-party namespaces here */
