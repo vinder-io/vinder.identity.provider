@@ -19,4 +19,8 @@ public static class UserErrors
         Description: "The user already has the specified permission assigned. See https://bit.ly/errors-reference for more details."
     );
 
+    public static readonly Error PermissionNotAssigned = new(
+        Code: "#VINDER-IDP-ERR-USR-416",
+        Description: "The user does not have the specified permission assigned. See https://bit.ly/errors-reference for more details."
+    );
 }
