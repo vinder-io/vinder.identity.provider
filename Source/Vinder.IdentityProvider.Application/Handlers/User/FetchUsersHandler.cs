@@ -7,28 +7,12 @@ public sealed class FetchUsersHandler(IUserRepository repository) :
     {
         var filters = UserMapper.AsFilters(request);
 
-        var matchingUsers = await repository.GetUsersAsync(filters, cancellationToken);
+        var users = await repository.GetUsersAsync(filters, cancellationToken);
         var totalUsers = await repository.CountAsync(filters, cancellationToken);
-
-        var users = matchingUsers.Select(user =>
-        {
-            var unifiedPermissions = user.Permissions
-                .Concat(user.Groups.SelectMany(group => group.Permissions))
-                .DistinctBy(permission => permission.Id)
-                .Select(PermissionMapper.AsResponse)
-                .ToArray();
-
-            var payload = UserMapper.AsResponse(user) with
-            {
-                Permissions = unifiedPermissions
-            };
-
-            return payload;
-        });
 
         var pagination = new Pagination<UserDetails>
         {
-            Items = [.. users],
+            Items = [.. users.Select(user => UserMapper.AsResponse(user))],
             Total = (int) totalUsers,
             PageNumber = request.PageNumber,
             PageSize = request.PageSize,

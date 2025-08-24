@@ -20,8 +20,6 @@ public static class UserMapper
     public static UserDetails AsResponse(User user) => new()
     {
         Id = user.Id.ToString(),
-        Username = user.Username,
-        Groups = [.. user.Groups.Select(GroupMapper.AsResponse)],
-        Permissions = [.. user.Permissions.Select(PermissionMapper.AsResponse)]
+        Username = user.Username
     };
 }
