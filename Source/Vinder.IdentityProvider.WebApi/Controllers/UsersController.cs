@@ -6,7 +6,7 @@ namespace Vinder.IdentityProvider.WebApi.Controllers;
 public sealed class UsersController(IMediator mediator) : ControllerBase
 {
     [HttpGet]
-    [Authorize]
+    [Authorize(Roles = Permissions.ViewUsers)]
     public async Task<IActionResult> GetUsersAsync([FromQuery] UsersFetchParameters request, CancellationToken cancellation)
     {
         var result = await mediator.Send(request, cancellation);
@@ -56,7 +56,7 @@ public sealed class UsersController(IMediator mediator) : ControllerBase
     }
 
     [HttpPost("{id:guid}/groups")]
-    [Authorize]
+    [Authorize(Roles = Permissions.EditUser)]
     public async Task<IActionResult> AssignUserToGroupAsync(Guid id, AssignUserToGroup request, CancellationToken cancellation)
     {
         var result = await mediator.Send(request with { UserId = id }, cancellation);
@@ -78,7 +78,7 @@ public sealed class UsersController(IMediator mediator) : ControllerBase
     }
 
     [HttpPost("{id:guid}/permissions")]
-    [Authorize]
+    [Authorize(Roles = Permissions.AssignPermissions)]
     public async Task<IActionResult> AssignUserPermissionAsync(Guid id, AssignUserPermission request, CancellationToken cancellation)
     {
         var result = await mediator.Send(request with { UserId = id }, cancellation);
