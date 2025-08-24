@@ -1,5 +1,6 @@
 /* global using for System namespaces here */
 
+global using System.Net;
 global using System.Net.Http.Headers;
 global using System.Net.Http.Json;
 
@@ -33,6 +34,8 @@ global using Vinder.IdentityProvider.Common.Errors;
 global using Vinder.IdentityProvider.Common.Results;
 global using Vinder.IdentityProvider.Common.Constants;
 global using Vinder.IdentityProvider.WebApi;
+
+global using Vinder.IdentityProvider.TestSuite.Extensions;
 global using Vinder.IdentityProvider.TestSuite.IntegrationTests.Fixtures;
 
 /* global usings for third-party namespaces here */
