@@ -19,6 +19,24 @@ public sealed class UsersController(IMediator mediator) : ControllerBase
         };
     }
 
+    [HttpGet("{id:guid}/permissions")]
+    [Authorize(Roles = Permissions.ViewPermissions)]
+    public async Task<IActionResult> GetUserPermissionsAsync(
+        [FromRoute] Guid id,
+        [FromQuery] ListUserAssignedPermissions request, CancellationToken cancellation
+    )
+    {
+        var result = await mediator.Send(request with { UserId = id }, cancellation);
+
+        return result switch
+        {
+            { IsSuccess: true } => StatusCode(StatusCodes.Status200OK, result.Data),
+
+            { IsFailure: true } when result.Error == UserErrors.UserDoesNotExist =>
+                StatusCode(StatusCodes.Status404NotFound, result.Error),
+        };
+    }
+
     [HttpPost("{id:guid}/groups")]
     [Authorize]
     public async Task<IActionResult> AssignUserToGroupAsync(Guid id, AssignUserToGroup request, CancellationToken cancellation)
