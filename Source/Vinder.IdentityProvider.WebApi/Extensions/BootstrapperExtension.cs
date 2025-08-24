@@ -8,9 +8,11 @@ public static class BootstrapperExtension
         using var scope = builder.ApplicationServices.CreateScope();
 
         var tenantRepository = scope.ServiceProvider.GetRequiredService<ITenantRepository>();
+        var userRepository = scope.ServiceProvider.GetRequiredService<IUserRepository>();
         var permissionRepository = scope.ServiceProvider.GetRequiredService<IPermissionRepository>();
         var tenantProvider = scope.ServiceProvider.GetRequiredService<ITenantProvider>();
         var passwordHasher = scope.ServiceProvider.GetRequiredService<IPasswordHasher>();
+        var settings = scope.ServiceProvider.GetRequiredService<ISettings>();
 
         var defaultTenant = new Tenant { Name = "master", ClientId = GenerateClientId() };
         var tenantFilters = new TenantFiltersBuilder()
@@ -53,6 +55,26 @@ public static class BootstrapperExtension
 
         await tenantRepository.InsertAsync(defaultTenant);
         await permissionRepository.InsertManyAsync(defaultTenant.Permissions);
+
+        var userFilters = new UserFiltersBuilder()
+            .WithUsername(settings.Administration.Username)
+            .Build();
+
+        var existingUsers = await userRepository.GetUsersAsync(userFilters);
+        var rootUser = existingUsers.FirstOrDefault();
+
+        if (rootUser is null)
+        {
+            rootUser = new User
+            {
+                Username = settings.Administration.Username,
+                TenantId = defaultTenant.Id,
+                Permissions = [.. defaultTenant.Permissions],
+                PasswordHash = await passwordHasher.HashPasswordAsync(settings.Administration.Password)
+            };
+
+            await userRepository.InsertAsync(rootUser);
+        }
     }
 
     public static string GenerateClientId(int size = 32)
