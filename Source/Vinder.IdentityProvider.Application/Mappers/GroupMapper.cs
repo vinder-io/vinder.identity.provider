@@ -22,6 +22,17 @@ public static class GroupMapper
         Permissions = [.. group.Permissions.Select(group => PermissionMapper.AsResponse(group))]
     };
 
+    public static IReadOnlyCollection<GroupBasicDetails> AsBasicResponse(IEnumerable<Group> groups)
+    {
+        return [.. groups.Select(GroupMapper.AsBasicResponse)];
+    }
+
+    public static GroupBasicDetails AsBasicResponse(Group group) => new()
+    {
+        Id = group.Id.ToString(),
+        Name = group.Name,
+    };
+
     public static GroupFilters AsFilters(GroupsFetchParameters parameters) => new()
     {
         Id = parameters.Id,
