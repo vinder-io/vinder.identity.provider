@@ -10,10 +10,6 @@ public static class WebInfrastructureExtension
         services.AddCorsConfiguration();
         services.AddJwtAuthentication();
         services.AddMemoryCache();
-
-        if (environment.IsDevelopment())
-        {
-            services.AddOpenApi();
-        }
+        services.AddOpenApi();
     }
 }
