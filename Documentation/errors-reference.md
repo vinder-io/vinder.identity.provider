@@ -7,6 +7,15 @@ Each error entry includes:
 - A clear description of the error  
 - Contextual information about when and why the error might occur
 
+## Table of Contents
+
+- [Authentication Errors (#VINDER-IDP-ERR-AUT-XXX)](#authentication-errors)
+- [Tenant Errors - (#VINDER-IDP-ERR-TNT-XXX)](#tenant-errors)
+- [Group Errors - (#VINDER-IDP-ERR-GRP-XXX)](#group-errors)
+- [User Errors - (#VINDER-IDP-ERR-USR-XXX)](#user-errors)
+- [Permission Errors - (#VINDER-IDP-ERR-PRM-XXX)](#permission-errors)
+- [Identity Errors - (#VINDER-IDP-ERR-IDN-XXX)](#identity-errors)
+
 # Authentication Errors
 
 Errors in this category are related to user authentication and token validation processes. Each error code starting with `#VINDER-IDP-ERR-AUT-XXX` indicates an issue encountered during authentication flows such as login, token generation, validation, refresh, and logout.
