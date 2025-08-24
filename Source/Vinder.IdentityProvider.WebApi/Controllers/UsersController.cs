@@ -19,6 +19,22 @@ public sealed class UsersController(IMediator mediator) : ControllerBase
         };
     }
 
+    [HttpDelete("{id:guid}")]
+    [Authorize(Roles = Permissions.EditUser)]
+    public async Task<IActionResult> DeleteUserAsync(Guid id, CancellationToken cancellation)
+    {
+        var request = new UserForDeletion { UserId = id };
+        var result = await mediator.Send(request, cancellation);
+
+        return result switch
+        {
+            { IsSuccess: true } => StatusCode(StatusCodes.Status204NoContent),
+
+            { IsFailure: true } when result.Error == UserErrors.UserDoesNotExist =>
+                StatusCode(StatusCodes.Status404NotFound, result.Error)
+        };
+    }
+
     [HttpGet("{id:guid}/permissions")]
     [Authorize(Roles = Permissions.ViewPermissions)]
     public async Task<IActionResult> GetUserPermissionsAsync(
