@@ -3,7 +3,7 @@ name: build and publish docker image
 on:
   push:
     branches:
-      - main
+      - master
 
 jobs:
   docker-build-and-push:
