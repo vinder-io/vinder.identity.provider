@@ -60,7 +60,7 @@ public sealed class GroupsController(IMediator mediator) : ControllerBase
         return result switch
         {
             { IsSuccess: true } =>
-                StatusCode(StatusCodes.Status200OK),
+                StatusCode(StatusCodes.Status204NoContent),
 
             { IsFailure: true } when result.Error == GroupErrors.GroupDoesNotExist =>
                 StatusCode(StatusCodes.Status404NotFound, result.Error),
@@ -94,7 +94,7 @@ public sealed class GroupsController(IMediator mediator) : ControllerBase
         return result switch
         {
             { IsSuccess: true } =>
-                StatusCode(StatusCodes.Status204NoContent, result.Data),
+                StatusCode(StatusCodes.Status200OK, result.Data),
 
             { IsFailure: true } when result.Error == GroupErrors.GroupDoesNotExist =>
                 StatusCode(StatusCodes.Status404NotFound, result.Error),
