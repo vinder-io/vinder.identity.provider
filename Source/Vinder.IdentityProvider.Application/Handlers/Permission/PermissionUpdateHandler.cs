@@ -7,7 +7,7 @@ public sealed class PermissionUpdateHandler(IPermissionRepository repository, IT
     {
         var tenant = tenantProvider.GetCurrentTenant();
         var filters = new PermissionFiltersBuilder()
-            .WithName(request.Name)
+            .WithPermissionId(request.PermissionId)
             .Build();
 
         var permissions = await repository.GetPermissionsAsync(filters, cancellation: cancellationToken);
