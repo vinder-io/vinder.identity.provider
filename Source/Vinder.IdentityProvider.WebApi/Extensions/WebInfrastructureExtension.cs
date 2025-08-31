@@ -6,6 +6,7 @@ public static class WebInfrastructureExtension
     public static void AddWebComposition(this IServiceCollection services, IWebHostEnvironment environment)
     {
         services.AddControllers();
+        services.AddHttpContextAccessor();
         services.AddEndpointsApiExplorer();
         services.AddCorsConfiguration();
         services.AddJwtAuthentication();
