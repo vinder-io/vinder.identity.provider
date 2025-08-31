@@ -2,7 +2,8 @@ using Microsoft.IdentityModel.Tokens;
 
 namespace Vinder.IdentityProvider.Infrastructure.Security;
 
-public sealed class JwtSecurityTokenService(ISettings settings, ITokenRepository repository) : ISecurityTokenService
+public sealed class JwtSecurityTokenService(ISettings settings, ITokenRepository repository, IHostInformationProvider host) :
+    ISecurityTokenService
 {
     private readonly TimeSpan _accessTokenDuration = TimeSpan.FromMinutes(15);
     private readonly TimeSpan _refreshTokenDuration = TimeSpan.FromDays(7);
@@ -23,6 +24,7 @@ public sealed class JwtSecurityTokenService(ISettings settings, ITokenRepository
         var tokenDescriptor = new SecurityTokenDescriptor
         {
             Subject = claimsIdentity,
+            Issuer = host.Address.ToString(),
             SigningCredentials = credentials,
             Expires = DateTime.UtcNow.Add(_accessTokenDuration),
         };
@@ -55,6 +57,8 @@ public sealed class JwtSecurityTokenService(ISettings settings, ITokenRepository
         var claimsIdentity = new ClaimsIdentity(claims);
         var tokenDescriptor = new SecurityTokenDescriptor
         {
+            Issuer = host.Address.ToString(),
+            Audience = tenant.Name,
             Subject = claimsIdentity,
             SigningCredentials = credentials,
             Expires = DateTime.UtcNow.Add(_accessTokenDuration)
@@ -88,6 +92,7 @@ public sealed class JwtSecurityTokenService(ISettings settings, ITokenRepository
         var tokenDescriptor = new SecurityTokenDescriptor
         {
             Subject = claimsIdentity,
+            Issuer = host.Address.ToString(),
             SigningCredentials = credentials,
             Expires = DateTime.UtcNow.Add(_refreshTokenDuration)
         };
