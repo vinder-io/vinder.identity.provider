@@ -14,7 +14,9 @@ public sealed class JwtSecurityTokenServiceTests : IClassFixture<MongoDatabaseFi
     private readonly IMongoDatabase _database;
     private readonly MongoDatabaseFixture _mongoFixture;
     private readonly Fixture _fixture = new();
+
     private readonly Mock<ITenantProvider> _tenantProvider = new();
+    private readonly Mock<IHostInformationProvider> _hostProvider = new();
 
     public JwtSecurityTokenServiceTests(MongoDatabaseFixture fixture)
     {
@@ -30,8 +32,11 @@ public sealed class JwtSecurityTokenServiceTests : IClassFixture<MongoDatabaseFi
         var secretKey = Convert.ToBase64String(keyBytes);
         var securitySettings = new SecuritySettings { SecretKey = secretKey };
 
+        _hostProvider.Setup(provider => provider.Address)
+            .Returns(new Uri("http://localhost:5078"));
+
         _settings = new Settings { Security = securitySettings };
-        _jwtSecurityTokenService = new JwtSecurityTokenService(_settings, _tokenRepository);
+        _jwtSecurityTokenService = new JwtSecurityTokenService(_settings, _tokenRepository, _hostProvider.Object);
     }
 
     [Fact(DisplayName = "[infrastructure] - when generating an access token, then it must be valid and contain correct claims")]
@@ -61,6 +66,7 @@ public sealed class JwtSecurityTokenServiceTests : IClassFixture<MongoDatabaseFi
 
         var claims = jwtToken.Claims.ToList();
 
+        Assert.Contains(claims, claim => claim.Type == JwtRegisteredClaimNames.Iss && claim.Value == _hostProvider.Object.Address.ToString());
         Assert.Contains(claims, claim => claim.Type == JwtRegisteredClaimNames.Sub && claim.Value == user.Id.ToString());
         Assert.Contains(claims, claim => claim.Type == JwtRegisteredClaimNames.PreferredUsername && claim.Value == user.Username);
 

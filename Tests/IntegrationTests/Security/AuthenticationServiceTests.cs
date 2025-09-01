@@ -12,7 +12,9 @@ public sealed class AuthenticationServiceTests : IClassFixture<MongoDatabaseFixt
     private readonly MongoDatabaseFixture _mongoFixture;
     private readonly AuthenticationService _authenticationService;
     private readonly Fixture _fixture = new();
+
     private readonly Mock<ITenantProvider> _tenantProvider = new();
+    private readonly Mock<IHostInformationProvider> _hostProvider = new();
 
     public AuthenticationServiceTests(MongoDatabaseFixture mongoFixture)
     {
@@ -34,7 +36,10 @@ public sealed class AuthenticationServiceTests : IClassFixture<MongoDatabaseFixt
 
         _settings = new Settings { Security = securitySettings };
 
-        _tokenService = new JwtSecurityTokenService(_settings, tokenRepository);
+        _hostProvider.Setup(provider => provider.Address)
+            .Returns(new Uri("http://localhost:5078"));
+
+        _tokenService = new JwtSecurityTokenService(_settings, tokenRepository, _hostProvider.Object);
         _authenticationService = new AuthenticationService(_userRepository, _passwordHasher, _tokenService);
     }
 
