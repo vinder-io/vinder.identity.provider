@@ -27,6 +27,13 @@ public static class DocumentFields
         public const string IsDeleted = nameof(Domain.Entities.Group.IsDeleted);
     }
 
+    public static class Scope
+    {
+        public const string Id = "_id";
+        public const string Name = nameof(Domain.Entities.Scope.Name);
+        public const string IsDeleted = nameof(Domain.Entities.Group.IsDeleted);
+    }
+
     public static class Tenant
     {
         public const string Name = nameof(Domain.Entities.Tenant.Name);
