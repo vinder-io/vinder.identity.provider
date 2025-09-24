@@ -14,7 +14,7 @@ public static class ScopeFiltersStage
         var filterDefinitions = new List<FilterDefinition<BsonDocument>>
         {
             MatchIfNotEmpty(DocumentFields.Scope.Name, filters.Name),
-            MatchIfNotEmptyGuid(DocumentFields.Scope.Id, filters.ScopeId)
+            MatchIfNotEmpty(DocumentFields.Scope.Id, filters.ScopeId)
         };
 
         if (!filters.IsDeleted.HasValue)
@@ -34,12 +34,5 @@ public static class ScopeFiltersStage
         return string.IsNullOrWhiteSpace(value)
             ? FilterDefinition<BsonDocument>.Empty
             : Builders<BsonDocument>.Filter.Eq(field, BsonValue.Create(value));
-    }
-
-    private static FilterDefinition<BsonDocument> MatchIfNotEmptyGuid(string field, Guid? value)
-    {
-        return !value.HasValue || value == Guid.Empty
-            ? FilterDefinition<BsonDocument>.Empty
-            : Builders<BsonDocument>.Filter.Eq(field, new BsonBinaryData(value.Value, GuidRepresentation.Standard));
     }
 }
