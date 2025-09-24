@@ -28,7 +28,6 @@ services:
       Settings__Security__SecretKey: ${VINDER_IDENTITY_PROVIDER_SECRETKEY}
       Settings__Administration__Username: ${VINDER_IDENTITY_PROVIDER_ADMIN_USERNAME}
       Settings__Administration__Password: ${VINDER_IDENTITY_PROVIDER_ADMIN_PASSWORD}
-      Settings__Administration__Tenant: ${VINDER_IDENTITY_PROVIDER_ADMIN_TENANT}
     depends_on:
       - vinder.identity.provider.infrastructure.mongo.database
 
