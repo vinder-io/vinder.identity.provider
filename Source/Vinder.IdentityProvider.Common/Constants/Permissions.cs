@@ -22,4 +22,9 @@ public static class Permissions
     public const string DeleteTenant = "vinder.defaults.permissions.tenant.delete";
     public const string EditTenant = "vinder.defaults.permissions.tenant.update";
     public const string ViewTenants = "vinder.defaults.permissions.tenant.view";
+
+    public const string CreateScope = "vinder.defaults.permissions.scopes.create";
+    public const string EditScope = "vinder.defaults.permissions.scopes.update";
+    public const string DeleteScope = "vinder.defaults.permissions.scopes.delete";
+    public const string ViewScopes = "vinder.defaults.permissions.scopes.view";
 }

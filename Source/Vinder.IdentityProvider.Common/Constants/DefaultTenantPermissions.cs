@@ -18,6 +18,11 @@ public static class DefaultTenantPermissions
         Permissions.RevokePermissions,
         Permissions.ViewPermissions,
         Permissions.EditPermission,
-        Permissions.DeletePermission
+        Permissions.DeletePermission,
+
+        Permissions.CreateScope,
+        Permissions.EditScope,
+        Permissions.DeleteGroup,
+        Permissions.ViewScopes
     ];
 }
