@@ -8,8 +8,8 @@ public sealed class SecurityToken : Entity
     public TokenType Type { get; set; }
     public DateTime ExpiresAt { get; set; }
 
-    public Guid UserId { get; set; }
-    public Guid TenantId { get; set; }
+    public string UserId { get; set; } = default!;
+    public string TenantId { get; set; } = default!;
 
     public bool IsExpired => DateTime.UtcNow >= ExpiresAt;
     public bool IsActive => !Revoked && !IsExpired;

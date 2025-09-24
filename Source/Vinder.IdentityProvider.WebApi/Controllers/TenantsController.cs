@@ -34,9 +34,9 @@ public sealed class TenantsController(IMediator mediator) : ControllerBase
         };
     }
 
-    [HttpPut("{id:guid}")]
+    [HttpPut("{id}")]
     [Authorize(Roles = Permissions.EditTenant)]
-    public async Task<IActionResult> UpdateTenantAsync(Guid id, TenantForUpdate request, CancellationToken cancellation)
+    public async Task<IActionResult> UpdateTenantAsync(string id, TenantForUpdate request, CancellationToken cancellation)
     {
         var result = await mediator.Send(request with { TenantId = id }, cancellation);
 
@@ -50,9 +50,9 @@ public sealed class TenantsController(IMediator mediator) : ControllerBase
         };
     }
 
-    [HttpDelete("{id:guid}")]
+    [HttpDelete("{id}")]
     [Authorize(Roles = Permissions.DeleteTenant)]
-    public async Task<IActionResult> DeleteTenantAsync(Guid id, CancellationToken cancellation)
+    public async Task<IActionResult> DeleteTenantAsync(string id, CancellationToken cancellation)
     {
         var result = await mediator.Send(new TenantForDeletion { TenantId = id }, cancellation);
 

@@ -16,7 +16,7 @@ public static class TenantFiltersStage
         {
             MatchIfNotEmpty(DocumentFields.Tenant.Name, filters.Name),
             MatchIfNotEmpty(DocumentFields.Tenant.ClientId, filters.ClientId),
-            MatchIfNotEmptyGuid(DocumentFields.Tenant.Id, filters.Id),
+            MatchIfNotEmpty(DocumentFields.Tenant.Id, filters.Id),
         };
 
         if (!filters.IsDeleted.HasValue)
@@ -40,12 +40,5 @@ public static class TenantFiltersStage
         return string.IsNullOrWhiteSpace(value)
             ? FilterDefinition<BsonDocument>.Empty
             : Builders<BsonDocument>.Filter.Eq(field, BsonValue.Create(value));
-    }
-
-    private static FilterDefinition<BsonDocument> MatchIfNotEmptyGuid(string field, Guid? value)
-    {
-        return !value.HasValue || value == Guid.Empty
-            ? FilterDefinition<BsonDocument>.Empty
-            : Builders<BsonDocument>.Filter.Eq(field, new BsonBinaryData(value.Value, GuidRepresentation.Standard));
     }
 }

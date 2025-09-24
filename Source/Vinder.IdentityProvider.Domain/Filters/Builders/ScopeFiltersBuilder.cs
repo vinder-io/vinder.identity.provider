@@ -5,9 +5,9 @@ public sealed class ScopeFiltersBuilder
     private readonly ScopeFilters _filters = new();
     public ScopeFilters Build() => _filters;
 
-    public ScopeFiltersBuilder WithScopeId(Guid? id)
+    public ScopeFiltersBuilder WithScopeId(string? id)
     {
-        if (id.HasValue && id != Guid.Empty)
+        if (!string.IsNullOrWhiteSpace(id))
         {
             _filters.ScopeId = id;
         }

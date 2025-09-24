@@ -2,8 +2,8 @@ namespace Vinder.IdentityProvider.Application.Payloads.Group;
 
 public sealed record GroupsFetchParameters : IRequest<Result<Pagination<GroupDetails>>>
 {
-    public Guid? Id { get; set; }
-    public Guid? TenantId { get; set; }
+    public string? Id { get; set; }
+    public string? TenantId { get; set; }
     public string? Name { get; set; }
     public bool? IncludeDeleted { get; set; }
 

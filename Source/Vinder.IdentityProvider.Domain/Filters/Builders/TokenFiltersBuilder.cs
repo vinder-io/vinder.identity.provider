@@ -26,9 +26,9 @@ public sealed class TokenFiltersBuilder
         return this;
     }
 
-    public TokenFiltersBuilder WithUserId(Guid? userId)
+    public TokenFiltersBuilder WithUserId(string? userId)
     {
-        if (userId.HasValue && userId != Guid.Empty)
+        if (!string.IsNullOrWhiteSpace(userId))
         {
             _filters.UserId = userId;
         }
@@ -36,9 +36,9 @@ public sealed class TokenFiltersBuilder
         return this;
     }
 
-    public TokenFiltersBuilder WithTenantId(Guid? tenantId)
+    public TokenFiltersBuilder WithTenantId(string? tenantId)
     {
-        if (tenantId.HasValue && tenantId != Guid.Empty)
+        if (!string.IsNullOrWhiteSpace(tenantId))
         {
             _filters.TenantId = tenantId;
         }

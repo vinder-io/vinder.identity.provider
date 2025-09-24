@@ -2,7 +2,7 @@ namespace Vinder.IdentityProvider.Domain.Entities;
 
 public abstract class Entity
 {
-    public Guid Id { get; set; } = Guid.NewGuid();
+    public string Id { get; set; } = default!;
 
     public DateTime CreatedAt { get; set; }
     public DateTime UpdatedAt { get; set; }

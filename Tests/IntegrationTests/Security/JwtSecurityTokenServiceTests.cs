@@ -121,7 +121,7 @@ public sealed class JwtSecurityTokenServiceTests : IClassFixture<MongoDatabaseFi
 
         var tokenDescriptor = new SecurityTokenDescriptor
         {
-            Subject = new ClaimsIdentity([new Claim(JwtRegisteredClaimNames.Sub, Guid.NewGuid().ToString())]),
+            Subject = new ClaimsIdentity([new Claim(JwtRegisteredClaimNames.Sub, Identifier.Generate<User>())]),
             NotBefore = DateTime.UtcNow.AddMinutes(-2),
             Expires = DateTime.UtcNow.AddMinutes(-1),
             SigningCredentials = credentials
