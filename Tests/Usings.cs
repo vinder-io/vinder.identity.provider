@@ -24,14 +24,15 @@ global using Vinder.IdentityProvider.Application.Payloads.Group;
 global using Vinder.IdentityProvider.Application.Payloads.Permission;
 global using Vinder.IdentityProvider.Application.Payloads.Tenant;
 global using Vinder.IdentityProvider.Application.Payloads.User;
+global using Vinder.IdentityProvider.Application.Payloads.Scope;
 
 global using Vinder.IdentityProvider.Infrastructure.Repositories;
 global using Vinder.IdentityProvider.Infrastructure.Security;
-global using Vinder.IdentityProvider.Infrastructure.IoC.Helpers;
 
 global using Vinder.IdentityProvider.Common.Configuration;
 global using Vinder.IdentityProvider.Common.Errors;
 global using Vinder.IdentityProvider.Common.Results;
+global using Vinder.IdentityProvider.Common.Utilities;
 global using Vinder.IdentityProvider.Common.Constants;
 global using Vinder.IdentityProvider.WebApi;
 
