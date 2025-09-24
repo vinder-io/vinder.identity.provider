@@ -1,5 +1,3 @@
-using Vinder.IdentityProvider.Common.Results;
-
 namespace Vinder.IdentityProvider.Common.Errors;
 
 public static class UserErrors
