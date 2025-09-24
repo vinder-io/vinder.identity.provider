@@ -19,11 +19,33 @@ public abstract class BaseRepository<TEntity>(IMongoDatabase database, string co
 
     public virtual async Task<TEntity> InsertAsync(TEntity entity, CancellationToken cancellation = default)
     {
+        // yes, we know what you're thinking:
+        // "why not just use a uuid/guid? or let the database handle IDs?"
+
+        // well... because we don't want to. we like our IDs fancy.
+
+        // in fact, this identifier generator is shamelessly inspired by stripe's style.
+        // it's unique, it's readable, and it's cooler than GUIDs. deal with it. ¯\_(ツ)_/¯
+
+        // you want GUID? fork it ( ദ്ദി ˙ᗜ˙ )
+
+        entity.Id = Identifier.Generate<TEntity>();
+        entity.CreatedAt = DateTime.Now;
+
         await _collection.InsertOneAsync(entity, cancellationToken: cancellation);
 
-        entity.CreatedAt = DateTime.UtcNow;
-
         return entity;
+    }
+
+    public virtual async Task InsertManyAsync(IEnumerable<TEntity> entities, CancellationToken cancellation = default)
+    {
+        Parallel.ForEach(entities, entity =>
+        {
+            entity.Id = Identifier.Generate<TEntity>();
+            entity.CreatedAt = DateTime.Now;
+        });
+
+        await _collection.InsertManyAsync(entities, cancellationToken: cancellation);
     }
 
     public virtual async Task<TEntity> UpdateAsync(TEntity entity, CancellationToken cancellation = default)
