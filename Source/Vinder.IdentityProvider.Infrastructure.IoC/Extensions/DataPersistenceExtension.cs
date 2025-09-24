@@ -5,9 +5,6 @@ public static class DataPersistenceExtension
 {
     public static void AddDataPersistence(this IServiceCollection services, ISettings settings)
     {
-        /* register custom serializers globally so mongodb can correctly serialize/deserialize custom types */
-        MongoSerializer.Register();
-
         services.AddSingleton<IMongoDatabase>(provider =>
         {
             var mongoClient = new MongoClient(settings.Database.ConnectionString);
