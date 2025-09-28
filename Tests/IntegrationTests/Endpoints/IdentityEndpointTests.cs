@@ -5,6 +5,34 @@ public sealed class IdentityEndpointTests(IntegrationEnvironmentFixture factory)
 {
     private readonly Fixture _fixture = new();
 
+    [Fact(DisplayName = "[e2e] - when POST /identity with new username should create identity successfully")]
+    public async Task WhenPostIdentityWithNewUsername_ShouldCreateIdentitySuccessfully()
+    {
+        /* arrange: prepare unique username and password */
+        var httpClient = factory.HttpClient.WithTenantHeader("master");
+
+        var username = $"john.doe@email.com";
+        var password = "TestPassword123!";
+
+        var credentials = new IdentityEnrollmentCredentials
+        {
+            Username = username,
+            Password = password
+        };
+
+        /* act: send POST request to create identity */
+        var response = await httpClient.PostAsJsonAsync("api/v1/identity", credentials);
+        var result = await response.Content.ReadFromJsonAsync<UserDetails>();
+
+        /* assert: response should be 201 Created and returned user details should match */
+        Assert.Equal(HttpStatusCode.Created, response.StatusCode);
+        Assert.NotNull(result);
+
+        /* assert: returned user details are valid, with a non-empty ID and matching username */
+        Assert.Equal(username, result.Username);
+        Assert.False(string.IsNullOrWhiteSpace(result.Id));
+    }
+
     [Fact(DisplayName = "[e2e] - when POST identity/authenticate with valid credentials should return access token 'n refresh token")]
     public async Task WhenPostIdentityAuthenticateWithValidCredentials_ShouldReturnAccessTokenAndRefreshToken()
     {
