@@ -28,7 +28,7 @@ public sealed class ScopesEndpointTests(IntegrationEnvironmentFixture factory) :
 
         /* arrange: build payload for scope creation */
         var payload = _fixture.Build<ScopeForCreation>()
-            .With(scope => scope.Name, "vinder.scopes.profile")
+            .With(scope => scope.Name, "vinder.scopes.orders")
             .Create();
 
         var httpResponse = await httpClient.PostAsJsonAsync("api/v1/scopes", payload);
@@ -69,7 +69,7 @@ public sealed class ScopesEndpointTests(IntegrationEnvironmentFixture factory) :
 
         /* arrange: build payload with a fixed scope name to simulate duplicate */
         var payload = _fixture.Build<ScopeForCreation>()
-            .With(scope => scope.Name, "vinder.scopes.profile")
+            .With(scope => scope.Name, "vinder.scopes.photos")
             .Create();
 
         /* act: send first POST request to create the scope (ensure it exists) */
