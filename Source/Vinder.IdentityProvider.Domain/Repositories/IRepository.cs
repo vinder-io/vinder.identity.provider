@@ -7,6 +7,11 @@ public interface IRepository<TEntity> where TEntity : Entity
         CancellationToken cancellation = default
     );
 
+    public Task InsertManyAsync(
+        IEnumerable<TEntity> entities,
+        CancellationToken cancellation = default
+    );
+
     public Task<TEntity> UpdateAsync(
         TEntity entity,
         CancellationToken cancellation = default

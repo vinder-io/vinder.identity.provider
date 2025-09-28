@@ -2,7 +2,7 @@ namespace Vinder.IdentityProvider.Application.Mappers;
 
 public static class UserMapper
 {
-    public static User AsUser(IdentityEnrollmentCredentials credentials, Guid tenantId) => new()
+    public static User AsUser(IdentityEnrollmentCredentials credentials, string tenantId) => new()
     {
         Username = credentials.Username,
         TenantId = tenantId,

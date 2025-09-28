@@ -29,8 +29,6 @@ public sealed class MongoDatabaseFixture : IAsyncLifetime
 
     public async Task InitializeAsync()
     {
-        MongoSerializer.Register();
-
         await _container.StartAsync();
 
         var hostPort = _container.GetMappedPublicPort(27017);

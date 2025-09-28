@@ -299,7 +299,7 @@ public sealed class TokenRepositoryTests : IClassFixture<MongoDatabaseFixture>, 
     {
         /* arrange: create user and token with user id */
         var tenant = _fixture.Create<Tenant>();
-        var userId = Guid.NewGuid();
+        var userId = Identifier.Generate<Tenant>();
 
         _tenantProvider.Setup(provider => provider.GetCurrentTenant())
             .Returns(tenant);
@@ -335,13 +335,13 @@ public sealed class TokenRepositoryTests : IClassFixture<MongoDatabaseFixture>, 
     {
         /* arrange: create 10 tokens with varied tenantId, userId and IsDeleted */
         var tenant = _fixture.Create<Tenant>();
-        var tenantId2 = Guid.NewGuid();
+        var tenantId2 = Identifier.Generate<Tenant>();
 
         _tenantProvider.Setup(provider => provider.GetCurrentTenant())
             .Returns(tenant);
 
-        var userId1 = Guid.NewGuid();
-        var userId2 = Guid.NewGuid();
+        var userId1 = Identifier.Generate<User>();
+        var userId2 = Identifier.Generate<User>();
 
         var tokens = new List<SecurityToken>();
 

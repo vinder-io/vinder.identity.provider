@@ -2,8 +2,7 @@ namespace Vinder.IdentityProvider.Domain.Entities;
 
 public sealed class User : Entity
 {
-    public Guid TenantId { get; set; }
-
+    public string TenantId { get; set; } = default!;
     public string Username { get; set; } = default!;
     public string PasswordHash { get; set; } = default!;
 

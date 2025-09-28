@@ -5,9 +5,9 @@ public sealed class TenantFiltersBuilder
     private readonly TenantFilters _filters = new();
     public TenantFilters Build() => _filters;
 
-    public TenantFiltersBuilder WithId(Guid? id)
+    public TenantFiltersBuilder WithId(string? id)
     {
-        if (id.HasValue && id != Guid.Empty)
+        if (!string.IsNullOrWhiteSpace(id))
         {
             _filters.Id = id;
         }

@@ -17,8 +17,8 @@ public static class PermissionFiltersStage
         var filterDefinitions = new List<FilterDefinition<BsonDocument>>
         {
             MatchIfNotEmpty(DocumentFields.Permission.Name, filters.Name),
-            MatchIfNotEmptyGuid(DocumentFields.Permission.TenantId, tenant.Id),
-            MatchIfNotEmptyGuid(DocumentFields.Permission.Id, filters.PermissionId)
+            MatchIfNotEmpty(DocumentFields.Permission.TenantId, tenant.Id),
+            MatchIfNotEmpty(DocumentFields.Permission.Id, filters.PermissionId)
         };
 
         if (!filters.IsDeleted.HasValue)
@@ -38,12 +38,5 @@ public static class PermissionFiltersStage
         return string.IsNullOrWhiteSpace(value)
             ? FilterDefinition<BsonDocument>.Empty
             : Builders<BsonDocument>.Filter.Eq(field, BsonValue.Create(value));
-    }
-
-    private static FilterDefinition<BsonDocument> MatchIfNotEmptyGuid(string field, Guid? value)
-    {
-        return !value.HasValue || value == Guid.Empty
-            ? FilterDefinition<BsonDocument>.Empty
-            : Builders<BsonDocument>.Filter.Eq(field, new BsonBinaryData(value.Value, GuidRepresentation.Standard));
     }
 }

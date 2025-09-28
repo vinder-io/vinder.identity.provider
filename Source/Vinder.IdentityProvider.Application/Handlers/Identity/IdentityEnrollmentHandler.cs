@@ -4,9 +4,9 @@ public sealed class IdentityEnrollmentHandler(
     IUserRepository userRepository,
     IPasswordHasher passwordHasher,
     ITenantProvider tenantProvider
-) : IRequestHandler<IdentityEnrollmentCredentials, Result>
+) : IRequestHandler<IdentityEnrollmentCredentials, Result<UserDetails>>
 {
-    public async Task<Result> Handle(IdentityEnrollmentCredentials request, CancellationToken cancellationToken)
+    public async Task<Result<UserDetails>> Handle(IdentityEnrollmentCredentials request, CancellationToken cancellationToken)
     {
         var filters = new UserFiltersBuilder()
             .WithUsername(request.Username)
@@ -17,7 +17,7 @@ public sealed class IdentityEnrollmentHandler(
 
         if (user is not null)
         {
-            return Result.Failure(IdentityErrors.UserAlreadyExists);
+            return Result<UserDetails>.Failure(IdentityErrors.UserAlreadyExists);
         }
 
         var tenant = tenantProvider.GetCurrentTenant();
@@ -27,6 +27,6 @@ public sealed class IdentityEnrollmentHandler(
 
         await userRepository.InsertAsync(identity, cancellationToken);
 
-        return Result.Success();
+        return Result<UserDetails>.Success(UserMapper.AsResponse(identity));
     }
 }

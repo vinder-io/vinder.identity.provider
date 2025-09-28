@@ -16,9 +16,9 @@ public sealed class PermissionFiltersBuilder
         return this;
     }
 
-    public PermissionFiltersBuilder WithTenantId(Guid? tenantId)
+    public PermissionFiltersBuilder WithTenantId(string? tenantId)
     {
-        if (tenantId.HasValue && tenantId != Guid.Empty)
+        if (!string.IsNullOrWhiteSpace(tenantId))
         {
             _filters.TenantId = tenantId;
         }
@@ -26,9 +26,9 @@ public sealed class PermissionFiltersBuilder
         return this;
     }
 
-    public PermissionFiltersBuilder WithPermissionId(Guid? permissionId)
+    public PermissionFiltersBuilder WithPermissionId(string? permissionId)
     {
-        if (permissionId.HasValue && permissionId != Guid.Empty)
+        if (!string.IsNullOrWhiteSpace(permissionId))
         {
             _filters.PermissionId = permissionId;
         }

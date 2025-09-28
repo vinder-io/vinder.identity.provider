@@ -5,9 +5,9 @@ public sealed class UserFiltersBuilder
     private readonly UserFilters _filters = new();
     public UserFilters Build() => _filters;
 
-    public UserFiltersBuilder WithTenantId(Guid? tenantId)
+    public UserFiltersBuilder WithTenantId(string? tenantId)
     {
-        if (tenantId.HasValue && tenantId != Guid.Empty)
+        if (!string.IsNullOrWhiteSpace(tenantId))
         {
             _filters.TenantId = tenantId;
         }
@@ -15,9 +15,9 @@ public sealed class UserFiltersBuilder
         return this;
     }
 
-    public UserFiltersBuilder WithUserId(Guid? userId)
+    public UserFiltersBuilder WithUserId(string? userId)
     {
-        if (userId.HasValue && userId != Guid.Empty)
+        if (!string.IsNullOrWhiteSpace(userId))
         {
             _filters.UserId = userId;
         }

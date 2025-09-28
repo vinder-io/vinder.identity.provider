@@ -13,7 +13,7 @@ public sealed class IdentityController(IMediator mediator) : ControllerBase
         return result switch
         {
             { IsSuccess: true } =>
-                StatusCode(StatusCodes.Status201Created),
+                StatusCode(StatusCodes.Status201Created, result.Data),
 
             { IsFailure: true } when result.Error == IdentityErrors.UserAlreadyExists =>
                 StatusCode(StatusCodes.Status409Conflict, result.Error),

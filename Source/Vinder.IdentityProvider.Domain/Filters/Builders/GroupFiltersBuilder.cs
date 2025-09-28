@@ -6,9 +6,9 @@ public sealed class GroupFiltersBuilder
 
     public GroupFilters Build() => _filters;
 
-    public GroupFiltersBuilder WithId(Guid? id)
+    public GroupFiltersBuilder WithId(string? id)
     {
-        if (id.HasValue && id != Guid.Empty)
+        if (!string.IsNullOrWhiteSpace(id))
         {
             _filters.Id = id;
         }
@@ -16,9 +16,9 @@ public sealed class GroupFiltersBuilder
         return this;
     }
 
-    public GroupFiltersBuilder WithTenantId(Guid? tenantId)
+    public GroupFiltersBuilder WithTenantId(string? tenantId)
     {
-        if (tenantId.HasValue && tenantId != Guid.Empty)
+        if (!string.IsNullOrWhiteSpace(tenantId))
         {
             _filters.TenantId = tenantId;
         }

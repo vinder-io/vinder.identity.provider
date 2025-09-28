@@ -16,8 +16,8 @@ public static class GroupFiltersStage
         var filterDefinitions = new List<FilterDefinition<BsonDocument>>
         {
             MatchIfNotEmpty(DocumentFields.Group.Name, filters.Name),
-            MatchIfNotEmptyGuid(DocumentFields.Group.Id, filters.Id),
-            MatchIfNotEmptyGuid(DocumentFields.Group.TenantId, tenant.Id),
+            MatchIfNotEmpty(DocumentFields.Group.Id, filters.Id),
+            MatchIfNotEmpty(DocumentFields.Group.TenantId, tenant.Id),
         };
 
         if (!filters.IsDeleted.HasValue)
@@ -41,12 +41,5 @@ public static class GroupFiltersStage
         return string.IsNullOrWhiteSpace(value)
             ? FilterDefinition<BsonDocument>.Empty
             : Builders<BsonDocument>.Filter.Eq(field, BsonValue.Create(value));
-    }
-
-    private static FilterDefinition<BsonDocument> MatchIfNotEmptyGuid(string field, Guid? value)
-    {
-        return !value.HasValue || value == Guid.Empty
-            ? FilterDefinition<BsonDocument>.Empty
-            : Builders<BsonDocument>.Filter.Eq(field, new BsonBinaryData(value.Value, GuidRepresentation.Standard));
     }
 }

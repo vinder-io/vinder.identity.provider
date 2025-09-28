@@ -17,8 +17,8 @@ public static class UserFiltersStage
         var filterDefinitions = new List<FilterDefinition<BsonDocument>>
         {
             MatchIfNotEmpty(DocumentFields.User.Username, filters.Username),
-            MatchIfNotEmptyGuid(DocumentFields.User.Id, filters.UserId),
-            MatchIfNotEmptyGuid(DocumentFields.User.TenantId, tenant.Id)
+            MatchIfNotEmpty(DocumentFields.User.Id, filters.UserId),
+            MatchIfNotEmpty(DocumentFields.User.TenantId, tenant.Id)
         };
 
         if (!filters.IsDeleted.HasValue)
@@ -38,12 +38,5 @@ public static class UserFiltersStage
         return string.IsNullOrWhiteSpace(value)
             ? FilterDefinition<BsonDocument>.Empty
             : Builders<BsonDocument>.Filter.Eq(field, BsonValue.Create(value));
-    }
-
-    private static FilterDefinition<BsonDocument> MatchIfNotEmptyGuid(string field, Guid? value)
-    {
-        return !value.HasValue || value == Guid.Empty
-            ? FilterDefinition<BsonDocument>.Empty
-            : Builders<BsonDocument>.Filter.Eq(field, new BsonBinaryData(value.Value, GuidRepresentation.Standard));
     }
 }

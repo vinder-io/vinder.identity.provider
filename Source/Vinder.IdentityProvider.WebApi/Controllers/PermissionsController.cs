@@ -35,9 +35,9 @@ public sealed class PermissionsController(IMediator mediator) : ControllerBase
         };
     }
 
-    [HttpPut("{id:guid}")]
+    [HttpPut("{id}")]
     [Authorize(Roles = Permissions.EditPermission)]
-    public async Task<IActionResult> UpdatePermissionAsync(Guid id, PermissionForUpdate request, CancellationToken cancellation)
+    public async Task<IActionResult> UpdatePermissionAsync(string id, PermissionForUpdate request, CancellationToken cancellation)
     {
         var result = await mediator.Send(request with { PermissionId = id }, cancellation);
 
@@ -51,9 +51,9 @@ public sealed class PermissionsController(IMediator mediator) : ControllerBase
         };
     }
 
-    [HttpDelete("{id:guid}")]
+    [HttpDelete("{id}")]
     [Authorize(Roles = Permissions.DeletePermission)]
-    public async Task<IActionResult> DeletePermissionAsync(Guid id, CancellationToken cancellation)
+    public async Task<IActionResult> DeletePermissionAsync(string id, CancellationToken cancellation)
     {
         var result = await mediator.Send(new PermissionForDeletion { PermissionId = id }, cancellation);
 
