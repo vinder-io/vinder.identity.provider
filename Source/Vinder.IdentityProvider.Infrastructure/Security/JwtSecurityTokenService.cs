@@ -2,13 +2,17 @@ using Microsoft.IdentityModel.Tokens;
 
 namespace Vinder.IdentityProvider.Infrastructure.Security;
 
-public sealed class JwtSecurityTokenService(ISettings settings, ITokenRepository repository, IHostInformationProvider host) :
-    ISecurityTokenService
+public sealed class JwtSecurityTokenService(
+    ISettings settings,
+    ITokenRepository repository,
+    ITenantRepository tenantRepository,
+    IHostInformationProvider host
+) : ISecurityTokenService
 {
     private readonly TimeSpan _accessTokenDuration = TimeSpan.FromMinutes(15);
     private readonly TimeSpan _refreshTokenDuration = TimeSpan.FromDays(7);
 
-    public Task<Result<SecurityToken>> GenerateAccessTokenAsync(User user, CancellationToken cancellation = default)
+    public async Task<Result<SecurityToken>> GenerateAccessTokenAsync(User user, CancellationToken cancellation = default)
     {
         var tokenHandler = new JwtSecurityTokenHandler();
         var claims = new ClaimsBuilder()
@@ -20,10 +24,18 @@ public sealed class JwtSecurityTokenService(ISettings settings, ITokenRepository
         var securityKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(settings.Security.SecretKey));
         var credentials = new SigningCredentials(securityKey, SecurityAlgorithms.HmacSha256);
 
+        var filters = new TenantFiltersBuilder()
+            .WithId(user.TenantId)
+            .Build();
+
+        var tenants = await tenantRepository.GetTenantsAsync(filters, cancellation);
+        var tenant = tenants.FirstOrDefault()!;
+
         var claimsIdentity = new ClaimsIdentity(claims);
         var tokenDescriptor = new SecurityTokenDescriptor
         {
             Subject = claimsIdentity,
+            Audience = tenant.Name,
             Issuer = host.Address.ToString(),
             SigningCredentials = credentials,
             Expires = DateTime.UtcNow.Add(_accessTokenDuration),
@@ -38,7 +50,7 @@ public sealed class JwtSecurityTokenService(ISettings settings, ITokenRepository
             ExpiresAt = tokenDescriptor.Expires.Value
         };
 
-        return Task.FromResult(Result<SecurityToken>.Success(securityToken));
+        return Result<SecurityToken>.Success(securityToken);
     }
 
     public Task<Result<SecurityToken>> GenerateAccessTokenAsync(Tenant tenant, CancellationToken cancellation = default)
@@ -88,10 +100,18 @@ public sealed class JwtSecurityTokenService(ISettings settings, ITokenRepository
         var securityKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(settings.Security.SecretKey));
         var credentials = new SigningCredentials(securityKey, SecurityAlgorithms.HmacSha256);
 
+        var filters = new TenantFiltersBuilder()
+            .WithId(user.TenantId)
+            .Build();
+
+        var tenants = await tenantRepository.GetTenantsAsync(filters, cancellation);
+        var tenant = tenants.FirstOrDefault()!;
+
         var claimsIdentity = new ClaimsIdentity(claims);
         var tokenDescriptor = new SecurityTokenDescriptor
         {
             Subject = claimsIdentity,
+            Audience = tenant.Name,
             Issuer = host.Address.ToString(),
             SigningCredentials = credentials,
             Expires = DateTime.UtcNow.Add(_refreshTokenDuration)
