@@ -5,6 +5,10 @@ global using System.Security.Claims;
 global using System.Security.Cryptography;
 global using System.Text;
 
+/* global usings for Microsoft namespaces here */
+
+global using Microsoft.IdentityModel.Tokens;
+
 /* global usings for Vinder namespaces here */
 
 global using Vinder.IdentityProvider.Domain.Entities;
@@ -14,6 +18,7 @@ global using Vinder.IdentityProvider.Domain.Filters.Builders;
 
 global using Vinder.IdentityProvider.Infrastructure.Constants;
 global using Vinder.IdentityProvider.Infrastructure.Pipelines;
+global using Vinder.IdentityProvider.Infrastructure.Utilities;
 
 global using Vinder.IdentityProvider.Application.Payloads.Identity;
 global using Vinder.IdentityProvider.Application.Services;
