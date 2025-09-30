@@ -11,5 +11,6 @@ public static class ServicesExtension
         services.AddServices();
         services.AddMediator();
         services.AddValidators();
+        services.AddInitialSecrets();
     }
 }
