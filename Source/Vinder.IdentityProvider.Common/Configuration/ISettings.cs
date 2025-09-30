@@ -4,5 +4,4 @@ public interface ISettings
 {
     public Administration Administration { get; }
     public DatabaseSettings Database { get; }
-    public SecuritySettings Security { get; }
 }

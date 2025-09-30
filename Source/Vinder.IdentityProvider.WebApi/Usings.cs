@@ -33,11 +33,14 @@ global using Vinder.IdentityProvider.Application.Payloads.Permission;
 global using Vinder.IdentityProvider.Application.Payloads.Tenant;
 global using Vinder.IdentityProvider.Application.Payloads.User;
 global using Vinder.IdentityProvider.Application.Payloads.Scope;
+global using Vinder.IdentityProvider.Application.Payloads.OpenID;
 
 global using Vinder.IdentityProvider.Application.Providers;
 global using Vinder.IdentityProvider.Application.Services;
 
 global using Vinder.IdentityProvider.Infrastructure.IoC.Extensions;
+global using Vinder.IdentityProvider.Infrastructure.Utilities;
+
 global using Vinder.IdentityProvider.WebApi.Extensions;
 global using Vinder.IdentityProvider.WebApi.Middlewares;
 global using Vinder.IdentityProvider.WebApi.Attributes;

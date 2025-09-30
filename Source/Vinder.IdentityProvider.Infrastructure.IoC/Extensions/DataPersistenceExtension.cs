@@ -19,5 +19,6 @@ public static class DataPersistenceExtension
         services.AddScoped<IScopeRepository, ScopesRepository>();
         services.AddScoped<ITokenRepository, TokenRepository>();
         services.AddScoped<ITenantRepository, TenantRepository>();
+        services.AddScoped<ISecretRepository, SecretRepository>();
     }
 }

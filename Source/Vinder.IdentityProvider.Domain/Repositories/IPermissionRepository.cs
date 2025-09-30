@@ -7,11 +7,6 @@ public interface IPermissionRepository : IRepository<Permission>
         CancellationToken cancellation = default
     );
 
-    public Task InsertManyAsync(
-        IEnumerable<Permission> permissions,
-        CancellationToken cancellation = default
-    );
-
     public Task<long> CountAsync(
         PermissionFilters filters,
         CancellationToken cancellation = default

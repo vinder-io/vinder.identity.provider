@@ -1,6 +1,7 @@
 /* global usings for System namespaces here */
 
 global using System.Diagnostics.CodeAnalysis;
+global using System.Security.Cryptography;
 
 /* global usings for Microsoft namespaces here */
 
@@ -12,6 +13,7 @@ global using Microsoft.Extensions.Hosting;
 
 global using Vinder.IdentityProvider.Common.Configuration;
 global using Vinder.IdentityProvider.Domain.Repositories;
+global using Vinder.IdentityProvider.Domain.Entities;
 
 global using Vinder.IdentityProvider.Application.Services;
 global using Vinder.IdentityProvider.Application.Providers;

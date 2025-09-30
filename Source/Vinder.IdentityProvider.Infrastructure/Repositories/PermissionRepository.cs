@@ -41,14 +41,4 @@ public sealed class PermissionRepository(IMongoDatabase database, ITenantProvide
 
         return result.Count;
     }
-
-    public async Task InsertManyAsync(IEnumerable<Permission> permissions, CancellationToken cancellation = default)
-    {
-        if (permissions is null || !permissions.Any())
-        {
-            return;
-        }
-
-        await _collection.InsertManyAsync(permissions, cancellationToken: cancellation);
-    }
 }
