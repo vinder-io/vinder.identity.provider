@@ -28,7 +28,7 @@ public sealed class JwtSecurityTokenService(
         {
             Audience = tenant.Name,
             Subject = claimsIdentity,
-            Issuer = host.Address.ToString(),
+            Issuer = host.Address.ToString().TrimEnd('/'),
             SigningCredentials = credentials,
             Expires = DateTime.UtcNow.Add(_accessTokenDuration),
         };
@@ -61,7 +61,7 @@ public sealed class JwtSecurityTokenService(
         var claimsIdentity = new ClaimsIdentity(claims);
         var tokenDescriptor = new SecurityTokenDescriptor
         {
-            Issuer = host.Address.ToString(),
+            Issuer = host.Address.ToString().TrimEnd('/'),
             Audience = tenant.Name,
             Subject = claimsIdentity,
             SigningCredentials = credentials,
@@ -98,7 +98,7 @@ public sealed class JwtSecurityTokenService(
         {
             Audience = tenant.Name,
             Subject = claimsIdentity,
-            Issuer = host.Address.ToString(),
+            Issuer = host.Address.ToString().TrimEnd('/'),
             SigningCredentials = credentials,
             Expires = DateTime.UtcNow.Add(_refreshTokenDuration)
         };
