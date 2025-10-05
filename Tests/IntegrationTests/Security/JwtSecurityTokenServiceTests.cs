@@ -29,17 +29,23 @@ public sealed class JwtSecurityTokenServiceTests : IClassFixture<MongoDatabaseFi
             .Setup(provider => provider.Address)
             .Returns(new Uri("http://localhost:5078"));
 
+        var tenant = _fixture.Create<Tenant>();
         var secret = new Secret
         {
             PrivateKey = Convert.ToBase64String(_rsa.ExportRSAPrivateKey()),
-            PublicKey  = Convert.ToBase64String(_rsa.ExportRSAPublicKey())
+            PublicKey = Convert.ToBase64String(_rsa.ExportRSAPublicKey())
         };
+
+        _tenantProvider.Setup(provider => provider.GetCurrentTenant())
+            .Returns(tenant);
+
 
         _secretRepository
             .Setup(repository => repository.GetSecretAsync(It.IsAny<CancellationToken>()))
             .ReturnsAsync(secret);
 
         _jwtSecurityTokenService = new JwtSecurityTokenService(
+            tenantProvider: _tenantProvider.Object,
             secretRepository: _secretRepository.Object,
             repository: _tokenRepository,
             host: _hostProvider.Object
@@ -73,6 +79,7 @@ public sealed class JwtSecurityTokenServiceTests : IClassFixture<MongoDatabaseFi
 
         var claims = jwtToken.Claims.ToList();
 
+        Assert.Contains(claims, claim => claim.Type == JwtRegisteredClaimNames.Aud && claim.Value == tenant.Name);
         Assert.Contains(claims, claim => claim.Type == JwtRegisteredClaimNames.Iss && claim.Value == _hostProvider.Object.Address.ToString());
         Assert.Contains(claims, claim => claim.Type == JwtRegisteredClaimNames.Sub && claim.Value == user.Id.ToString());
         Assert.Contains(claims, claim => claim.Type == JwtRegisteredClaimNames.PreferredUsername && claim.Value == user.Username);

@@ -16,7 +16,7 @@ services:
       - vinder.identity.provider.infrastructure.mongo.database:/data/db
 
   vinder.identity.provider:
-    container_name: "vinder.identity.provider"
+    container_name: "vinder.identity.provider.webapi"
     build:
       context: .
       dockerfile: Dockerfile
@@ -25,7 +25,6 @@ services:
     environment:
       Settings__Database__ConnectionString: ${MONGO_CONNECTIONSTRING}
       Settings__Database__DatabaseName: ${MONGO_DATABASENAME}
-      Settings__Security__SecretKey: ${VINDER_IDENTITY_PROVIDER_SECRETKEY}
       Settings__Administration__Username: ${VINDER_IDENTITY_PROVIDER_ADMIN_USERNAME}
       Settings__Administration__Password: ${VINDER_IDENTITY_PROVIDER_ADMIN_PASSWORD}
     depends_on:
