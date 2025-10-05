@@ -1,42 +1,49 @@
 using System.IdentityModel.Tokens.Jwt;
 using System.Security.Claims;
 using System.Security.Cryptography;
-using System.Text;
 using Microsoft.IdentityModel.Tokens;
+using Vinder.IdentityProvider.Infrastructure.Utilities;
 
 namespace Vinder.IdentityProvider.TestSuite.IntegrationTests.Security;
 
 public sealed class JwtSecurityTokenServiceTests : IClassFixture<MongoDatabaseFixture>, IAsyncLifetime
 {
     private readonly JwtSecurityTokenService _jwtSecurityTokenService;
-    private readonly ISettings _settings;
-    private readonly ITokenRepository _tokenRepository;
+    private readonly TokenRepository _tokenRepository;
     private readonly IMongoDatabase _database;
     private readonly MongoDatabaseFixture _mongoFixture;
+    private readonly RSA _rsa = RSA.Create(2048);
     private readonly Fixture _fixture = new();
 
     private readonly Mock<ITenantProvider> _tenantProvider = new();
+    private readonly Mock<ISecretRepository> _secretRepository = new();
     private readonly Mock<IHostInformationProvider> _hostProvider = new();
 
     public JwtSecurityTokenServiceTests(MongoDatabaseFixture fixture)
     {
         _mongoFixture = fixture;
         _database = fixture.Database;
+
         _tokenRepository = new TokenRepository(_database, _tenantProvider.Object);
-
-        var keyBytes = new byte[32];
-        var randomNumberGenerator = RandomNumberGenerator.Create();
-
-        randomNumberGenerator.GetBytes(keyBytes);
-
-        var secretKey = Convert.ToBase64String(keyBytes);
-        var securitySettings = new SecuritySettings { SecretKey = secretKey };
-
-        _hostProvider.Setup(provider => provider.Address)
+        _hostProvider
+            .Setup(provider => provider.Address)
             .Returns(new Uri("http://localhost:5078"));
 
-        _settings = new Settings { Security = securitySettings };
-        _jwtSecurityTokenService = new JwtSecurityTokenService(_settings, _tokenRepository, _hostProvider.Object);
+        var secret = new Secret
+        {
+            PrivateKey = Convert.ToBase64String(_rsa.ExportRSAPrivateKey()),
+            PublicKey  = Convert.ToBase64String(_rsa.ExportRSAPublicKey())
+        };
+
+        _secretRepository
+            .Setup(repository => repository.GetSecretAsync(It.IsAny<CancellationToken>()))
+            .ReturnsAsync(secret);
+
+        _jwtSecurityTokenService = new JwtSecurityTokenService(
+            secretRepository: _secretRepository.Object,
+            repository: _tokenRepository,
+            host: _hostProvider.Object
+        );
     }
 
     [Fact(DisplayName = "[infrastructure] - when generating an access token, then it must be valid and contain correct claims")]
@@ -115,9 +122,12 @@ public sealed class JwtSecurityTokenServiceTests : IClassFixture<MongoDatabaseFi
     public async Task WhenValidatingExpiredToken_ThenItMustReturnTokenExpiredError()
     {
         /* arrange: create an expired token */
+
+        var secret = await _secretRepository.Object.GetSecretAsync();
+        var privateKey = RsaKeyHelper.FromPrivateKey(secret.PrivateKey);
+
         var tokenHandler = new JwtSecurityTokenHandler();
-        var securityKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(_settings.Security.SecretKey));
-        var credentials = new SigningCredentials(securityKey, SecurityAlgorithms.HmacSha256);
+        var credentials = new SigningCredentials(privateKey, SecurityAlgorithms.RsaSha256);
 
         var tokenDescriptor = new SecurityTokenDescriptor
         {

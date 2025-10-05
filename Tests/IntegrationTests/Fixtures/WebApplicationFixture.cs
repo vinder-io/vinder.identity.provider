@@ -1,5 +1,3 @@
-using System.Security.Cryptography;
-
 namespace Vinder.IdentityProvider.TestSuite.IntegrationTests.Fixtures;
 
 public sealed class WebApplicationFixture : IAsyncLifetime
@@ -20,14 +18,11 @@ public sealed class WebApplicationFixture : IAsyncLifetime
     {
         await _databaseFixture.InitializeAsync();
 
-        var secretKey = Convert.ToBase64String(RandomNumberGenerator.GetBytes(32));
-
         Environment.SetEnvironmentVariable("Settings__Administration__Username", "vinder.testing.user");
         Environment.SetEnvironmentVariable("Settings__Administration__Password", "vinder.testing.password");
 
         Environment.SetEnvironmentVariable("Settings__Database__ConnectionString", _databaseFixture.ConnectionString);
         Environment.SetEnvironmentVariable("Settings__Database__DatabaseName", _databaseFixture.DatabaseName);
-        Environment.SetEnvironmentVariable("Settings__Security__SecretKey", secretKey);
 
         _factory = new WebApplicationFactory<Program>()
             .WithWebHostBuilder(builder =>
@@ -126,8 +121,7 @@ public sealed class WebApplicationFixture : IAsyncLifetime
     {
         HttpClient.Dispose();
 
-        _factory.Dispose();
-
+        await _factory.DisposeAsync();
         await _databaseFixture.CleanDatabaseAsync();
         await _databaseFixture.DisposeAsync();
     }

@@ -6,16 +6,18 @@ public static class AuthenticationExtension
     public static IServiceCollection AddJwtAuthentication(this IServiceCollection services)
     {
         var serviceProvider = services.BuildServiceProvider();
-        var settings = serviceProvider.GetRequiredService<ISettings>();
+        var secretRepository = serviceProvider.GetRequiredService<ISecretRepository>();
 
-        var secret = Encoding.UTF8.GetBytes(settings.Security.SecretKey);
+        var secret = secretRepository.GetSecretAsync().GetAwaiter().GetResult();
+        var publicKey = RsaKeyHelper.FromPublicKey(secret.PublicKey);
+
         var validationParameters = new TokenValidationParameters
         {
             ValidateIssuer = false,
             ValidateAudience = false,
             ValidateLifetime = true,
             ValidateIssuerSigningKey = true,
-            IssuerSigningKey = new SymmetricSecurityKey(secret),
+            IssuerSigningKey = publicKey,
             ClockSkew = TimeSpan.Zero
         };
 

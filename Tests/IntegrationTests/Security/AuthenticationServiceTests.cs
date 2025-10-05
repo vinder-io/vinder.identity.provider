@@ -2,19 +2,21 @@ using System.Security.Cryptography;
 
 namespace Vinder.IdentityProvider.TestSuite.IntegrationTests.Security;
 
-public sealed class AuthenticationServiceTests : IClassFixture<MongoDatabaseFixture>, IAsyncLifetime
+public sealed class AuthenticationServiceTests :
+    IClassFixture<MongoDatabaseFixture>, IAsyncLifetime
 {
-    private readonly IUserRepository _userRepository;
-    private readonly IPasswordHasher _passwordHasher;
+    private readonly UserRepository _userRepository;
+    private readonly PasswordHasher _passwordHasher;
     private readonly ISecurityTokenService _tokenService;
-    private readonly ISettings _settings;
     private readonly IMongoDatabase _database;
     private readonly MongoDatabaseFixture _mongoFixture;
     private readonly AuthenticationService _authenticationService;
     private readonly Fixture _fixture = new();
+    private readonly RSA _rsa = RSA.Create(2048);
 
     private readonly Mock<ITenantProvider> _tenantProvider = new();
     private readonly Mock<IHostInformationProvider> _hostProvider = new();
+    private readonly Mock<ISecretRepository> _secretRepository = new();
 
     public AuthenticationServiceTests(MongoDatabaseFixture mongoFixture)
     {
@@ -25,21 +27,20 @@ public sealed class AuthenticationServiceTests : IClassFixture<MongoDatabaseFixt
         _passwordHasher = new PasswordHasher();
 
         var tokenRepository = new TokenRepository(_database, _tenantProvider.Object);
+        var secret = new Secret
+        {
+            PrivateKey = Convert.ToBase64String(_rsa.ExportRSAPrivateKey()),
+            PublicKey  = Convert.ToBase64String(_rsa.ExportRSAPublicKey())
+        };
 
-        var keyBytes = new byte[32];
-        var randomNumberGenerator = RandomNumberGenerator.Create();
-
-        randomNumberGenerator.GetBytes(keyBytes);
-
-        var secretKey = Convert.ToBase64String(keyBytes);
-        var securitySettings = new SecuritySettings { SecretKey = secretKey };
-
-        _settings = new Settings { Security = securitySettings };
+        _secretRepository
+            .Setup(repository => repository.GetSecretAsync(It.IsAny<CancellationToken>()))
+            .ReturnsAsync(secret);
 
         _hostProvider.Setup(provider => provider.Address)
             .Returns(new Uri("http://localhost:5078"));
 
-        _tokenService = new JwtSecurityTokenService(_settings, tokenRepository, _hostProvider.Object);
+        _tokenService = new JwtSecurityTokenService(_secretRepository.Object, tokenRepository, _hostProvider.Object);
         _authenticationService = new AuthenticationService(_userRepository, _passwordHasher, _tokenService);
     }
 
