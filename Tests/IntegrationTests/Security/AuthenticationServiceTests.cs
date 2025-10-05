@@ -33,6 +33,8 @@ public sealed class AuthenticationServiceTests :
             PublicKey  = Convert.ToBase64String(_rsa.ExportRSAPublicKey())
         };
 
+        var tenant = _fixture.Create<Tenant>();
+
         _secretRepository
             .Setup(repository => repository.GetSecretAsync(It.IsAny<CancellationToken>()))
             .ReturnsAsync(secret);
@@ -40,8 +42,21 @@ public sealed class AuthenticationServiceTests :
         _hostProvider.Setup(provider => provider.Address)
             .Returns(new Uri("http://localhost:5078"));
 
-        _tokenService = new JwtSecurityTokenService(_secretRepository.Object, tokenRepository, _hostProvider.Object);
-        _authenticationService = new AuthenticationService(_userRepository, _passwordHasher, _tokenService);
+        _tenantProvider.Setup(provider => provider.GetCurrentTenant())
+            .Returns(tenant);
+
+        _tokenService = new JwtSecurityTokenService(
+            secretRepository: _secretRepository.Object,
+            repository: tokenRepository,
+            tenantProvider: _tenantProvider.Object,
+            host: _hostProvider.Object
+        );
+
+        _authenticationService = new AuthenticationService(
+            userRepository: _userRepository,
+            passwordHasher: _passwordHasher,
+            tokenService: _tokenService
+        );
     }
 
     [Fact(DisplayName = "[security] - when valid credentials are provided, then returns access and refresh tokens")]
