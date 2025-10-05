@@ -3,6 +3,7 @@ namespace Vinder.IdentityProvider.Infrastructure.Security;
 public sealed class JwtSecurityTokenService(
     ISecretRepository secretRepository,
     ITokenRepository repository,
+    ITenantProvider tenantProvider,
     IHostInformationProvider host
 ) : ISecurityTokenService
 {
@@ -18,12 +19,14 @@ public sealed class JwtSecurityTokenService(
             .WithPermissions(user.Permissions)
             .Build();
 
+        var tenant = tenantProvider.GetCurrentTenant();
         var privateKey = await GetPrivateKeyAsync(cancellation);
         var credentials = new SigningCredentials(privateKey, SecurityAlgorithms.RsaSha256);
 
         var claimsIdentity = new ClaimsIdentity(claims);
         var tokenDescriptor = new SecurityTokenDescriptor
         {
+            Audience = tenant.Name,
             Subject = claimsIdentity,
             Issuer = host.Address.ToString(),
             SigningCredentials = credentials,
@@ -89,9 +92,11 @@ public sealed class JwtSecurityTokenService(
         var privateKey = await GetPrivateKeyAsync(cancellation);
         var credentials = new SigningCredentials(privateKey, SecurityAlgorithms.RsaSha256);
 
+        var tenant = tenantProvider.GetCurrentTenant();
         var claimsIdentity = new ClaimsIdentity(claims);
         var tokenDescriptor = new SecurityTokenDescriptor
         {
+            Audience = tenant.Name,
             Subject = claimsIdentity,
             Issuer = host.Address.ToString(),
             SigningCredentials = credentials,
