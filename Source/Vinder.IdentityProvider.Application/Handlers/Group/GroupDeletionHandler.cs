@@ -1,8 +1,8 @@
 namespace Vinder.IdentityProvider.Application.Handlers.Group;
 
-public sealed class GroupDeletionHandler(IGroupRepository repository) : IRequestHandler<GroupForDeletion, Result>
+public sealed class GroupDeletionHandler(IGroupRepository repository) : IRequestHandler<GroupDeletionScheme, Result>
 {
-    public async Task<Result> Handle(GroupForDeletion request, CancellationToken cancellationToken)
+    public async Task<Result> Handle(GroupDeletionScheme request, CancellationToken cancellationToken)
     {
         var filters = new GroupFiltersBuilder()
             .WithId(request.GroupId)

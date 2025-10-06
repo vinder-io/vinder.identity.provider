@@ -1,6 +1,6 @@
 namespace Vinder.IdentityProvider.Application.Validators.Permission;
 
-public sealed class PermissionCreationValidator : AbstractValidator<PermissionForCreation>
+public sealed class PermissionCreationValidator : AbstractValidator<PermissionCreationScheme>
 {
     public PermissionCreationValidator()
     {

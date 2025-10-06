@@ -2,14 +2,14 @@ namespace Vinder.IdentityProvider.Application.Mappers;
 
 public static class PermissionMapper
 {
-    public static PermissionDetails AsResponse(Permission permission) => new()
+    public static PermissionDetailsScheme AsResponse(Permission permission) => new()
     {
         Id = permission.Id.ToString(),
         Name = permission.Name,
         Description = permission.Description
     };
 
-    public static IReadOnlyCollection<PermissionDetails> AsResponse(IEnumerable<Permission> permissions)
+    public static IReadOnlyCollection<PermissionDetailsScheme> AsResponse(IEnumerable<Permission> permissions)
     {
         return [.. permissions.Select(PermissionMapper.AsResponse)];
     }
@@ -22,14 +22,14 @@ public static class PermissionMapper
         IsDeleted = parameters.IncludeDeleted ?? false
     };
 
-    public static Permission AsPermission(PermissionForCreation permission, Tenant tenant) => new()
+    public static Permission AsPermission(PermissionCreationScheme permission, Tenant tenant) => new()
     {
         Name = permission.Name,
         Description = permission.Description,
         TenantId = tenant.Id
     };
 
-    public static Permission AsPermission(PermissionForUpdate payload, Permission permission, Tenant tenant)
+    public static Permission AsPermission(PermissionUpdateScheme payload, Permission permission, Tenant tenant)
     {
         permission.Name = payload.Name;
         permission.Description = payload.Description ?? permission.Description;

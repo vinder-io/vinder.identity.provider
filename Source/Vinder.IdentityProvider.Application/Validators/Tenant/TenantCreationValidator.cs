@@ -1,6 +1,6 @@
 namespace Vinder.IdentityProvider.Application.Validators.Tenant;
 
-public sealed class TenantCreationValidator : AbstractValidator<TenantForCreation>
+public sealed class TenantCreationValidator : AbstractValidator<TenantCreationScheme>
 {
     public TenantCreationValidator()
     {

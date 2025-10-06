@@ -4,9 +4,9 @@ public sealed class ScopeCreationHandler(
     IScopeRepository scopeRepository,
     ITenantRepository tenantRepository,
     ITenantProvider tenantProvider
-) : IRequestHandler<ScopeForCreation, Result<ScopeDetails>>
+) : IRequestHandler<ScopeCreationScheme, Result<ScopeDetailsScheme>>
 {
-    public async Task<Result<ScopeDetails>> Handle(ScopeForCreation request, CancellationToken cancellationToken)
+    public async Task<Result<ScopeDetailsScheme>> Handle(ScopeCreationScheme request, CancellationToken cancellationToken)
     {
         var tenant = tenantProvider.GetCurrentTenant();
         var filters = new ScopeFiltersBuilder()
@@ -18,7 +18,7 @@ public sealed class ScopeCreationHandler(
 
         if (existingScope is not null)
         {
-            return Result<ScopeDetails>.Failure(ScopeErrors.ScopeAlreadyExists);
+            return Result<ScopeDetailsScheme>.Failure(ScopeErrors.ScopeAlreadyExists);
         }
 
         var scope = await scopeRepository.InsertAsync(ScopeMapper.AsScope(request, tenant), cancellation: cancellationToken);
@@ -28,6 +28,6 @@ public sealed class ScopeCreationHandler(
 
         await tenantRepository.UpdateAsync(tenant, cancellation: cancellationToken);
 
-        return Result<ScopeDetails>.Success(response);
+        return Result<ScopeDetailsScheme>.Success(response);
     }
 }

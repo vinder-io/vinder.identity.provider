@@ -7,7 +7,8 @@ public sealed class GroupsController(IMediator mediator) : ControllerBase
 {
     [HttpGet]
     [Authorize(Roles = Permissions.ViewGroups)]
-    public async Task<IActionResult> GetGroupsAsync([FromQuery] GroupsFetchParameters request, CancellationToken cancellation)
+    public async Task<IActionResult> GetGroupsAsync(
+        [FromQuery] GroupsFetchParameters request, CancellationToken cancellation)
     {
         var result = await mediator.Send(request, cancellation);
 
@@ -21,7 +22,7 @@ public sealed class GroupsController(IMediator mediator) : ControllerBase
 
     [HttpPost]
     [Authorize(Roles = Permissions.CreateGroup)]
-    public async Task<IActionResult> CreateGroupAsync(GroupForCreation request, CancellationToken cancellation)
+    public async Task<IActionResult> CreateGroupAsync(GroupCreationScheme request, CancellationToken cancellation)
     {
         var result = await mediator.Send(request, cancellation);
 
@@ -37,7 +38,7 @@ public sealed class GroupsController(IMediator mediator) : ControllerBase
 
     [HttpPut("{id}")]
     [Authorize(Roles = Permissions.EditGroup)]
-    public async Task<IActionResult> UpdateGroupAsync(string id, GroupForUpdate request, CancellationToken cancellation)
+    public async Task<IActionResult> UpdateGroupAsync(string id, GroupUpdateScheme request, CancellationToken cancellation)
     {
         var result = await mediator.Send(request with { GroupId = id }, cancellation);
 
@@ -55,7 +56,7 @@ public sealed class GroupsController(IMediator mediator) : ControllerBase
     [Authorize(Roles = Permissions.DeleteGroup)]
     public async Task<IActionResult> DeleteGroupAsync(string id, CancellationToken cancellation)
     {
-        var result = await mediator.Send(new GroupForDeletion { GroupId = id }, cancellation);
+        var result = await mediator.Send(new GroupDeletionScheme { GroupId = id }, cancellation);
 
         return result switch
         {
@@ -71,7 +72,7 @@ public sealed class GroupsController(IMediator mediator) : ControllerBase
     [Authorize(Roles = Permissions.ViewPermissions)]
     public async Task<IActionResult> GetGroupsPermissionsAsync(
         [FromRoute] string id,
-        [FromQuery] ListGroupAssignedPermissions request, CancellationToken cancellation
+        [FromQuery] ListGroupAssignedPermissionsParameters request, CancellationToken cancellation
     )
     {
         var result = await mediator.Send(request with { GroupId = id }, cancellation);
@@ -87,7 +88,8 @@ public sealed class GroupsController(IMediator mediator) : ControllerBase
 
     [HttpPost("{id}/permissions")]
     [Authorize(Roles = Permissions.AssignPermissions)]
-    public async Task<IActionResult> AssignPermissionAsync(string id, AssignGroupPermission request, CancellationToken cancellation)
+    public async Task<IActionResult> AssignPermissionAsync(
+        string id, AssignGroupPermissionScheme request, CancellationToken cancellation)
     {
         var result = await mediator.Send(request with { GroupId = id }, cancellation);
 
@@ -111,7 +113,7 @@ public sealed class GroupsController(IMediator mediator) : ControllerBase
     [Authorize(Roles = Permissions.RevokePermissions)]
     public async Task<IActionResult> RevokePermissionAsync(string id, string permissionId, CancellationToken cancellation)
     {
-        var request = new RevokeGroupPermission { GroupId = id, PermissionId = permissionId };
+        var request = new RevokeGroupPermissionScheme { GroupId = id, PermissionId = permissionId };
         var result = await mediator.Send(request, cancellation);
 
         return result switch

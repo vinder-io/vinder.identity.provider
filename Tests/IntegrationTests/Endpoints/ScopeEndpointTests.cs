@@ -27,12 +27,12 @@ public sealed class ScopesEndpointTests(IntegrationEnvironmentFixture factory) :
         httpClient.WithAuthorization(authentication.AccessToken);
 
         /* arrange: build payload for scope creation */
-        var payload = _fixture.Build<ScopeForCreation>()
+        var payload = _fixture.Build<ScopeCreationScheme>()
             .With(scope => scope.Name, "vinder.scopes.orders")
             .Create();
 
         var httpResponse = await httpClient.PostAsJsonAsync("api/v1/scopes", payload);
-        var content = await httpResponse.Content.ReadFromJsonAsync<ScopeDetails>();
+        var content = await httpResponse.Content.ReadFromJsonAsync<ScopeDetailsScheme>();
 
         /* assert: ensure the response and content are not null */
         Assert.NotNull(httpResponse);
@@ -68,7 +68,7 @@ public sealed class ScopesEndpointTests(IntegrationEnvironmentFixture factory) :
         httpClient.WithAuthorization(authentication.AccessToken);
 
         /* arrange: build payload with a fixed scope name to simulate duplicate */
-        var payload = _fixture.Build<ScopeForCreation>()
+        var payload = _fixture.Build<ScopeCreationScheme>()
             .With(scope => scope.Name, "vinder.scopes.photos")
             .Create();
 

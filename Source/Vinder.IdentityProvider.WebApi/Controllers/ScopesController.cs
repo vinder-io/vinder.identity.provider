@@ -7,7 +7,7 @@ public sealed class ScopesController(IMediator mediator) : ControllerBase
 {
     [HttpPost]
     [Authorize(Roles = Permissions.CreateScope)]
-    public async Task<IActionResult> CreateScopeAsync(ScopeForCreation request, CancellationToken cancellation)
+    public async Task<IActionResult> CreateScopeAsync(ScopeCreationScheme request, CancellationToken cancellation)
     {
         var result = await mediator.Send(request, cancellation);
 

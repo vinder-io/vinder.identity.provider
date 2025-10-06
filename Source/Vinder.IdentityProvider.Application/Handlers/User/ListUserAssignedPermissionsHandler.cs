@@ -1,9 +1,10 @@
 namespace Vinder.IdentityProvider.Application.Handlers.User;
 
 public sealed class ListUserAssignedPermissionsHandler(IUserRepository repository) :
-    IRequestHandler<ListUserAssignedPermissions, Result<IReadOnlyCollection<PermissionDetails>>>
+    IRequestHandler<ListUserAssignedPermissionsParameters, Result<IReadOnlyCollection<PermissionDetailsScheme>>>
 {
-    public async Task<Result<IReadOnlyCollection<PermissionDetails>>> Handle(ListUserAssignedPermissions request, CancellationToken cancellationToken)
+    public async Task<Result<IReadOnlyCollection<PermissionDetailsScheme>>> Handle(
+        ListUserAssignedPermissionsParameters request, CancellationToken cancellationToken)
     {
         var filters = new UserFiltersBuilder()
             .WithUserId(request.UserId)
@@ -13,7 +14,7 @@ public sealed class ListUserAssignedPermissionsHandler(IUserRepository repositor
         var user = users.FirstOrDefault();
 
         return user is not null
-            ? Result<IReadOnlyCollection<PermissionDetails>>.Success(PermissionMapper.AsResponse(user.Permissions))
-            : Result<IReadOnlyCollection<PermissionDetails>>.Failure(UserErrors.UserDoesNotExist);
+            ? Result<IReadOnlyCollection<PermissionDetailsScheme>>.Success(PermissionMapper.AsResponse(user.Permissions))
+            : Result<IReadOnlyCollection<PermissionDetailsScheme>>.Failure(UserErrors.UserDoesNotExist);
     }
 }

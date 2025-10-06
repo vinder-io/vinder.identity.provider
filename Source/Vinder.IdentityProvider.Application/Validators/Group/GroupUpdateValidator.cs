@@ -1,6 +1,6 @@
 namespace Vinder.IdentityProvider.Application.Validators.Group;
 
-public sealed class GroupUpdateValidator : AbstractValidator<GroupForUpdate>
+public sealed class GroupUpdateValidator : AbstractValidator<GroupUpdateScheme>
 {
     public GroupUpdateValidator()
     {

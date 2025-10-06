@@ -1,8 +1,8 @@
 namespace Vinder.IdentityProvider.Application.Handlers.Tenant;
 
-public sealed class TenantDeletionHandler(ITenantRepository repository) : IRequestHandler<TenantForDeletion, Result>
+public sealed class TenantDeletionHandler(ITenantRepository repository) : IRequestHandler<TenantDeletionScheme, Result>
 {
-    public async Task<Result> Handle(TenantForDeletion request, CancellationToken cancellationToken)
+    public async Task<Result> Handle(TenantDeletionScheme request, CancellationToken cancellationToken)
     {
         var filters = new TenantFiltersBuilder()
             .WithId(request.TenantId)

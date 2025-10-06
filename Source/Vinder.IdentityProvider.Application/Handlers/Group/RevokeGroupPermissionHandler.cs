@@ -1,9 +1,9 @@
 namespace Vinder.IdentityProvider.Application.Handlers.Group;
 
 public sealed class RevokeGroupPermissionHandler(IGroupRepository groupRepository, IPermissionRepository permissionRepository) :
-    IRequestHandler<RevokeGroupPermission, Result>
+    IRequestHandler<RevokeGroupPermissionScheme, Result>
 {
-    public async Task<Result> Handle(RevokeGroupPermission request, CancellationToken cancellationToken)
+    public async Task<Result> Handle(RevokeGroupPermissionScheme request, CancellationToken cancellationToken)
     {
         var permissionFilters = new PermissionFiltersBuilder()
             .WithPermissionId(request.PermissionId)

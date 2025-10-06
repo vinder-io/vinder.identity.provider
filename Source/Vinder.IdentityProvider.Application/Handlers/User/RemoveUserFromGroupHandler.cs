@@ -1,9 +1,9 @@
 namespace Vinder.IdentityProvider.Application.Handlers.User;
 
 public sealed class RemoveUserFromGroupHandler(IUserRepository userRepository, IGroupRepository groupRepository) :
-    IRequestHandler<RemoveUserFromGroup, Result>
+    IRequestHandler<RemoveUserFromGroupScheme, Result>
 {
-    public async Task<Result> Handle(RemoveUserFromGroup request, CancellationToken cancellationToken)
+    public async Task<Result> Handle(RemoveUserFromGroupScheme request, CancellationToken cancellationToken)
     {
         var userFilters = new UserFiltersBuilder()
             .WithUserId(request.UserId)

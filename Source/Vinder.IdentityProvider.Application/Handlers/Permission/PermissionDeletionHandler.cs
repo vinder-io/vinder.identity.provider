@@ -1,8 +1,8 @@
 namespace Vinder.IdentityProvider.Application.Handlers.Permission;
 
-public sealed class PermissionDeletionHandler(IPermissionRepository repository) : IRequestHandler<PermissionForDeletion, Result>
+public sealed class PermissionDeletionHandler(IPermissionRepository repository) : IRequestHandler<PermissionDeletionScheme, Result>
 {
-    public async Task<Result> Handle(PermissionForDeletion request, CancellationToken cancellationToken)
+    public async Task<Result> Handle(PermissionDeletionScheme request, CancellationToken cancellationToken)
     {
         var filters = new PermissionFiltersBuilder()
             .WithPermissionId(request.PermissionId)

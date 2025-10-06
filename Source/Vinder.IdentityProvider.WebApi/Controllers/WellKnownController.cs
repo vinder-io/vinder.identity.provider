@@ -6,7 +6,7 @@ public sealed class WellKnownController(IMediator mediator) : ControllerBase
 {
     [HttpGet("openid-configuration")]
     public async Task<IActionResult> GetConfigurationAsync(
-        [FromQuery] FetchOpenIDConfigurationRequest request, CancellationToken cancellation)
+        [FromQuery] FetchOpenIDConfigurationParameters request, CancellationToken cancellation)
     {
         var result = await mediator.Send(request, cancellation);
 
@@ -20,7 +20,7 @@ public sealed class WellKnownController(IMediator mediator) : ControllerBase
 
     [HttpGet("jwks.json")]
     public async Task<IActionResult> GetJsonWebKeysAsync(
-        [FromQuery] FetchJsonWebKeysRequest request, CancellationToken cancellation)
+        [FromQuery] FetchJsonWebKeysParameters request, CancellationToken cancellation)
     {
         var result = await mediator.Send(request, cancellation);
 

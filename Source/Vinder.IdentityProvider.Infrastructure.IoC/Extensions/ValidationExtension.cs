@@ -14,17 +14,17 @@ public static class ValidationExtension
         services.AddTransient<IValidator<ClientAuthenticationCredentials>, ClientAuthenticationCredentialsValidator>();
         services.AddTransient<IValidator<IdentityEnrollmentCredentials>, IdentityEnrollmentCredentialsValidator>();
 
-        services.AddTransient<IValidator<GroupForCreation>, GroupCreationValidator>();
-        services.AddTransient<IValidator<GroupForUpdate>, GroupUpdateValidator>();
-        services.AddTransient<IValidator<AssignGroupPermission>, AssignGroupPermissionValidator>();
+        services.AddTransient<IValidator<GroupCreationScheme>, GroupCreationValidator>();
+        services.AddTransient<IValidator<GroupUpdateScheme>, GroupUpdateValidator>();
+        services.AddTransient<IValidator<AssignGroupPermissionScheme>, AssignGroupPermissionValidator>();
 
-        services.AddTransient<IValidator<PermissionForCreation>, PermissionCreationValidator>();
-        services.AddTransient<IValidator<PermissionForUpdate>, PermissionUpdateValidator>();
+        services.AddTransient<IValidator<PermissionCreationScheme>, PermissionCreationValidator>();
+        services.AddTransient<IValidator<PermissionUpdateScheme>, PermissionUpdateValidator>();
 
-        services.AddTransient<IValidator<TenantForCreation>, TenantCreationValidator>();
-        services.AddTransient<IValidator<TenantForUpdate>, TenantUpdateValidator>();
+        services.AddTransient<IValidator<TenantCreationScheme>, TenantCreationValidator>();
+        services.AddTransient<IValidator<TenantUpdateScheme>, TenantUpdateValidator>();
 
-        services.AddTransient<IValidator<AssignUserPermission>, AssignUserPermissionValidator>();
-        services.AddTransient<IValidator<ScopeForCreation>, ScopeCreationValidator>();
+        services.AddTransient<IValidator<AssignUserPermissionScheme>, AssignUserPermissionValidator>();
+        services.AddTransient<IValidator<ScopeCreationScheme>, ScopeCreationValidator>();
     }
 }

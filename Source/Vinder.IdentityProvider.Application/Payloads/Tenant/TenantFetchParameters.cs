@@ -1,6 +1,6 @@
 namespace Vinder.IdentityProvider.Application.Payloads.Tenant;
 
-public sealed record TenantFetchParameters : IRequest<Result<Pagination<TenantDetails>>>
+public sealed record TenantFetchParameters : IRequest<Result<Pagination<TenantDetailsScheme>>>
 {
     public string? Id { get; init; }
     public string? Name { get; init; }

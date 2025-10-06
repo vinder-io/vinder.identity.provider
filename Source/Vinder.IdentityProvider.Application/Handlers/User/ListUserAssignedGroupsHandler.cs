@@ -1,9 +1,10 @@
 namespace Vinder.IdentityProvider.Application.Handlers.User;
 
 public sealed class ListUserAssignedGroupsHandler(IUserRepository repository) :
-    IRequestHandler<ListUserAssignedGroups, Result<IReadOnlyCollection<GroupBasicDetails>>>
+    IRequestHandler<ListUserAssignedGroupsParameters, Result<IReadOnlyCollection<GroupBasicDetailsScheme>>>
 {
-    public async Task<Result<IReadOnlyCollection<GroupBasicDetails>>> Handle(ListUserAssignedGroups request, CancellationToken cancellationToken)
+    public async Task<Result<IReadOnlyCollection<GroupBasicDetailsScheme>>> Handle(
+        ListUserAssignedGroupsParameters request, CancellationToken cancellationToken)
     {
         var filters = new UserFiltersBuilder()
             .WithUserId(request.UserId)
@@ -13,7 +14,7 @@ public sealed class ListUserAssignedGroupsHandler(IUserRepository repository) :
         var user = users.FirstOrDefault();
 
         return user is not null
-            ? Result<IReadOnlyCollection<GroupBasicDetails>>.Success(GroupMapper.AsBasicResponse(user.Groups))
-            : Result<IReadOnlyCollection<GroupBasicDetails>>.Failure(UserErrors.UserDoesNotExist);
+            ? Result<IReadOnlyCollection<GroupBasicDetailsScheme>>.Success(GroupMapper.AsBasicResponse(user.Groups))
+            : Result<IReadOnlyCollection<GroupBasicDetailsScheme>>.Failure(UserErrors.UserDoesNotExist);
     }
 }

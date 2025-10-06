@@ -1,6 +1,6 @@
 namespace Vinder.IdentityProvider.Application.Validators.Scope;
 
-public sealed class ScopeCreationValidator : AbstractValidator<ScopeForCreation>
+public sealed class ScopeCreationValidator : AbstractValidator<ScopeCreationScheme>
 {
     public ScopeCreationValidator()
     {

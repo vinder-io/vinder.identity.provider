@@ -1,9 +1,9 @@
 namespace Vinder.IdentityProvider.Application.Handlers.Identity;
 
 public sealed class SessionTokenRenewalHandler(IUserRepository userRepository, ISecurityTokenService tokenService) :
-    IRequestHandler<SessionTokenRenewal, Result<AuthenticationResult>>
+    IRequestHandler<SessionTokenRenewalScheme, Result<AuthenticationResult>>
 {
-    public async Task<Result<AuthenticationResult>> Handle(SessionTokenRenewal request, CancellationToken cancellationToken)
+    public async Task<Result<AuthenticationResult>> Handle(SessionTokenRenewalScheme request, CancellationToken cancellationToken)
     {
         var refreshToken = TokenMapper.AsRefreshToken(request.RefreshToken);
         var validationResult = await tokenService.ValidateRefreshTokenAsync(refreshToken, cancellationToken);

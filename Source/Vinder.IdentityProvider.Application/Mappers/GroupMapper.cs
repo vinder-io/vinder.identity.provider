@@ -2,32 +2,32 @@ namespace Vinder.IdentityProvider.Application.Mappers;
 
 public static class GroupMapper
 {
-    public static Group AsGroup(GroupForCreation group, Tenant tenant) => new()
+    public static Group AsGroup(GroupCreationScheme group, Tenant tenant) => new()
     {
         Name = group.Name,
         TenantId = tenant.Id
     };
 
-    public static Group AsGroup(GroupForUpdate payload, Group group)
+    public static Group AsGroup(GroupUpdateScheme payload, Group group)
     {
         group.Name = payload.Name;
 
         return group;
     }
 
-    public static GroupDetails AsResponse(Group group) => new()
+    public static GroupDetailsScheme AsResponse(Group group) => new()
     {
         Id = group.Id.ToString(),
         Name = group.Name,
         Permissions = [.. group.Permissions.Select(group => PermissionMapper.AsResponse(group))]
     };
 
-    public static IReadOnlyCollection<GroupBasicDetails> AsBasicResponse(IEnumerable<Group> groups)
+    public static IReadOnlyCollection<GroupBasicDetailsScheme> AsBasicResponse(IEnumerable<Group> groups)
     {
         return [.. groups.Select(GroupMapper.AsBasicResponse)];
     }
 
-    public static GroupBasicDetails AsBasicResponse(Group group) => new()
+    public static GroupBasicDetailsScheme AsBasicResponse(Group group) => new()
     {
         Id = group.Id.ToString(),
         Name = group.Name,

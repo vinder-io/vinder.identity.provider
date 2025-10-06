@@ -1,6 +1,6 @@
 namespace Vinder.IdentityProvider.Application.Validators.Permission;
 
-public sealed class PermissionUpdateValidator : AbstractValidator<PermissionForUpdate>
+public sealed class PermissionUpdateValidator : AbstractValidator<PermissionUpdateScheme>
 {
     public PermissionUpdateValidator()
     {

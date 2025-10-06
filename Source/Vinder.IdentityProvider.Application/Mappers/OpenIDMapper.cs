@@ -2,7 +2,7 @@ namespace Vinder.IdentityProvider.Application.Mappers;
 
 public static class OpenIDMapper
 {
-    public static OpenIDConfiguration AsConfiguration(Uri baseUri)
+    public static OpenIDConfigurationScheme AsConfiguration(Uri baseUri)
     {
         var issuer = baseUri.GetLeftPart(UriPartial.Authority);
         var authorizeUri = new Uri(baseUri, OpenIDEndpoints.Authorize);
@@ -10,7 +10,7 @@ public static class OpenIDMapper
         var userInfoUri = new Uri(baseUri, OpenIDEndpoints.UserInfo);
         var jwksUri = new Uri(baseUri, OpenIDEndpoints.Jwks);
 
-        var configuration = new OpenIDConfiguration
+        var configuration = new OpenIDConfigurationScheme
         {
             Issuer = issuer,
             AuthorizationEndpoint = authorizeUri.ToString(),

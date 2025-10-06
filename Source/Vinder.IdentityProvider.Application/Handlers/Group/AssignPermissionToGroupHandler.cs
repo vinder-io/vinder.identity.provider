@@ -1,9 +1,10 @@
 namespace Vinder.IdentityProvider.Application.Handlers.Group;
 
 public sealed class AssignPermissionToGroupHandler(IGroupRepository groupRepository, IPermissionRepository permissionRepository) :
-    IRequestHandler<AssignGroupPermission, Result<GroupDetails>>
+    IRequestHandler<AssignGroupPermissionScheme, Result<GroupDetailsScheme>>
 {
-    public async Task<Result<GroupDetails>> Handle(AssignGroupPermission request, CancellationToken cancellationToken)
+    public async Task<Result<GroupDetailsScheme>> Handle(
+        AssignGroupPermissionScheme request, CancellationToken cancellationToken)
     {
         var groupFilters = new GroupFiltersBuilder()
             .WithId(request.GroupId)
@@ -18,7 +19,7 @@ public sealed class AssignPermissionToGroupHandler(IGroupRepository groupReposit
 
         if (group is null)
         {
-            return Result<GroupDetails>.Failure(GroupErrors.GroupDoesNotExist);
+            return Result<GroupDetailsScheme>.Failure(GroupErrors.GroupDoesNotExist);
         }
 
         var permissions = await permissionRepository.GetPermissionsAsync(permissionFilters, cancellation: cancellationToken);
@@ -26,18 +27,18 @@ public sealed class AssignPermissionToGroupHandler(IGroupRepository groupReposit
 
         if (existingPermission is null)
         {
-            return Result<GroupDetails>.Failure(PermissionErrors.PermissionDoesNotExist);
+            return Result<GroupDetailsScheme>.Failure(PermissionErrors.PermissionDoesNotExist);
         }
 
         if (group.Permissions.Any(permission => permission.Name == existingPermission.Name))
         {
-            return Result<GroupDetails>.Failure(GroupErrors.GroupAlreadyHasPermission);
+            return Result<GroupDetailsScheme>.Failure(GroupErrors.GroupAlreadyHasPermission);
         }
 
         group.Permissions.Add(existingPermission);
 
         await groupRepository.UpdateAsync(group, cancellation: cancellationToken);
 
-        return Result<GroupDetails>.Success(GroupMapper.AsResponse(group));
+        return Result<GroupDetailsScheme>.Success(GroupMapper.AsResponse(group));
     }
 }

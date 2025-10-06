@@ -1,9 +1,9 @@
 namespace Vinder.IdentityProvider.Application.Handlers.User;
 
 public sealed class AssignUserToGroupHandler(IUserRepository userRepository, IGroupRepository groupRepository) :
-    IRequestHandler<AssignUserToGroup, Result>
+    IRequestHandler<AssignUserToGroupScheme, Result>
 {
-    public async Task<Result> Handle(AssignUserToGroup request, CancellationToken cancellationToken)
+    public async Task<Result> Handle(AssignUserToGroupScheme request, CancellationToken cancellationToken)
     {
         var userFilters = new UserFiltersBuilder()
             .WithUserId(request.UserId)

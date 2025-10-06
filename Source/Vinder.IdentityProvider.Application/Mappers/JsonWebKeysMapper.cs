@@ -2,12 +2,12 @@ namespace Vinder.IdentityProvider.Application.Mappers;
 
 public static class JsonWebKeysMapper
 {
-    public static JsonWebKeyDetails AsJsonWebKeys(Secret secret)
+    public static JsonWebKeyScheme AsJsonWebKeys(Secret secret)
     {
         var publicKey = RsaHelper.FromPublicKey(secret.PublicKey);
         var parameters = publicKey.ExportParameters(false);
 
-        return new JsonWebKeyDetails
+        return new JsonWebKeyScheme
         {
             Identifier = secret.Id,
             Exponent = Base64UrlEncoder.Encode(parameters.Exponent!),
@@ -15,9 +15,9 @@ public static class JsonWebKeysMapper
         };
     }
 
-    public static JsonWebKeySet AsJsonWebKeySet(Secret secret)
+    public static JsonWebKeySetScheme AsJsonWebKeySetScheme(Secret secret)
     {
-        return new JsonWebKeySet
+        return new JsonWebKeySetScheme
         {
             Keys = [JsonWebKeysMapper.AsJsonWebKeys(secret)]
         };

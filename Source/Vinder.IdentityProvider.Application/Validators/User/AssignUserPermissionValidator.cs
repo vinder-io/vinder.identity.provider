@@ -1,6 +1,6 @@
 namespace Vinder.IdentityProvider.Application.Validators.User;
 
-public sealed class AssignUserPermissionValidator : AbstractValidator<AssignUserPermission>
+public sealed class AssignUserPermissionValidator : AbstractValidator<AssignUserPermissionScheme>
 {
     public AssignUserPermissionValidator()
     {

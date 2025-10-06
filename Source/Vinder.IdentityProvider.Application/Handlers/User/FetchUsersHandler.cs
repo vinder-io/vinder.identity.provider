@@ -1,16 +1,16 @@
 namespace Vinder.IdentityProvider.Application.Handlers.User;
 
 public sealed class FetchUsersHandler(IUserRepository repository) :
-    IRequestHandler<UsersFetchParameters, Result<Pagination<UserDetails>>>
+    IRequestHandler<UsersFetchParameters, Result<Pagination<UserDetailsScheme>>>
 {
-    public async Task<Result<Pagination<UserDetails>>> Handle(UsersFetchParameters request, CancellationToken cancellationToken)
+    public async Task<Result<Pagination<UserDetailsScheme>>> Handle(UsersFetchParameters request, CancellationToken cancellationToken)
     {
         var filters = UserMapper.AsFilters(request);
 
         var users = await repository.GetUsersAsync(filters, cancellationToken);
         var totalUsers = await repository.CountAsync(filters, cancellationToken);
 
-        var pagination = new Pagination<UserDetails>
+        var pagination = new Pagination<UserDetailsScheme>
         {
             Items = [.. users.Select(user => UserMapper.AsResponse(user))],
             Total = (int) totalUsers,
@@ -18,6 +18,6 @@ public sealed class FetchUsersHandler(IUserRepository repository) :
             PageSize = request.PageSize,
         };
 
-        return Result<Pagination<UserDetails>>.Success(pagination);
+        return Result<Pagination<UserDetailsScheme>>.Success(pagination);
     }
 }

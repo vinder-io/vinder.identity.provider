@@ -1,6 +1,6 @@
 namespace Vinder.IdentityProvider.Application.Validators.Tenant;
 
-public sealed class TenantUpdateValidator : AbstractValidator<TenantForUpdate>
+public sealed class TenantUpdateValidator : AbstractValidator<TenantUpdateScheme>
 {
     public TenantUpdateValidator()
     {

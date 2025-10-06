@@ -1,9 +1,10 @@
 namespace Vinder.IdentityProvider.Application.Handlers.Group;
 
 public sealed class ListGroupAssignedPermissionsHandler(IGroupRepository repository) :
-    IRequestHandler<ListGroupAssignedPermissions, Result<IReadOnlyCollection<PermissionDetails>>>
+    IRequestHandler<ListGroupAssignedPermissionsParameters, Result<IReadOnlyCollection<PermissionDetailsScheme>>>
 {
-    public async Task<Result<IReadOnlyCollection<PermissionDetails>>> Handle(ListGroupAssignedPermissions request, CancellationToken cancellationToken)
+    public async Task<Result<IReadOnlyCollection<PermissionDetailsScheme>>> Handle(
+        ListGroupAssignedPermissionsParameters request, CancellationToken cancellationToken)
     {
         var filters = new GroupFiltersBuilder()
             .WithId(request.GroupId)
@@ -13,7 +14,7 @@ public sealed class ListGroupAssignedPermissionsHandler(IGroupRepository reposit
         var group = groups.FirstOrDefault();
 
         return group is not null
-            ? Result<IReadOnlyCollection<PermissionDetails>>.Success(PermissionMapper.AsResponse(group.Permissions))
-            : Result<IReadOnlyCollection<PermissionDetails>>.Failure(GroupErrors.GroupDoesNotExist);
+            ? Result<IReadOnlyCollection<PermissionDetailsScheme>>.Success(PermissionMapper.AsResponse(group.Permissions))
+            : Result<IReadOnlyCollection<PermissionDetailsScheme>>.Failure(GroupErrors.GroupDoesNotExist);
     }
 }

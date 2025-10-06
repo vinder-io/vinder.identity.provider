@@ -22,7 +22,7 @@ public sealed class IdentityEndpointTests(IntegrationEnvironmentFixture factory)
 
         /* act: send POST request to create identity */
         var response = await httpClient.PostAsJsonAsync("api/v1/identity", credentials);
-        var result = await response.Content.ReadFromJsonAsync<UserDetails>();
+        var result = await response.Content.ReadFromJsonAsync<UserDetailsScheme>();
 
         /* assert: response should be 201 Created and returned user details should match */
         Assert.Equal(HttpStatusCode.Created, response.StatusCode);
@@ -74,7 +74,7 @@ public sealed class IdentityEndpointTests(IntegrationEnvironmentFixture factory)
         var authenticationResult = await authenticationResponse.Content.ReadFromJsonAsync<AuthenticationResult>();
 
         /* act: use refresh token to get a new access token */
-        var refreshRequest = new SessionTokenRenewal
+        var refreshRequest = new SessionTokenRenewalScheme
         {
             RefreshToken = authenticationResult!.RefreshToken
         };
@@ -98,7 +98,7 @@ public sealed class IdentityEndpointTests(IntegrationEnvironmentFixture factory)
     {
         /* arrange: prepare an invalid refresh token */
         var httpClient = factory.HttpClient.WithTenantHeader("master");
-        var refreshRequest = new SessionTokenRenewal
+        var refreshRequest = new SessionTokenRenewalScheme
         {
             RefreshToken = "this-is-an-invalid-token"
         };
@@ -149,7 +149,7 @@ public sealed class IdentityEndpointTests(IntegrationEnvironmentFixture factory)
         Assert.True(revokeResult.IsSuccess, "Refresh token should be revoked successfully");
 
         /* act: attempt to renew session with the revoked refresh token */
-        var refreshRequest = _fixture.Build<SessionTokenRenewal>()
+        var refreshRequest = _fixture.Build<SessionTokenRenewalScheme>()
             .With(payload => payload.RefreshToken, authenticationResult.RefreshToken)
             .Create();
 

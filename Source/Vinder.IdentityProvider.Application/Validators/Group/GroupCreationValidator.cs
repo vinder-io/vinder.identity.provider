@@ -1,6 +1,6 @@
 namespace Vinder.IdentityProvider.Application.Validators.Group;
 
-public sealed class GroupCreationValidator : AbstractValidator<GroupForCreation>
+public sealed class GroupCreationValidator : AbstractValidator<GroupCreationScheme>
 {
     public GroupCreationValidator()
     {

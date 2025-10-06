@@ -2,7 +2,7 @@ namespace Vinder.IdentityProvider.Application.Mappers;
 
 public static class TenantMapper
 {
-    public static Tenant AsTenant(TenantForCreation tenant, string clientId, string secretHash) => new()
+    public static Tenant AsTenant(TenantCreationScheme tenant, string clientId, string secretHash) => new()
     {
         Name = tenant.Name,
         Description = tenant.Description,
@@ -10,7 +10,7 @@ public static class TenantMapper
         SecretHash = secretHash
     };
 
-    public static Tenant AsTenant(TenantForUpdate payload, Tenant tenant)
+    public static Tenant AsTenant(TenantUpdateScheme payload, Tenant tenant)
     {
         tenant.Name = payload.Name;
         tenant.Description = payload.Description ?? tenant.Description;
@@ -20,7 +20,7 @@ public static class TenantMapper
         return tenant;
     }
 
-    public static TenantDetails AsResponse(Tenant tenant) => new()
+    public static TenantDetailsScheme AsResponse(Tenant tenant) => new()
     {
         Id = tenant.Id.ToString(),
         Name = tenant.Name,

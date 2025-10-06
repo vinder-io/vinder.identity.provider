@@ -21,7 +21,7 @@ public sealed class PermissionsController(IMediator mediator) : ControllerBase
 
     [HttpPost]
     [Authorize(Roles = Permissions.CreatePermission)]
-    public async Task<IActionResult> CreatePermissionAsync(PermissionForCreation request, CancellationToken cancellation)
+    public async Task<IActionResult> CreatePermissionAsync(PermissionCreationScheme request, CancellationToken cancellation)
     {
         var result = await mediator.Send(request, cancellation);
 
@@ -37,7 +37,7 @@ public sealed class PermissionsController(IMediator mediator) : ControllerBase
 
     [HttpPut("{id}")]
     [Authorize(Roles = Permissions.EditPermission)]
-    public async Task<IActionResult> UpdatePermissionAsync(string id, PermissionForUpdate request, CancellationToken cancellation)
+    public async Task<IActionResult> UpdatePermissionAsync(string id, PermissionUpdateScheme request, CancellationToken cancellation)
     {
         var result = await mediator.Send(request with { PermissionId = id }, cancellation);
 
@@ -55,7 +55,7 @@ public sealed class PermissionsController(IMediator mediator) : ControllerBase
     [Authorize(Roles = Permissions.DeletePermission)]
     public async Task<IActionResult> DeletePermissionAsync(string id, CancellationToken cancellation)
     {
-        var result = await mediator.Send(new PermissionForDeletion { PermissionId = id }, cancellation);
+        var result = await mediator.Send(new PermissionDeletionScheme { PermissionId = id }, cancellation);
 
         return result switch
         {

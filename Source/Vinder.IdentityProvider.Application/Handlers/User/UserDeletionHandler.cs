@@ -1,8 +1,8 @@
 namespace Vinder.IdentityProvider.Application.Handlers.User;
 
-public sealed class UserDeletionHandler(IUserRepository repository) : IRequestHandler<UserForDeletion, Result>
+public sealed class UserDeletionHandler(IUserRepository repository) : IRequestHandler<UserDeletionScheme, Result>
 {
-    public async Task<Result> Handle(UserForDeletion request, CancellationToken cancellationToken)
+    public async Task<Result> Handle(UserDeletionScheme request, CancellationToken cancellationToken)
     {
         var filters = new UserFiltersBuilder()
             .WithUserId(request.UserId)

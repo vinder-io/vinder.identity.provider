@@ -2,7 +2,7 @@ namespace Vinder.IdentityProvider.Application.Mappers;
 
 public static class ScopeMapper
 {
-    public static Scope AsScope(ScopeForCreation scope, Tenant tenant) => new()
+    public static Scope AsScope(ScopeCreationScheme scope, Tenant tenant) => new()
     {
         Name = scope.Name,
         Description = scope.Description,
@@ -10,7 +10,7 @@ public static class ScopeMapper
         IsGlobal = false
     };
 
-    public static ScopeDetails AsResponse(Scope scope) => new()
+    public static ScopeDetailsScheme AsResponse(Scope scope) => new()
     {
         Id = scope.Id,
         Name = scope.Name,

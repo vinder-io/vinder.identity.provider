@@ -17,7 +17,7 @@ public static class UserMapper
         PageSize = parameters.PageSize
     };
 
-    public static UserDetails AsResponse(User user) => new()
+    public static UserDetailsScheme AsResponse(User user) => new()
     {
         Id = user.Id.ToString(),
         Username = user.Username

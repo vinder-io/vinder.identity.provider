@@ -1,9 +1,9 @@
 namespace Vinder.IdentityProvider.Application.Handlers.User;
 
 public sealed class AssignUserPermissionHandler(IUserRepository userRepository, IPermissionRepository permissionRepository) :
-    IRequestHandler<AssignUserPermission, Result>
+    IRequestHandler<AssignUserPermissionScheme, Result>
 {
-    public async Task<Result> Handle(AssignUserPermission request, CancellationToken cancellationToken)
+    public async Task<Result> Handle(AssignUserPermissionScheme request, CancellationToken cancellationToken)
     {
         var userFilters = new UserFiltersBuilder()
             .WithUserId(request.UserId)

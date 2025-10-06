@@ -1,6 +1,6 @@
 namespace Vinder.IdentityProvider.Application.Validators.Group;
 
-public sealed class AssignGroupPermissionValidator : AbstractValidator<AssignGroupPermission>
+public sealed class AssignGroupPermissionValidator : AbstractValidator<AssignGroupPermissionScheme>
 {
     public AssignGroupPermissionValidator()
     {
