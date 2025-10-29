@@ -21,6 +21,7 @@ global using Vinder.IdentityProvider.Application.Payloads.Permission;
 global using Vinder.IdentityProvider.Application.Payloads.Tenant;
 global using Vinder.IdentityProvider.Application.Payloads.User;
 global using Vinder.IdentityProvider.Application.Payloads.Scope;
+global using Vinder.IdentityProvider.Application.Payloads.Client;
 global using Vinder.IdentityProvider.Application.Payloads.OpenID;
 
 global using Vinder.IdentityProvider.Application.Services;
