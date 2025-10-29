@@ -146,7 +146,7 @@ public sealed class AuthenticationServiceTests :
 
         /* assert: it should fail with user not found error */
         Assert.True(result.IsFailure);
-        Assert.Equal(AuthenticationErrors.UserNotFound, result.Error);
+        Assert.Equal(AuthenticationErrors.InvalidCredentials, result.Error);
     }
 
     public async Task InitializeAsync() => await _mongoFixture.CleanDatabaseAsync();
