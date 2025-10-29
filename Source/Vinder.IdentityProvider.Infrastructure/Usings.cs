@@ -3,7 +3,6 @@
 global using System.IdentityModel.Tokens.Jwt;
 global using System.Security.Claims;
 global using System.Security.Cryptography;
-global using System.Text;
 
 /* global usings for Microsoft namespaces here */
 
@@ -23,9 +22,9 @@ global using Vinder.IdentityProvider.Infrastructure.Utilities;
 global using Vinder.IdentityProvider.Application.Payloads.Identity;
 global using Vinder.IdentityProvider.Application.Services;
 global using Vinder.IdentityProvider.Application.Providers;
+global using Vinder.IdentityProvider.Application.Payloads.Client;
 
 global using Vinder.IdentityProvider.Common.Utilities;
-global using Vinder.IdentityProvider.Common.Configuration;
 global using Vinder.IdentityProvider.Common.Errors;
 global using Vinder.IdentityProvider.Common.Results;
 
