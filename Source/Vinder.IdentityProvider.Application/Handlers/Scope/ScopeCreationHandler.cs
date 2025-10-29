@@ -1,10 +1,7 @@
 namespace Vinder.IdentityProvider.Application.Handlers.Scope;
 
-public sealed class ScopeCreationHandler(
-    IScopeRepository scopeRepository,
-    ITenantRepository tenantRepository,
-    ITenantProvider tenantProvider
-) : IRequestHandler<ScopeCreationScheme, Result<ScopeDetailsScheme>>
+public sealed class ScopeCreationHandler(IScopeRepository scopeRepository, ITenantRepository tenantRepository, ITenantProvider tenantProvider) :
+    IRequestHandler<ScopeCreationScheme, Result<ScopeDetailsScheme>>
 {
     public async Task<Result<ScopeDetailsScheme>> Handle(ScopeCreationScheme request, CancellationToken cancellationToken)
     {
