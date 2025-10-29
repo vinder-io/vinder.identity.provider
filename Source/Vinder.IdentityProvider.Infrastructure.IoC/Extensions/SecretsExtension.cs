@@ -7,17 +7,24 @@ public static class SecretsExtension
         var serviceProvider = services.BuildServiceProvider();
         var secretRepository = serviceProvider.GetRequiredService<ISecretRepository>();
 
-        var secret = secretRepository.GetSecretAsync().GetAwaiter().GetResult();
+        var secret = secretRepository.GetSecretAsync()
+            .GetAwaiter()
+            .GetResult();
+
+        /* if no secret exists, generate an initial one to sign JWT tokens */
         if (secret is null)
         {
             using var rsa = RSA.Create(2048);
+
             secret = new Secret
             {
                 PrivateKey = Convert.ToBase64String(rsa.ExportRSAPrivateKey()),
                 PublicKey  = Convert.ToBase64String(rsa.ExportRSAPublicKey())
             };
 
-            secretRepository.InsertAsync(secret).GetAwaiter().GetResult();
+            secretRepository.InsertAsync(secret)
+                .GetAwaiter()
+                .GetResult();
         }
     }
 }
