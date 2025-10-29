@@ -17,7 +17,7 @@ public static class Base64UrlEncoder
     public static byte[] Decode(string input)
     {
         if (string.IsNullOrEmpty(input))
-            return Array.Empty<byte>();
+            return [];
 
         var base64 = input.Replace("-", "+")
                           .Replace("_", "/");
