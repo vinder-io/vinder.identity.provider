@@ -16,14 +16,16 @@ public sealed class JwtSecurityTokenService(
         var claims = new ClaimsBuilder()
             .WithSubject(user.Id.ToString())
             .WithUsername(user.Username)
-            .WithPermissions(user.Permissions)
-            .Build();
+            .WithPermissions(user.Permissions);
 
         var tenant = tenantProvider.GetCurrentTenant();
         var privateKey = await GetPrivateKeyAsync(cancellation);
         var credentials = new SigningCredentials(privateKey, SecurityAlgorithms.RsaSha256);
 
-        var claimsIdentity = new ClaimsIdentity(claims);
+        claims.WithClaim(IdentityClaimNames.Tenant, tenant.Name);
+        claims.WithClaim(IdentityClaimNames.TenantId, tenant.Id);
+
+        var claimsIdentity = new ClaimsIdentity(claims.Build());
         var tokenDescriptor = new SecurityTokenDescriptor
         {
             Audience = tenant.Name,
