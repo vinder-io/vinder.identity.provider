@@ -2,5 +2,5 @@ namespace Vinder.IdentityProvider.Application.Services;
 
 public interface IClientCredentialsGenerator
 {
-    Task<(string clientId, string clientSecret)> GenerateAsync(string tenantName);
+    public Task<ClientCredentials> GenerateAsync(string tenantName, CancellationToken cancellation = default);
 }
