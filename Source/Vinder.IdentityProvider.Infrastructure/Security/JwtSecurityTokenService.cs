@@ -192,12 +192,12 @@ public sealed class JwtSecurityTokenService(
     private async Task<RsaSecurityKey> GetPrivateKeyAsync(CancellationToken cancellation = default)
     {
         var secret = await secretRepository.GetSecretAsync(cancellation);
-        return RsaKeyHelper.FromPrivateKey(secret.PrivateKey);
+        return Common.Utilities.RsaHelper.CreateSecurityKeyFromPrivateKey(secret.PrivateKey);
     }
 
     private async Task<RsaSecurityKey> GetPublicKeyAsync(CancellationToken cancellation = default)
     {
         var secret = await secretRepository.GetSecretAsync(cancellation);
-        return RsaKeyHelper.FromPublicKey(secret.PublicKey);
+        return Common.Utilities.RsaHelper.CreateSecurityKeyFromPublicKey(secret.PublicKey);
     }
 }
