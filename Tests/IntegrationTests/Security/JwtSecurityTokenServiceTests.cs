@@ -5,7 +5,7 @@ using System.Security.Cryptography;
 using Microsoft.IdentityModel.Tokens;
 
 using Vinder.IdentityProvider.Infrastructure.Constants;
-using Vinder.IdentityProvider.Infrastructure.Utilities;
+using Vinder.IdentityProvider.Common.Utilities;
 
 namespace Vinder.IdentityProvider.TestSuite.IntegrationTests.Security;
 
@@ -137,7 +137,7 @@ public sealed class JwtSecurityTokenServiceTests : IClassFixture<MongoDatabaseFi
         /* arrange: create an expired token */
 
         var secret = await _secretRepository.Object.GetSecretAsync();
-        var privateKey = RsaKeyHelper.FromPrivateKey(secret.PrivateKey);
+        var privateKey = Common.Utilities.RsaHelper.CreateSecurityKeyFromPrivateKey(secret.PrivateKey);
 
         var tokenHandler = new JwtSecurityTokenHandler();
         var credentials = new SigningCredentials(privateKey, SecurityAlgorithms.RsaSha256);
