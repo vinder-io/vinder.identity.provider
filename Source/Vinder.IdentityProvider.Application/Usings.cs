@@ -29,7 +29,6 @@ global using Vinder.IdentityProvider.Application.Payloads.OpenID;
 global using Vinder.IdentityProvider.Application.Services;
 global using Vinder.IdentityProvider.Application.Providers;
 global using Vinder.IdentityProvider.Application.Mappers;
-global using Vinder.IdentityProvider.Application.Utilities;
 
 /* global usings for third-party namespaces here */
 
