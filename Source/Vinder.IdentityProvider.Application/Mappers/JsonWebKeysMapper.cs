@@ -1,10 +1,12 @@
+using Microsoft.IdentityModel.Tokens;
+
 namespace Vinder.IdentityProvider.Application.Mappers;
 
 public static class JsonWebKeysMapper
 {
     public static JsonWebKeyScheme AsJsonWebKeys(Secret secret)
     {
-        var publicKey = RsaHelper.FromPublicKey(secret.PublicKey);
+        var publicKey = Common.Utilities.RsaHelper.CreateRsaFromPublicKey(secret.PublicKey);
         var parameters = publicKey.ExportParameters(false);
 
         return new JsonWebKeyScheme
