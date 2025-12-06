@@ -38,7 +38,6 @@ global using Vinder.IdentityProvider.Application.Providers;
 global using Vinder.IdentityProvider.Application.Services;
 
 global using Vinder.IdentityProvider.Infrastructure.IoC.Extensions;
-global using Vinder.IdentityProvider.Infrastructure.Utilities;
 
 global using Vinder.IdentityProvider.WebApi.Extensions;
 global using Vinder.IdentityProvider.WebApi.Middlewares;
