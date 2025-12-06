@@ -6,17 +6,20 @@ public sealed class PrincipalMiddleware(RequestDelegate next)
 {
     public async Task InvokeAsync(HttpContext context)
     {
+        var principalProvider = context.RequestServices.GetRequiredService<IPrincipalProvider>();
+
+        principalProvider.Clear();
+
         var endpoint = context.GetEndpoint();
         var requiresAuth = endpoint?.Metadata.GetMetadata<AuthorizeAttribute>() != null;
 
-        if (!requiresAuth || !context.User.Identity?.IsAuthenticated == true)
+        if (!requiresAuth || context.User.Identity?.IsAuthenticated != true)
         {
             await next(context);
             return;
         }
 
         var userRepository = context.RequestServices.GetRequiredService<IUserRepository>();
-        var principalProvider = context.RequestServices.GetRequiredService<IPrincipalProvider>();
 
         var userIdClaim = context.User.FindFirst(ClaimTypes.NameIdentifier);
 
