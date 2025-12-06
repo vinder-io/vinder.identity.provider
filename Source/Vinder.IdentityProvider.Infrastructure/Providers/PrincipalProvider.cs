@@ -10,4 +10,7 @@ public sealed class PrincipalProvider : IPrincipalProvider
 
     public User GetCurrentPrincipal() =>
         _currentPrincipal!;
+
+    public void Clear() =>
+        _currentPrincipal = null;
 }
