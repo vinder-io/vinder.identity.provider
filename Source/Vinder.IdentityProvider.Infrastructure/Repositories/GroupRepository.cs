@@ -10,7 +10,8 @@ public sealed class GroupRepository(IMongoDatabase database, ITenantProvider ten
             .For<Group>()
             .As<Group, Group, BsonDocument>()
             .FilterGroups(filters, tenantProvider)
-            .Paginate(filters);
+            .Paginate(filters.Pagination)
+            .Sort(filters.Sort);
 
         var options = new AggregateOptions { AllowDiskUse = true };
         var aggregation = await _collection.AggregateAsync(pipeline, options, cancellation);

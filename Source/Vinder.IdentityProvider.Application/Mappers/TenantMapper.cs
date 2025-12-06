@@ -1,3 +1,5 @@
+using Vinder.IdentityProvider.Domain.Filtering;
+
 namespace Vinder.IdentityProvider.Application.Mappers;
 
 public static class TenantMapper

@@ -5,34 +5,14 @@ public static class ScopeFiltersStage
     public static PipelineDefinition<Scope, BsonDocument> FilterScopes(
         this PipelineDefinition<Scope, BsonDocument> pipeline, ScopeFilters filters)
     {
-        var specifications = ScopeFiltersStage.BuildMatchFilter(filters);
-        return pipeline.Match(specifications);
-    }
-
-    private static FilterDefinition<BsonDocument> BuildMatchFilter(ScopeFilters filters)
-    {
-        var filterDefinitions = new List<FilterDefinition<BsonDocument>>
+        var definitions = new List<FilterDefinition<BsonDocument>>
         {
-            MatchIfNotEmpty(DocumentFields.Scope.Name, filters.Name),
-            MatchIfNotEmpty(DocumentFields.Scope.Id, filters.ScopeId)
+            FilterDefinitions.MatchIfNotEmpty(Documents.Scope.Name, filters.Name),
+            FilterDefinitions.MatchIfNotEmpty(Documents.Scope.Id, filters.Id),
+            FilterDefinitions.MatchIfNotEmpty(Documents.Scope.Tenant, filters.TenantId),
+            FilterDefinitions.MatchBool(Documents.Scope.IsDeleted, filters.IsDeleted)
         };
 
-        if (!filters.IsDeleted.HasValue)
-        {
-            filterDefinitions.Add(Builders<BsonDocument>.Filter.Eq(DocumentFields.Scope.IsDeleted, false));
-        }
-        else
-        {
-            filterDefinitions.Add(Builders<BsonDocument>.Filter.Eq(DocumentFields.Scope.IsDeleted, filters.IsDeleted.Value));
-        }
-
-        return Builders<BsonDocument>.Filter.And(filterDefinitions);
-    }
-
-    private static FilterDefinition<BsonDocument> MatchIfNotEmpty(string field, string? value)
-    {
-        return string.IsNullOrWhiteSpace(value)
-            ? FilterDefinition<BsonDocument>.Empty
-            : Builders<BsonDocument>.Filter.Eq(field, BsonValue.Create(value));
+        return pipeline.Match(Builders<BsonDocument>.Filter.And(definitions));
     }
 }

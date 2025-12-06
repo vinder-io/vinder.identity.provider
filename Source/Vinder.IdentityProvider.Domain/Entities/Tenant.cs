@@ -12,6 +12,5 @@ public sealed class Tenant : Entity
     public ICollection<string> AllowedCorsOrigins { get; set; } = [];
 
     public ICollection<Permission> Permissions { get; set; } = [];
-    public ICollection<Group> Groups { get; set; } = [];
     public ICollection<Scope> Scopes { get; set; } = [];
 }
