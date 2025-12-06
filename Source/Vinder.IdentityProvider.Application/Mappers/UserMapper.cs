@@ -22,4 +22,14 @@ public static class UserMapper
         Id = user.Id.ToString(),
         Username = user.Username
     };
+
+    public static PrincipalDetailsScheme AsPrincipal(User user) => new()
+    {
+        Id = user.Id.ToString(),
+        Username = user.Username,
+        Permissions = [.. user.Permissions.Select(permission => PermissionMapper.AsResponse(permission))],
+        Groups = [.. user.Groups.Select(group => GroupMapper.AsBasicResponse(group))],
+        CreatedAt = user.CreatedAt,
+        UpdatedAt = user.UpdatedAt
+    };
 }
