@@ -13,8 +13,10 @@ global using Microsoft.IdentityModel.Tokens;
 global using Vinder.Internal.Infrastructure.Persistence;
 global using Vinder.Internal.Infrastructure.Persistence.Pipelines;
 global using Vinder.Internal.Infrastructure.Persistence.Repositories;
+global using Vinder.Internal.Essentials.Patterns;
 
 global using Vinder.IdentityProvider.Domain.Entities;
+global using Vinder.IdentityProvider.Domain.Errors;
 global using Vinder.IdentityProvider.Domain.Repositories;
 global using Vinder.IdentityProvider.Domain.Filtering;
 global using Vinder.IdentityProvider.Domain.Filtering.Builders;
@@ -27,9 +29,6 @@ global using Vinder.IdentityProvider.Application.Payloads.Identity;
 global using Vinder.IdentityProvider.Application.Services;
 global using Vinder.IdentityProvider.Application.Providers;
 global using Vinder.IdentityProvider.Application.Payloads.Client;
-
-global using Vinder.IdentityProvider.Common.Errors;
-global using Vinder.IdentityProvider.Common.Results;
 
 global using SecurityToken = Vinder.IdentityProvider.Domain.Entities.SecurityToken;
 

@@ -6,11 +6,11 @@ public sealed class RemoveUserFromGroupHandler(IUserRepository userRepository, I
     public async Task<Result> Handle(RemoveUserFromGroupScheme request, CancellationToken cancellationToken)
     {
         var userFilters = new UserFiltersBuilder()
-            .WithUserId(request.UserId)
+            .WithIdentifier(request.UserId)
             .Build();
 
         var groupFilters = new GroupFiltersBuilder()
-            .WithId(request.GroupId)
+            .WithIdentifier(request.GroupId)
             .Build();
 
         var users = await userRepository.GetUsersAsync(userFilters, cancellationToken);

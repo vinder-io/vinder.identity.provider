@@ -5,13 +5,15 @@ global using System.Security.Cryptography;
 
 /* global usings for Vinder namespaces here */
 
-global using Vinder.IdentityProvider.Common.Results;
-global using Vinder.IdentityProvider.Common.Errors;
+global using Vinder.Internal.Essentials.Patterns;
+global using Vinder.Internal.Essentials.Filters;
+
+global using Vinder.IdentityProvider.Domain.Errors;
 global using Vinder.IdentityProvider.Common.Constants;
 
 global using Vinder.IdentityProvider.Domain.Entities;
-global using Vinder.IdentityProvider.Domain.Filters;
-global using Vinder.IdentityProvider.Domain.Filters.Builders;
+global using Vinder.IdentityProvider.Domain.Filtering;
+global using Vinder.IdentityProvider.Domain.Filtering.Builders;
 global using Vinder.IdentityProvider.Domain.Repositories;
 
 global using Vinder.IdentityProvider.Application.Payloads.Common;

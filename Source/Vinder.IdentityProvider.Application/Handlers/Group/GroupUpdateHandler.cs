@@ -7,7 +7,7 @@ public sealed class GroupUpdateHandler(IGroupRepository repository) :
         GroupUpdateScheme request, CancellationToken cancellationToken)
     {
         var filters = new GroupFiltersBuilder()
-            .WithId(request.GroupId)
+            .WithIdentifier(request.GroupId)
             .Build();
 
         var groups = await repository.GetGroupsAsync(filters, cancellation: cancellationToken);

@@ -7,4 +7,5 @@ public sealed class User : Entity
     public string PasswordHash { get; set; } = default!;
 
     public ICollection<Permission> Permissions { get; set; } = [];
+    public ICollection<Group> Groups { get; set; } = [];
 }

@@ -6,11 +6,11 @@ public sealed class RevokeUserPermissionHandler(IUserRepository userRepository, 
     public async Task<Result> Handle(RevokeUserPermissionScheme request, CancellationToken cancellationToken)
     {
         var permissionFilters = new PermissionFiltersBuilder()
-            .WithPermissionId(request.PermissionId)
+            .WithIdentifier(request.PermissionId)
             .Build();
 
         var userFilters = new UserFiltersBuilder()
-            .WithUserId(request.UserId)
+            .WithIdentifier(request.UserId)
             .Build();
 
         var users = await userRepository.GetUsersAsync(userFilters, cancellationToken);

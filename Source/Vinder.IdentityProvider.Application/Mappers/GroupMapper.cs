@@ -1,5 +1,3 @@
-using Vinder.IdentityProvider.Domain.Filtering;
-
 namespace Vinder.IdentityProvider.Application.Mappers;
 
 public static class GroupMapper
@@ -40,8 +38,8 @@ public static class GroupMapper
         Id = parameters.Id,
         TenantId = parameters.TenantId,
         Name = parameters.Name,
-        PageNumber = parameters.PageNumber,
-        PageSize = parameters.PageSize,
-        IsDeleted = parameters.IncludeDeleted ?? false
+        Pagination = parameters.Pagination,
+        Sort = parameters.Sort,
+        IsDeleted = parameters.IsDeleted
     };
 }

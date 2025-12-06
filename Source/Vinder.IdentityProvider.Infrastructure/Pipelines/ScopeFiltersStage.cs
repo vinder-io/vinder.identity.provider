@@ -9,7 +9,7 @@ public static class ScopeFiltersStage
         {
             FilterDefinitions.MatchIfNotEmpty(Documents.Scope.Name, filters.Name),
             FilterDefinitions.MatchIfNotEmpty(Documents.Scope.Id, filters.Id),
-            FilterDefinitions.MatchIfNotEmpty(Documents.Scope.Tenant, filters.TenantId),
+            FilterDefinitions.MatchIfNotEmpty(Documents.Scope.TenantId, filters.TenantId),
             FilterDefinitions.MatchBool(Documents.Scope.IsDeleted, filters.IsDeleted)
         };
 

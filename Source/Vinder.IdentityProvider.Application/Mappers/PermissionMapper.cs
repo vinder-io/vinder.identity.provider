@@ -1,5 +1,3 @@
-using Vinder.IdentityProvider.Domain.Filtering;
-
 namespace Vinder.IdentityProvider.Application.Mappers;
 
 public static class PermissionMapper
@@ -18,10 +16,11 @@ public static class PermissionMapper
 
     public static PermissionFilters AsFilters(PermissionsFetchParameters parameters) => new()
     {
+        Id = parameters.Id,
         Name = parameters.Name,
-        PageNumber = parameters.PageNumber,
-        PageSize = parameters.PageSize,
-        IsDeleted = parameters.IncludeDeleted ?? false
+        Pagination = parameters.Pagination,
+        Sort = parameters.Sort,
+        IsDeleted = parameters.IsDeleted
     };
 
     public static Permission AsPermission(PermissionCreationScheme permission, Tenant tenant) => new()

@@ -22,11 +22,11 @@ public sealed record OpenIDConfigurationScheme
     public string JwksUri { get; set; } = default!;
 
     [JsonPropertyName("response_types_supported")]
-    public IEnumerable<string> ResponseTypesSupported { get; set; } = new[] { "code", "token" };
+    public IEnumerable<string> ResponseTypesSupported { get; set; } = ["code", "token"];
 
     [JsonPropertyName("subject_types_supported")]
-    public IEnumerable<string> SubjectTypesSupported { get; set; } = new[] { "public" };
+    public IEnumerable<string> SubjectTypesSupported { get; set; } = ["public"];
 
     [JsonPropertyName("id_token_signing_alg_values_supported")]
-    public IEnumerable<string> IdTokenSigningAlgValuesSupported { get; set; } = new[] { "RS256" };
+    public IEnumerable<string> IdTokenSigningAlgValuesSupported { get; set; } = ["RS256"];
 }

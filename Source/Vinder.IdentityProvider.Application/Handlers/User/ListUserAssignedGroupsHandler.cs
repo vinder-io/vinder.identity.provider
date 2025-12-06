@@ -7,7 +7,7 @@ public sealed class ListUserAssignedGroupsHandler(IUserRepository repository) :
         ListUserAssignedGroupsParameters request, CancellationToken cancellationToken)
     {
         var filters = new UserFiltersBuilder()
-            .WithUserId(request.UserId)
+            .WithIdentifier(request.UserId)
             .Build();
 
         var users = await repository.GetUsersAsync(filters, cancellationToken);

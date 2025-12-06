@@ -6,7 +6,7 @@ public sealed class AssignUserToGroupHandler(IUserRepository userRepository, IGr
     public async Task<Result> Handle(AssignUserToGroupScheme request, CancellationToken cancellationToken)
     {
         var userFilters = new UserFiltersBuilder()
-            .WithUserId(request.UserId)
+            .WithIdentifier(request.UserId)
             .Build();
 
         var matchingUsers = await userRepository.GetUsersAsync(userFilters, cancellationToken);
@@ -18,7 +18,7 @@ public sealed class AssignUserToGroupHandler(IUserRepository userRepository, IGr
         }
 
         var groupFilters = new GroupFiltersBuilder()
-            .WithId(request.GroupId)
+            .WithIdentifier(request.GroupId)
             .Build();
 
         var matchingGroups = await groupRepository.GetGroupsAsync(groupFilters, cancellationToken);

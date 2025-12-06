@@ -7,7 +7,7 @@ public sealed class ListUserAssignedPermissionsHandler(IUserRepository repositor
         ListUserAssignedPermissionsParameters request, CancellationToken cancellationToken)
     {
         var filters = new UserFiltersBuilder()
-            .WithUserId(request.UserId)
+            .WithIdentifier(request.UserId)
             .Build();
 
         var users = await repository.GetUsersAsync(filters, cancellationToken);

@@ -6,11 +6,11 @@ public sealed class RevokeGroupPermissionHandler(IGroupRepository groupRepositor
     public async Task<Result> Handle(RevokeGroupPermissionScheme request, CancellationToken cancellationToken)
     {
         var permissionFilters = new PermissionFiltersBuilder()
-            .WithPermissionId(request.PermissionId)
+            .WithIdentifier(request.PermissionId)
             .Build();
 
         var groupFilters = new GroupFiltersBuilder()
-            .WithId(request.GroupId)
+            .WithIdentifier(request.GroupId)
             .Build();
 
         var groups = await groupRepository.GetGroupsAsync(groupFilters, cancellationToken);
