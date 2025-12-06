@@ -1,0 +1,13 @@
+namespace Vinder.IdentityProvider.Infrastructure.Providers;
+
+public sealed class PrincipalProvider : IPrincipalProvider
+{
+    private User? _currentPrincipal;
+    public User? Principal => _currentPrincipal;
+
+    public void SetPrincipal(User user) =>
+        _currentPrincipal = user;
+
+    public User GetCurrentPrincipal() =>
+        _currentPrincipal!;
+}
