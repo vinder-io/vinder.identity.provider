@@ -23,7 +23,6 @@ global using Vinder.IdentityProvider.Domain.Filtering.Builders;
 
 global using Vinder.IdentityProvider.Infrastructure.Constants;
 global using Vinder.IdentityProvider.Infrastructure.Pipelines;
-global using Vinder.IdentityProvider.Infrastructure.Utilities;
 
 global using Vinder.IdentityProvider.Application.Payloads.Identity;
 global using Vinder.IdentityProvider.Application.Services;
