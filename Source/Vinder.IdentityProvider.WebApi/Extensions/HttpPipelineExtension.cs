@@ -12,6 +12,7 @@ public static class HttpPipelineExtension
 
         app.UseTenantMiddleware();
         app.UseAuthentication();
+        app.UsePrincipalMiddleware();
         app.UseAuthorization();
 
         app.UseEndpoints(endpoints =>
