@@ -7,7 +7,7 @@ public sealed class AssignPermissionToGroupHandler(IGroupRepository groupReposit
         AssignGroupPermissionScheme request, CancellationToken cancellationToken)
     {
         var groupFilters = new GroupFiltersBuilder()
-            .WithId(request.GroupId)
+            .WithIdentifier(request.GroupId)
             .Build();
 
         var permissionFilters = new PermissionFiltersBuilder()

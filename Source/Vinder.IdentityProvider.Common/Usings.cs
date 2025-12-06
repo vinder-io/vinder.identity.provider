@@ -1,2 +1,2 @@
 global using System.Security.Cryptography;
-global using Vinder.IdentityProvider.Common.Results;
+global using Microsoft.IdentityModel.Tokens;

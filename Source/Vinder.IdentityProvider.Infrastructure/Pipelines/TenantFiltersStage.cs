@@ -2,43 +2,17 @@ namespace Vinder.IdentityProvider.Infrastructure.Pipelines;
 
 public static class TenantFiltersStage
 {
-    public static PipelineDefinition<Tenant, BsonDocument> FilterTenants(
-        this PipelineDefinition<Tenant, BsonDocument> pipeline,
+    public static PipelineDefinition<Tenant, BsonDocument> FilterTenants(this PipelineDefinition<Tenant, BsonDocument> pipeline,
         TenantFilters filters)
     {
-        var specifications = BuildMatchFilter(filters);
-        return pipeline.Match(specifications);
-    }
-
-    private static FilterDefinition<BsonDocument> BuildMatchFilter(TenantFilters filters)
-    {
-        var filterDefinitions = new List<FilterDefinition<BsonDocument>>
+        var definitions = new List<FilterDefinition<BsonDocument>>
         {
-            MatchIfNotEmpty(DocumentFields.Tenant.Name, filters.Name),
-            MatchIfNotEmpty(DocumentFields.Tenant.ClientId, filters.ClientId),
-            MatchIfNotEmpty(DocumentFields.Tenant.Id, filters.Id),
+            FilterDefinitions.MatchIfNotEmpty(Documents.Tenant.Name, filters.Name),
+            FilterDefinitions.MatchIfNotEmpty(Documents.Tenant.ClientId, filters.ClientId),
+            FilterDefinitions.MatchIfNotEmpty(Documents.Tenant.Id, filters.Id),
+            FilterDefinitions.MatchBool(Documents.Tenant.IsDeleted, filters.IsDeleted)
         };
 
-        if (!filters.IsDeleted.HasValue)
-        {
-            filterDefinitions.Add(
-                Builders<BsonDocument>.Filter.Eq(DocumentFields.Tenant.IsDeleted, false)
-            );
-        }
-        else
-        {
-            filterDefinitions.Add(
-                Builders<BsonDocument>.Filter.Eq(DocumentFields.Tenant.IsDeleted, filters.IsDeleted.Value)
-            );
-        }
-
-        return Builders<BsonDocument>.Filter.And(filterDefinitions);
-    }
-
-    private static FilterDefinition<BsonDocument> MatchIfNotEmpty(string field, string? value)
-    {
-        return string.IsNullOrWhiteSpace(value)
-            ? FilterDefinition<BsonDocument>.Empty
-            : Builders<BsonDocument>.Filter.Eq(field, BsonValue.Create(value));
+        return pipeline.Match(Builders<BsonDocument>.Filter.And(definitions));
     }
 }

@@ -1,6 +1,6 @@
 namespace Vinder.IdentityProvider.Infrastructure.Constants;
 
-public static class DocumentFields
+public static class Documents
 {
     public static class User
     {
@@ -30,6 +30,7 @@ public static class DocumentFields
     public static class Scope
     {
         public const string Id = "_id";
+        public const string TenantId = nameof(Domain.Entities.Scope.TenantId);
         public const string Name = nameof(Domain.Entities.Scope.Name);
         public const string IsDeleted = nameof(Domain.Entities.Group.IsDeleted);
     }

@@ -1,8 +1,11 @@
 using System.IdentityModel.Tokens.Jwt;
 using System.Security.Claims;
 using System.Security.Cryptography;
+
 using Microsoft.IdentityModel.Tokens;
-using Vinder.IdentityProvider.Infrastructure.Utilities;
+
+using Vinder.IdentityProvider.Infrastructure.Constants;
+using Vinder.IdentityProvider.Common.Utilities;
 
 namespace Vinder.IdentityProvider.TestSuite.IntegrationTests.Security;
 
@@ -80,9 +83,12 @@ public sealed class JwtSecurityTokenServiceTests : IClassFixture<MongoDatabaseFi
         var claims = jwtToken.Claims.ToList();
 
         Assert.Contains(claims, claim => claim.Type == JwtRegisteredClaimNames.Aud && claim.Value == tenant.Name);
-        Assert.Contains(claims, claim => claim.Type == JwtRegisteredClaimNames.Iss && claim.Value == _hostProvider.Object.Address.ToString());
+        Assert.Contains(claims, claim => claim.Type == JwtRegisteredClaimNames.Iss && claim.Value == _hostProvider.Object.Address.ToString().TrimEnd('/'));
         Assert.Contains(claims, claim => claim.Type == JwtRegisteredClaimNames.Sub && claim.Value == user.Id.ToString());
         Assert.Contains(claims, claim => claim.Type == JwtRegisteredClaimNames.PreferredUsername && claim.Value == user.Username);
+
+        /* assert that a claim containing the tenant name is present */
+        Assert.Contains(claims, claim => claim.Type == IdentityClaimNames.Tenant && claim.Value == tenant.Name);
 
         foreach (var permission in user.Permissions)
         {
@@ -131,7 +137,7 @@ public sealed class JwtSecurityTokenServiceTests : IClassFixture<MongoDatabaseFi
         /* arrange: create an expired token */
 
         var secret = await _secretRepository.Object.GetSecretAsync();
-        var privateKey = RsaKeyHelper.FromPrivateKey(secret.PrivateKey);
+        var privateKey = Common.Utilities.RsaHelper.CreateSecurityKeyFromPrivateKey(secret.PrivateKey);
 
         var tokenHandler = new JwtSecurityTokenHandler();
         var credentials = new SigningCredentials(privateKey, SecurityAlgorithms.RsaSha256);

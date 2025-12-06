@@ -1,10 +1,6 @@
 namespace Vinder.IdentityProvider.Infrastructure.Security;
 
-public sealed class AuthenticationService(
-    IUserRepository userRepository,
-    IPasswordHasher passwordHasher,
-    ISecurityTokenService tokenService
-) : IAuthenticationService
+public sealed class AuthenticationService(IUserRepository userRepository, IPasswordHasher passwordHasher, ISecurityTokenService tokenService) : IAuthenticationService
 {
     public async Task<Result<AuthenticationResult>> AuthenticateAsync(AuthenticationCredentials credentials, CancellationToken cancellation = default)
     {
@@ -17,7 +13,7 @@ public sealed class AuthenticationService(
 
         if (user is null)
         {
-            return Result<AuthenticationResult>.Failure(AuthenticationErrors.UserNotFound);
+            return Result<AuthenticationResult>.Failure(AuthenticationErrors.InvalidCredentials);
         }
 
         if (!await passwordHasher.VerifyPasswordAsync(credentials.Password, user.PasswordHash))
@@ -25,27 +21,27 @@ public sealed class AuthenticationService(
             return Result<AuthenticationResult>.Failure(AuthenticationErrors.InvalidCredentials);
         }
 
-        var accessTokenResult = await tokenService.GenerateAccessTokenAsync(user, cancellation);
-        if (!accessTokenResult.IsSuccess)
+        var accessTokenOutcome = await tokenService.GenerateAccessTokenAsync(user, cancellation);
+        if (!accessTokenOutcome.IsSuccess)
         {
-            return Result<AuthenticationResult>.Failure(accessTokenResult.Error);
+            return Result<AuthenticationResult>.Failure(accessTokenOutcome.Error);
         }
 
-        var refreshTokenResult = await tokenService.GenerateRefreshTokenAsync(user, cancellation);
-        if (!refreshTokenResult.IsSuccess)
+        var refreshTokenOutcome = await tokenService.GenerateRefreshTokenAsync(user, cancellation);
+        if (!refreshTokenOutcome.IsSuccess)
         {
-            return Result<AuthenticationResult>.Failure(refreshTokenResult.Error);
+            return Result<AuthenticationResult>.Failure(refreshTokenOutcome.Error);
         }
 
-        if (accessTokenResult.Data is null || refreshTokenResult.Data is null)
+        if (accessTokenOutcome.Data is null || refreshTokenOutcome.Data is null)
         {
             return Result<AuthenticationResult>.Failure(AuthenticationErrors.InvalidTokenFormat);
         }
 
         var result = new AuthenticationResult
         {
-            AccessToken = accessTokenResult.Data.Value,
-            RefreshToken = refreshTokenResult.Data.Value
+            AccessToken = accessTokenOutcome.Data.Value,
+            RefreshToken = refreshTokenOutcome.Data.Value
         };
 
         return Result<AuthenticationResult>.Success(result);

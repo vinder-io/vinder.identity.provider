@@ -1,6 +1,6 @@
 namespace Vinder.IdentityProvider.Domain.Repositories;
 
-public interface IScopeRepository : IRepository<Scope>
+public interface IScopeRepository : IBaseRepository<Scope>
 {
     public Task<IReadOnlyCollection<Scope>> GetScopesAsync(
         ScopeFilters filters,

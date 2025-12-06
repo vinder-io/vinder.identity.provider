@@ -34,8 +34,8 @@ public static class TenantMapper
         Id = parameters.Id,
         ClientId = parameters.ClientId,
         Name = parameters.Name,
-        PageNumber = parameters.PageNumber,
-        PageSize = parameters.PageSize,
-        IsDeleted = parameters.IncludeDeleted ?? false
+        Pagination = parameters.Pagination,
+        Sort = parameters.Sort,
+        IsDeleted = parameters.IsDeleted
     };
 }

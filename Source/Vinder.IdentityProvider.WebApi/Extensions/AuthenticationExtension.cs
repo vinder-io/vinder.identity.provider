@@ -9,7 +9,7 @@ public static class AuthenticationExtension
         var secretRepository = serviceProvider.GetRequiredService<ISecretRepository>();
 
         var secret = secretRepository.GetSecretAsync().GetAwaiter().GetResult();
-        var publicKey = RsaKeyHelper.FromPublicKey(secret.PublicKey);
+        var publicKey = Common.Utilities.RsaHelper.CreateSecurityKeyFromPublicKey(secret.PublicKey);
 
         var validationParameters = new TokenValidationParameters
         {

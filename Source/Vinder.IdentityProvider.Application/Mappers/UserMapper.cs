@@ -10,11 +10,11 @@ public static class UserMapper
 
     public static UserFilters AsFilters(UsersFetchParameters parameters) => new()
     {
-        UserId = parameters.Id,
+        Id = parameters.Id,
         Username = parameters.Username,
         IsDeleted = parameters.IsDeleted,
-        PageNumber = parameters.PageNumber,
-        PageSize = parameters.PageSize
+        Pagination = parameters.Pagination,
+        Sort = parameters.Sort
     };
 
     public static UserDetailsScheme AsResponse(User user) => new()

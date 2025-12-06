@@ -1,12 +1,16 @@
 namespace Vinder.IdentityProvider.Application.Payloads.Group;
 
-public sealed record GroupsFetchParameters : IRequest<Result<Pagination<GroupDetailsScheme>>>
+public sealed record GroupsFetchParameters :
+    IRequest<Result<Pagination<GroupDetailsScheme>>>
 {
     public string? Id { get; set; }
     public string? TenantId { get; set; }
     public string? Name { get; set; }
-    public bool? IncludeDeleted { get; set; }
+    public bool? IsDeleted { get; set; }
 
-    public int PageNumber { get; init; } = 1;
-    public int PageSize { get; init; } = 20;
+    public PaginationFilters? Pagination { get; set; }
+    public SortFilters? Sort { get; set; }
+
+    public DateOnly? CreatedAfter { get; set; }
+    public DateOnly? CreatedBefore { get; set; }
 }

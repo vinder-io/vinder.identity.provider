@@ -19,13 +19,12 @@ global using Microsoft.IdentityModel.Tokens;
 /* global usings for Vinder namespaces here */
 
 global using Vinder.IdentityProvider.Domain.Entities;
-global using Vinder.IdentityProvider.Domain.Filters.Builders;
+global using Vinder.IdentityProvider.Domain.Filtering.Builders;
 global using Vinder.IdentityProvider.Domain.Repositories;
 
-global using Vinder.IdentityProvider.Common.Utilities;
 global using Vinder.IdentityProvider.Common.Constants;
 global using Vinder.IdentityProvider.Common.Configuration;
-global using Vinder.IdentityProvider.Common.Errors;
+global using Vinder.IdentityProvider.Domain.Errors;
 
 global using Vinder.IdentityProvider.Application.Payloads.Group;
 global using Vinder.IdentityProvider.Application.Payloads.Identity;
@@ -39,12 +38,13 @@ global using Vinder.IdentityProvider.Application.Providers;
 global using Vinder.IdentityProvider.Application.Services;
 
 global using Vinder.IdentityProvider.Infrastructure.IoC.Extensions;
-global using Vinder.IdentityProvider.Infrastructure.Utilities;
 
 global using Vinder.IdentityProvider.WebApi.Extensions;
 global using Vinder.IdentityProvider.WebApi.Middlewares;
 global using Vinder.IdentityProvider.WebApi.Attributes;
 global using Vinder.IdentityProvider.WebApi.Binders;
+
+global using Vinder.Internal.Essentials.Utilities;
 
 
 /* global usings for third-party namespaces here */

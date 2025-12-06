@@ -13,10 +13,13 @@ public static class BootstrapperExtension
         var permissionRepository = scope.ServiceProvider.GetRequiredService<IPermissionRepository>();
 
         var tenantProvider = scope.ServiceProvider.GetRequiredService<ITenantProvider>();
+        var credentialsGenerator = scope.ServiceProvider.GetRequiredService<IClientCredentialsGenerator>();
         var passwordHasher = scope.ServiceProvider.GetRequiredService<IPasswordHasher>();
         var settings = scope.ServiceProvider.GetRequiredService<ISettings>();
 
-        var defaultTenant = new Tenant { Name = "master", ClientId = GenerateClientId() };
+        var tenantCredentials = await credentialsGenerator.GenerateAsync("master", cancellation: default);
+
+        var defaultTenant = new Tenant { Name = "master", ClientId = tenantCredentials.ClientId };
         var tenantFilters = new TenantFiltersBuilder()
             .WithName("master")
             .Build();
@@ -29,7 +32,7 @@ public static class BootstrapperExtension
             return;
         }
 
-        defaultTenant.SecretHash = await passwordHasher.HashPasswordAsync(defaultTenant.ClientId + defaultTenant.Name);
+        defaultTenant.SecretHash = await passwordHasher.HashPasswordAsync(tenantCredentials.ClientId + defaultTenant.Name);
         defaultTenant.Permissions = [
             new() { Id = Identifier.Generate<Permission>(), Name = Permissions.CreateGroup, TenantId = defaultTenant.Id },
             new() { Id = Identifier.Generate<Permission>(), Name = Permissions.DeleteGroup, TenantId = defaultTenant.Id },
@@ -92,16 +95,5 @@ public static class BootstrapperExtension
 
             await userRepository.InsertAsync(rootUser);
         }
-    }
-
-    public static string GenerateClientId(int size = 32)
-    {
-        var bytes = new byte[size];
-
-        RandomNumberGenerator.Fill(bytes);
-
-        return Convert
-            .ToHexString(bytes)
-            .ToLowerInvariant();
     }
 }

@@ -157,8 +157,7 @@ public sealed class TenantRepositoryTests : IClassFixture<MongoDatabaseFixture>,
 
         /* arrange: prepare filters for page 1 with page size 5 */
         var filtersPage1 = new TenantFiltersBuilder()
-            .WithPageSize(5)
-            .WithPageNumber(1)
+            .WithPagination(PaginationFilters.From(pageNumber: 1, pageSize: 5))
             .Build();
 
         /* act: get first page */
@@ -169,8 +168,7 @@ public sealed class TenantRepositoryTests : IClassFixture<MongoDatabaseFixture>,
 
         /* arrange: prepare filters for page 2 with page size 5 */
         var filtersPage2 = new TenantFiltersBuilder()
-            .WithPageSize(5)
-            .WithPageNumber(2)
+            .WithPagination(PaginationFilters.From(pageNumber: 2, pageSize: 5))
             .Build();
 
         /* act: get second page */

@@ -1,11 +1,10 @@
 namespace Vinder.IdentityProvider.Application.Handlers.Tenant;
 
-public sealed class TenantCreationHandler(
-    ITenantRepository repository,
-    IClientCredentialsGenerator credentialsGenerator
-) : IRequestHandler<TenantCreationScheme, Result<TenantDetailsScheme>>
+public sealed class TenantCreationHandler(ITenantRepository repository, IClientCredentialsGenerator credentialsGenerator) :
+    IRequestHandler<TenantCreationScheme, Result<TenantDetailsScheme>>
 {
-    public async Task<Result<TenantDetailsScheme>> Handle(TenantCreationScheme request, CancellationToken cancellationToken)
+    public async Task<Result<TenantDetailsScheme>> Handle(
+        TenantCreationScheme request, CancellationToken cancellationToken)
     {
         var filters = new TenantFiltersBuilder()
             .WithName(request.Name)
@@ -17,12 +16,11 @@ public sealed class TenantCreationHandler(
             return Result<TenantDetailsScheme>.Failure(TenantErrors.TenantAlreadyExists);
         }
 
-        var (clientId, clientSecret) = await credentialsGenerator.GenerateAsync(request.Name);
-
+        var credentials = await credentialsGenerator.GenerateAsync(request.Name, cancellation: cancellationToken);
         var tenant = TenantMapper.AsTenant(
             tenant: request,
-            clientId: clientId,
-            secretHash: clientSecret
+            clientId: credentials.ClientId,
+            secretHash: credentials.ClientSecret
         );
 
         var masterFilters = new TenantFiltersBuilder()

@@ -6,7 +6,7 @@ public sealed class AssignUserPermissionHandler(IUserRepository userRepository, 
     public async Task<Result> Handle(AssignUserPermissionScheme request, CancellationToken cancellationToken)
     {
         var userFilters = new UserFiltersBuilder()
-            .WithUserId(request.UserId)
+            .WithIdentifier(request.UserId)
             .Build();
 
         var permissionFilters = new PermissionFiltersBuilder()

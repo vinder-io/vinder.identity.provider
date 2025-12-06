@@ -5,7 +5,7 @@ public sealed class UserDeletionHandler(IUserRepository repository) : IRequestHa
     public async Task<Result> Handle(UserDeletionScheme request, CancellationToken cancellationToken)
     {
         var filters = new UserFiltersBuilder()
-            .WithUserId(request.UserId)
+            .WithIdentifier(request.UserId)
             .Build();
 
         var users = await repository.GetUsersAsync(filters, cancellation: cancellationToken);

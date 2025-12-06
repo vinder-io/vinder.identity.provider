@@ -5,7 +5,7 @@ public sealed class TenantDeletionHandler(ITenantRepository repository) : IReque
     public async Task<Result> Handle(TenantDeletionScheme request, CancellationToken cancellationToken)
     {
         var filters = new TenantFiltersBuilder()
-            .WithId(request.TenantId)
+            .WithIdentifier(request.TenantId)
             .Build();
 
         var tenants = await repository.GetTenantsAsync(filters, cancellation: cancellationToken);

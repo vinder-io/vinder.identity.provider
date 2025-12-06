@@ -6,6 +6,10 @@ public sealed record UsersFetchParameters :
     public string? Id { get; init; }
     public string? Username { get; init; }
     public bool? IsDeleted { get; set; }
-    public int PageNumber { get; init; } = 1;
-    public int PageSize { get; init; } = 20;
+
+    public PaginationFilters? Pagination { get; set; }
+    public SortFilters? Sort { get; set; }
+
+    public DateOnly? CreatedAfter { get; set; }
+    public DateOnly? CreatedBefore { get; set; }
 }

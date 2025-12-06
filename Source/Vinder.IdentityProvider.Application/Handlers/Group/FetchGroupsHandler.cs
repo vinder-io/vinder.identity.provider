@@ -4,9 +4,9 @@ public sealed class FetchGroupsHandler(IGroupRepository repository) :
     IRequestHandler<GroupsFetchParameters, Result<Pagination<GroupDetailsScheme>>>
 {
     public async Task<Result<Pagination<GroupDetailsScheme>>> Handle(
-        GroupsFetchParameters request, CancellationToken cancellationToken)
+        GroupsFetchParameters parameters, CancellationToken cancellationToken)
     {
-        var filters = GroupMapper.AsFilters(request);
+        var filters = GroupMapper.AsFilters(parameters);
 
         var groups = await repository.GetGroupsAsync(filters, cancellation: cancellationToken);
         var totalGroups = await repository.CountAsync(filters, cancellation: cancellationToken);
@@ -15,8 +15,8 @@ public sealed class FetchGroupsHandler(IGroupRepository repository) :
         {
             Items = [.. groups.Select(group => GroupMapper.AsResponse(group))],
             Total = (int) totalGroups,
-            PageNumber = request.PageNumber,
-            PageSize = request.PageSize,
+            PageNumber = parameters.Pagination?.PageNumber ?? 1,
+            PageSize = parameters.Pagination?.PageSize ?? 20
         };
 
         return Result<Pagination<GroupDetailsScheme>>.Success(pagination);

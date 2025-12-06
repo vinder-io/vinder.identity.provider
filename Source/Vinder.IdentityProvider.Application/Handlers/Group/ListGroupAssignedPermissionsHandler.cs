@@ -7,7 +7,7 @@ public sealed class ListGroupAssignedPermissionsHandler(IGroupRepository reposit
         ListGroupAssignedPermissionsParameters request, CancellationToken cancellationToken)
     {
         var filters = new GroupFiltersBuilder()
-            .WithId(request.GroupId)
+            .WithIdentifier(request.GroupId)
             .Build();
 
         var groups = await repository.GetGroupsAsync(filters, cancellationToken);

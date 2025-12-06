@@ -2,7 +2,7 @@ namespace Vinder.IdentityProvider.Infrastructure.Security;
 
 public sealed class ClientCredentialsGenerator(IPasswordHasher passwordHasher) : IClientCredentialsGenerator
 {
-    public async Task<(string clientId, string clientSecret)> GenerateAsync(string tenantName)
+    public async Task<ClientCredentials> GenerateAsync(string tenantName, CancellationToken cancellation = default)
     {
         var bytes = new byte[32];
 
@@ -11,6 +11,10 @@ public sealed class ClientCredentialsGenerator(IPasswordHasher passwordHasher) :
         var clientId = Convert.ToHexString(bytes).ToLowerInvariant();
         var clientSecret = await passwordHasher.HashPasswordAsync(clientId + tenantName);
 
-        return (clientId, clientSecret);
+        return new ClientCredentials
+        {
+            ClientId = clientId,
+            ClientSecret = clientSecret
+        };
     }
 }

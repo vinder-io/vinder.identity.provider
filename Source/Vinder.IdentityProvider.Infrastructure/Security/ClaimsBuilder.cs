@@ -31,7 +31,7 @@ public sealed class ClaimsBuilder
 
     public ClaimsBuilder WithTenantName(string tenantName)
     {
-        _claims.Add(new Claim(IdentityClaimNames.TenantName, tenantName));
+        _claims.Add(new Claim(IdentityClaimNames.Tenant, tenantName));
         return this;
     }
 
@@ -42,6 +42,12 @@ public sealed class ClaimsBuilder
             _claims.Add(new Claim(ClaimTypes.Role, permission.Name));
         }
 
+        return this;
+    }
+
+    public ClaimsBuilder WithClaim(string type, string value)
+    {
+        _claims.Add(new Claim(type, value));
         return this;
     }
 }

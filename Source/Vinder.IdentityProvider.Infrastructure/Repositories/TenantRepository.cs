@@ -10,7 +10,8 @@ public sealed class TenantRepository(IMongoDatabase database) :
             .For<Tenant>()
             .As<Tenant, Tenant, BsonDocument>()
             .FilterTenants(filters)
-            .Paginate(filters);
+            .Paginate(filters.Pagination)
+            .Sort(filters.Sort);
 
         var options = new AggregateOptions { AllowDiskUse = true };
         var aggregation = await _collection.AggregateAsync(pipeline, options, cancellation);

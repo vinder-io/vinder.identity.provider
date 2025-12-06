@@ -10,7 +10,8 @@ public sealed class TokenRepository(IMongoDatabase database, ITenantProvider ten
             .For<SecurityToken>()
             .As<SecurityToken, SecurityToken, BsonDocument>()
             .FilterTokens(filters, tenantProvider)
-            .Paginate(filters);
+            .Paginate(filters.Pagination)
+            .Sort(filters.Sort);
 
         var options = new AggregateOptions { AllowDiskUse = true };
         var aggregation = await _collection.AggregateAsync(pipeline, options, cancellation);

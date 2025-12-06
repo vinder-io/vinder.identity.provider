@@ -8,5 +8,4 @@ public sealed class User : Entity
 
     public ICollection<Permission> Permissions { get; set; } = [];
     public ICollection<Group> Groups { get; set; } = [];
-    public ICollection<SecurityToken> Tokens { get; set; } = [];
 }

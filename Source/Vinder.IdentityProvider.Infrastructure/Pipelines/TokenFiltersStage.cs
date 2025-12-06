@@ -2,50 +2,20 @@ namespace Vinder.IdentityProvider.Infrastructure.Pipelines;
 
 public static class TokenFiltersStage
 {
-    public static PipelineDefinition<SecurityToken, BsonDocument> FilterTokens(
-        this PipelineDefinition<SecurityToken, BsonDocument> pipeline,
-        TokenFilters filters,
-        ITenantProvider tenantProvider)
-    {
-        var specifications = BuildMatchFilter(filters, tenantProvider);
-        return pipeline.Match(specifications);
-    }
-
-    private static FilterDefinition<BsonDocument> BuildMatchFilter(TokenFilters filters, ITenantProvider tenantProvider)
+    public static PipelineDefinition<SecurityToken, BsonDocument> FilterTokens(this PipelineDefinition<SecurityToken, BsonDocument> pipeline,
+        TokenFilters filters, ITenantProvider tenantProvider)
     {
         var tenant = tenantProvider.GetCurrentTenant();
-        var filterDefinitions = new List<FilterDefinition<BsonDocument>>
+        var definitions = new List<FilterDefinition<BsonDocument>>
         {
-            MatchIfNotEmpty(DocumentFields.SecurityToken.Value, filters.Value),
-            MatchIfNotEmptyEnum(DocumentFields.SecurityToken.Type, filters.Type),
-            MatchIfNotEmpty(DocumentFields.SecurityToken.UserId, filters.UserId),
-            MatchIfNotEmpty(DocumentFields.SecurityToken.TenantId, tenant.Id),
+            FilterDefinitions.MatchIfNotEmptyEnum(Documents.SecurityToken.Type, filters.Type),
+            FilterDefinitions.MatchIfNotEmpty(Documents.SecurityToken.Value, filters.Value),
+            FilterDefinitions.MatchIfNotEmpty(Documents.SecurityToken.UserId, filters.UserId),
+
+            FilterDefinitions.MatchIfNotEmpty(Documents.SecurityToken.TenantId, tenant.Id),
+            FilterDefinitions.MatchBool(Documents.SecurityToken.IsDeleted, filters.IsDeleted)
         };
 
-        if (!filters.IsDeleted.HasValue)
-        {
-            filterDefinitions.Add(Builders<BsonDocument>.Filter.Eq(DocumentFields.SecurityToken.IsDeleted, false));
-        }
-        else
-        {
-            filterDefinitions.Add(Builders<BsonDocument>.Filter.Eq(DocumentFields.SecurityToken.IsDeleted, filters.IsDeleted.Value));
-        }
-
-        return Builders<BsonDocument>.Filter.And(filterDefinitions);
-    }
-
-    private static FilterDefinition<BsonDocument> MatchIfNotEmpty(string field, string? value)
-    {
-        return string.IsNullOrWhiteSpace(value)
-            ? FilterDefinition<BsonDocument>.Empty
-            : Builders<BsonDocument>.Filter.Eq(field, BsonValue.Create(value));
-    }
-
-    private static FilterDefinition<BsonDocument> MatchIfNotEmptyEnum<TEnum>(string field, TEnum? value)
-        where TEnum : struct, Enum
-    {
-        return value.HasValue
-            ? Builders<BsonDocument>.Filter.Eq(field, Convert.ToInt32(value.Value))
-            : FilterDefinition<BsonDocument>.Empty;
+        return pipeline.Match(Builders<BsonDocument>.Filter.And(definitions));
     }
 }

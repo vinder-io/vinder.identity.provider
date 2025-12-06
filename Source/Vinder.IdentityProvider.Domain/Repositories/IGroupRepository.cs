@@ -1,6 +1,6 @@
 namespace Vinder.IdentityProvider.Domain.Repositories;
 
-public interface IGroupRepository : IRepository<Group>
+public interface IGroupRepository : IBaseRepository<Group>
 {
     public Task<IReadOnlyCollection<Group>> GetGroupsAsync(
         GroupFilters filters,

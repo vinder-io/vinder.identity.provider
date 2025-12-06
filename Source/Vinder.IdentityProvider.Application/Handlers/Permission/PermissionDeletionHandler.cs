@@ -5,7 +5,7 @@ public sealed class PermissionDeletionHandler(IPermissionRepository repository) 
     public async Task<Result> Handle(PermissionDeletionScheme request, CancellationToken cancellationToken)
     {
         var filters = new PermissionFiltersBuilder()
-            .WithPermissionId(request.PermissionId)
+            .WithIdentifier(request.PermissionId)
             .Build();
 
         var permissions = await repository.GetPermissionsAsync(filters, cancellation: cancellationToken);

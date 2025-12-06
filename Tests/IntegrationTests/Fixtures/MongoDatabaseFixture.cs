@@ -41,9 +41,8 @@ public sealed class MongoDatabaseFixture : IAsyncLifetime
 
     public async Task CleanDatabaseAsync()
     {
-        var collections = await Database
-            .ListCollectionNames()
-            .ToListAsync();
+        var cursor = await Database.ListCollectionNamesAsync();
+        var collections = await cursor.ToListAsync();
 
         foreach (var collectionName in collections)
         {

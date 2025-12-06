@@ -10,7 +10,8 @@ public sealed class UserRepository(IMongoDatabase database, ITenantProvider tena
             .For<User>()
             .As<User, User, BsonDocument>()
             .FilterUsers(filters, tenantProvider)
-            .Paginate(filters);
+            .Paginate(filters.Pagination)
+            .Sort(filters.Sort);
 
         var options = new AggregateOptions { AllowDiskUse = true };
         var aggregation = await _collection.AggregateAsync(pipeline, options, cancellation);

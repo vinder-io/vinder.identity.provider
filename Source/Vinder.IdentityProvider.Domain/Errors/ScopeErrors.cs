@@ -1,4 +1,4 @@
-namespace Vinder.IdentityProvider.Common.Errors;
+namespace Vinder.IdentityProvider.Domain.Errors;
 
 public static class ScopeErrors
 {
