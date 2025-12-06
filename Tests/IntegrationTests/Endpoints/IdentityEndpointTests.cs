@@ -162,4 +162,127 @@ public sealed class IdentityEndpointTests(IntegrationEnvironmentFixture factory)
 
         Assert.Equal("#VINDER-IDP-ERR-AUT-405", error.Code);
     }
+
+    [Fact(DisplayName = "[e2e] - when GET /identity/principal with valid token should return authenticated user details")]
+    public async Task WhenGetPrincipalWithValidToken_ShouldReturnAuthenticatedUserDetails()
+    {
+        /* arrange: authenticate user and get access token */
+        var httpClient = factory.HttpClient.WithTenantHeader("master");
+        var credentials = new AuthenticationCredentials
+        {
+            Username = "vinder.testing.user",
+            Password = "vinder.testing.password"
+        };
+
+        var authenticationResponse = await httpClient.PostAsJsonAsync("api/v1/identity/authenticate", credentials);
+        var authenticationResult = await authenticationResponse.Content.ReadFromJsonAsync<AuthenticationResult>();
+
+        Assert.NotNull(authenticationResult);
+        Assert.NotEmpty(authenticationResult.AccessToken);
+
+        /* arrange: configure client with access token */
+        httpClient.DefaultRequestHeaders.Authorization = new System.Net.Http.Headers.AuthenticationHeaderValue("Bearer", authenticationResult.AccessToken);
+
+        /* act: send GET request to principal endpoint */
+        var principalResponse = await httpClient.GetAsync("api/v1/identity/principal");
+        var principalResult = await principalResponse.Content.ReadFromJsonAsync<PrincipalDetailsScheme>();
+
+        /* assert: response should be 200 OK and principal details should be returned */
+        Assert.Equal(HttpStatusCode.OK, principalResponse.StatusCode);
+        Assert.NotNull(principalResult);
+
+        /* assert: principal details should contain valid user information */
+        Assert.False(string.IsNullOrWhiteSpace(principalResult.Id));
+        Assert.Equal(credentials.Username, principalResult.Username);
+
+        /* assert: principal should have created timestamp */
+        Assert.NotEqual(default, principalResult.CreatedAt);
+
+        /* assert: permissions and groups collections should be initialized */
+        Assert.NotNull(principalResult.Permissions);
+        Assert.NotNull(principalResult.Groups);
+    }
+
+    [Fact(DisplayName = "[e2e] - when GET /identity/principal without authentication should return 401 Unauthorized")]
+    public async Task WhenGetPrincipalWithoutAuthentication_ShouldReturnUnauthorized()
+    {
+        /* arrange: create client without authentication token */
+        var httpClient = factory.HttpClient;
+
+        httpClient.DefaultRequestHeaders.Remove("Authorization");
+        httpClient.WithTenantHeader("master");
+
+        /* act: send GET request to principal endpoint without token */
+        var principalResponse = await httpClient.GetAsync("api/v1/identity/principal");
+
+        /* assert: response should be 401 Unauthorized */
+        Assert.Equal(HttpStatusCode.Unauthorized, principalResponse.StatusCode);
+    }
+
+    [Fact(DisplayName = "[e2e] - when GET /identity/principal with invalid token should return 401 Unauthorized")]
+    public async Task WhenGetPrincipalWithInvalidToken_ShouldReturnUnauthorized()
+    {
+        /* arrange: create client with invalid token */
+        var httpClient = factory.HttpClient.WithTenantHeader("master");
+        httpClient.DefaultRequestHeaders.Authorization = new System.Net.Http.Headers.AuthenticationHeaderValue("Bearer", "invalid-token-here");
+
+        /* act: send GET request to principal endpoint with invalid token */
+        var principalResponse = await httpClient.GetAsync("api/v1/identity/principal");
+
+        /* assert: response should be 401 Unauthorized */
+        Assert.Equal(HttpStatusCode.Unauthorized, principalResponse.StatusCode);
+    }
+
+    [Fact(DisplayName = "[e2e] - when GET /identity/principal should return user with permissions and groups")]
+    public async Task WhenGetPrincipal_ShouldReturnUserWithPermissionsAndGroups()
+    {
+        /* arrange: authenticate user and get access token */
+        var httpClient = factory.HttpClient.WithTenantHeader("master");
+        var credentials = new AuthenticationCredentials
+        {
+            Username = "vinder.testing.user",
+            Password = "vinder.testing.password"
+        };
+
+        var authenticationResponse = await httpClient.PostAsJsonAsync("api/v1/identity/authenticate", credentials);
+        var authenticationResult = await authenticationResponse.Content.ReadFromJsonAsync<AuthenticationResult>();
+
+        Assert.NotNull(authenticationResult);
+        Assert.NotEmpty(authenticationResult.AccessToken);
+
+        /* arrange: configure client with access token */
+        httpClient.DefaultRequestHeaders.Authorization = new System.Net.Http.Headers.AuthenticationHeaderValue("Bearer", authenticationResult.AccessToken);
+
+        /* act: send GET request to principal endpoint */
+        var principalResponse = await httpClient.GetAsync("api/v1/identity/principal");
+        var principalResult = await principalResponse.Content.ReadFromJsonAsync<PrincipalDetailsScheme>();
+
+        /* assert: response should be 200 OK */
+        Assert.Equal(HttpStatusCode.OK, principalResponse.StatusCode);
+        Assert.NotNull(principalResult);
+
+        /* assert: principal should contain permissions collection */
+        Assert.NotNull(principalResult.Permissions);
+
+        /* assert: principal should contain groups collection */
+        Assert.NotNull(principalResult.Groups);
+
+        /* assert: if permissions exist, they should have valid structure */
+        if (principalResult.Permissions.Count > 0)
+        {
+            var firstPermission = principalResult.Permissions.First();
+
+            Assert.False(string.IsNullOrWhiteSpace(firstPermission.Id));
+            Assert.False(string.IsNullOrWhiteSpace(firstPermission.Name));
+        }
+
+        /* assert: if groups exist, they should have valid structure */
+        if (principalResult.Groups.Count > 0)
+        {
+            var firstGroup = principalResult.Groups.First();
+
+            Assert.False(string.IsNullOrWhiteSpace(firstGroup.Id));
+            Assert.False(string.IsNullOrWhiteSpace(firstGroup.Name));
+        }
+    }
 }

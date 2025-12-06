@@ -1,11 +1,10 @@
 /* global usings for System namespaces here */
 
 global using System.Diagnostics.CodeAnalysis;
-global using System.Security.Cryptography;
-global using System.Text;
 global using System.Text.Json;
 global using System.Text.RegularExpressions;
 global using System.Net.Mime;
+global using System.IdentityModel.Tokens.Jwt;
 
 /* global usings for Microsoft namespaces here */
 

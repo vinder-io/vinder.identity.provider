@@ -4,6 +4,23 @@ namespace Vinder.IdentityProvider.WebApi.Controllers;
 [Route("api/v1/identity")]
 public sealed class IdentityController(IMediator mediator) : ControllerBase
 {
+    [HttpGet("principal")]
+    [Authorize]
+    [TenantRequired]
+    public async Task<IActionResult> GetPrincipalAsync([FromQuery] InspectPrincipalParameters request, CancellationToken cancellation)
+    {
+        var result = await mediator.Send(request, cancellation);
+
+        return result switch
+        {
+            { IsSuccess: true } when result.Data is not null =>
+                StatusCode(StatusCodes.Status200OK, result.Data),
+
+            { IsFailure: true } when result.Error == UserErrors.UserDoesNotExist =>
+                StatusCode(StatusCodes.Status404NotFound, result.Error),
+        };
+    }
+
     [HttpPost]
     [TenantRequired]
     public async Task<IActionResult> EnrollIdentityAsync(IdentityEnrollmentCredentials request, CancellationToken cancellation)
