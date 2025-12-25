@@ -1,6 +1,7 @@
 namespace Vinder.IdentityProvider.WebApi.Controllers;
 
 [ApiController]
+[TenantRequired]
 [Route("api/v1/tenants")]
 public sealed class TenantsController(IMediator mediator) : ControllerBase
 {
