@@ -7,7 +7,7 @@ public sealed class JwtSecurityTokenService(
     IHostInformationProvider host
 ) : ISecurityTokenService
 {
-    private readonly TimeSpan _accessTokenDuration = TimeSpan.FromMinutes(15);
+    private readonly TimeSpan _accessTokenDuration = TimeSpan.FromHours(2);
     private readonly TimeSpan _refreshTokenDuration = TimeSpan.FromDays(7);
 
     public async Task<Result<SecurityToken>> GenerateAccessTokenAsync(User user, CancellationToken cancellation = default)
@@ -32,6 +32,7 @@ public sealed class JwtSecurityTokenService(
             Subject = claimsIdentity,
             Issuer = host.Address.ToString().TrimEnd('/'),
             SigningCredentials = credentials,
+            NotBefore = DateTime.UtcNow.AddSeconds(-30),
             Expires = DateTime.UtcNow.Add(_accessTokenDuration),
         };
 
@@ -67,6 +68,7 @@ public sealed class JwtSecurityTokenService(
             Audience = tenant.Name,
             Subject = claimsIdentity,
             SigningCredentials = credentials,
+            NotBefore = DateTime.UtcNow.AddSeconds(-30),
             Expires = DateTime.UtcNow.Add(_accessTokenDuration)
         };
 
@@ -102,6 +104,7 @@ public sealed class JwtSecurityTokenService(
             Subject = claimsIdentity,
             Issuer = host.Address.ToString().TrimEnd('/'),
             SigningCredentials = credentials,
+            NotBefore = DateTime.UtcNow.AddSeconds(-30),
             Expires = DateTime.UtcNow.Add(_refreshTokenDuration)
         };
 
@@ -134,7 +137,7 @@ public sealed class JwtSecurityTokenService(
             ValidateLifetime = true,
             IssuerSigningKey = publicKey,
             ValidateIssuerSigningKey = true,
-            ClockSkew = TimeSpan.Zero
+            ClockSkew = TimeSpan.FromSeconds(30)
         };
 
         try
