@@ -21,6 +21,7 @@ public sealed class JwtSecurityTokenServiceTests : IClassFixture<MongoDatabaseFi
     private readonly Mock<ITenantProvider> _tenantProvider = new();
     private readonly Mock<ISecretRepository> _secretRepository = new();
     private readonly Mock<IHostInformationProvider> _hostProvider = new();
+    private readonly Mock<IGroupRepository> _groupRepository = new();
 
     public JwtSecurityTokenServiceTests(MongoDatabaseFixture fixture)
     {
@@ -42,6 +43,9 @@ public sealed class JwtSecurityTokenServiceTests : IClassFixture<MongoDatabaseFi
         _tenantProvider.Setup(provider => provider.GetCurrentTenant())
             .Returns(tenant);
 
+        _groupRepository
+            .Setup(repository => repository.GetGroupsAsync(It.IsAny<GroupFilters>(), It.IsAny<CancellationToken>()))
+            .ReturnsAsync([  ]);
 
         _secretRepository
             .Setup(repository => repository.GetSecretAsync(It.IsAny<CancellationToken>()))
@@ -50,6 +54,7 @@ public sealed class JwtSecurityTokenServiceTests : IClassFixture<MongoDatabaseFi
         _jwtSecurityTokenService = new JwtSecurityTokenService(
             tenantProvider: _tenantProvider.Object,
             secretRepository: _secretRepository.Object,
+            groupRepository: _groupRepository.Object,
             repository: _tokenRepository,
             host: _hostProvider.Object
         );
