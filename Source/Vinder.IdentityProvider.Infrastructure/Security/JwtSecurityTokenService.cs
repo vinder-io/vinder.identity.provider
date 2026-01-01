@@ -4,6 +4,7 @@ public sealed class JwtSecurityTokenService(
     ISecretRepository secretRepository,
     ITokenRepository repository,
     ITenantProvider tenantProvider,
+    IGroupRepository groupRepository,
     IHostInformationProvider host
 ) : ISecurityTokenService
 {
@@ -12,11 +13,27 @@ public sealed class JwtSecurityTokenService(
 
     public async Task<Result<SecurityToken>> GenerateAccessTokenAsync(User user, CancellationToken cancellation = default)
     {
+        var filters = new GroupFiltersBuilder()
+            .WithTenantId(user.TenantId)
+            .Build();
+
+        var matchingGroups = await groupRepository.GetGroupsAsync(filters, cancellation);
+        var groups = matchingGroups
+            .Where(group => user.Groups.Any(userGroup => userGroup.Id == group.Id))
+            .ToList();
+
+        var groupPermissions = groups.SelectMany(group => group.Permissions ?? [  ]);
+        var permissions = user.Permissions
+            .Concat(groupPermissions)
+            .GroupBy(permission => permission.Name)
+            .Select(group => group.First())
+            .ToList();
+
         var tokenHandler = new JwtSecurityTokenHandler();
         var claims = new ClaimsBuilder()
             .WithSubject(user.Id.ToString())
             .WithUsername(user.Username)
-            .WithPermissions(user.Permissions);
+            .WithPermissions(permissions);
 
         var tenant = tenantProvider.GetCurrentTenant();
         var privateKey = await GetPrivateKeyAsync(cancellation);
