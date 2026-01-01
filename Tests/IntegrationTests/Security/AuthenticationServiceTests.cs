@@ -17,6 +17,7 @@ public sealed class AuthenticationServiceTests :
     private readonly Mock<ITenantProvider> _tenantProvider = new();
     private readonly Mock<IHostInformationProvider> _hostProvider = new();
     private readonly Mock<ISecretRepository> _secretRepository = new();
+    private readonly Mock<IGroupRepository> _groupRepository = new();
 
     public AuthenticationServiceTests(MongoDatabaseFixture mongoFixture)
     {
@@ -39,6 +40,10 @@ public sealed class AuthenticationServiceTests :
             .Setup(repository => repository.GetSecretAsync(It.IsAny<CancellationToken>()))
             .ReturnsAsync(secret);
 
+        _groupRepository
+            .Setup(repository => repository.GetGroupsAsync(It.IsAny<GroupFilters>(), It.IsAny<CancellationToken>()))
+            .ReturnsAsync([  ]);
+
         _hostProvider.Setup(provider => provider.Address)
             .Returns(new Uri("http://localhost:5078"));
 
@@ -49,6 +54,7 @@ public sealed class AuthenticationServiceTests :
             secretRepository: _secretRepository.Object,
             repository: tokenRepository,
             tenantProvider: _tenantProvider.Object,
+            groupRepository: _groupRepository.Object,
             host: _hostProvider.Object
         );
 

@@ -16,6 +16,7 @@ global using Vinder.Internal.Essentials.Patterns;
 global using Vinder.Internal.Essentials.Utilities;
 
 global using Vinder.IdentityProvider.Domain.Entities;
+global using Vinder.IdentityProvider.Domain.Filtering;
 global using Vinder.IdentityProvider.Domain.Filtering.Builders;
 global using Vinder.IdentityProvider.Domain.Repositories;
 

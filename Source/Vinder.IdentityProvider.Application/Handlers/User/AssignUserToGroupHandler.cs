@@ -36,17 +36,6 @@ public sealed class AssignUserToGroupHandler(IUserRepository userRepository, IGr
 
         existingUser.Groups.Add(existingGroup);
 
-        var groupPermissions = existingGroup.Permissions ?? [  ];
-        var userPermissions = existingUser.Permissions ?? [  ];
-
-        var newPermissions = groupPermissions
-            .Where(permission => userPermissions.All(existingPermission => existingPermission.Name != permission.Name))
-            .ToList();
-
-        existingUser.Permissions = userPermissions
-            .Concat(newPermissions)
-            .ToList();
-
         await userRepository.UpdateAsync(existingUser, cancellationToken);
 
         return Result.Success();
