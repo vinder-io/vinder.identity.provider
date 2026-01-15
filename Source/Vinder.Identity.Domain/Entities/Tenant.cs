@@ -8,9 +8,6 @@ public sealed class Tenant : Entity
     public string ClientId { get; set; } = default!;
     public string SecretHash { get; set; } = default!;
 
-    public ICollection<string> RedirectUris { get; set; } = [];
-    public ICollection<string> AllowedCorsOrigins { get; set; } = [];
-
     public ICollection<Permission> Permissions { get; set; } = [];
     public ICollection<Scope> Scopes { get; set; } = [];
 }
