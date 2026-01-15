@@ -47,3 +47,4 @@ global using Vinder.Internal.Essentials.Utilities;
 /* global usings for third-party namespaces here */
 
 global using MediatR;
+global using Scalar.AspNetCore;
