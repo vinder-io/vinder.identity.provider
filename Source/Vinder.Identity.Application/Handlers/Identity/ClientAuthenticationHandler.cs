@@ -1,7 +1,7 @@
 namespace Vinder.Identity.Application.Handlers.Identity;
 
 public sealed class ClientAuthenticationHandler(
-    ITenantRepository tenantRepository,
+    ITenantCollection tenantCollection,
     ISecurityTokenService tokenService
 ) : IRequestHandler<ClientAuthenticationCredentials, Result<ClientAuthenticationResult>>
 {
@@ -11,7 +11,7 @@ public sealed class ClientAuthenticationHandler(
             .WithClientId(request.ClientId)
             .Build();
 
-        var tenants = await tenantRepository.GetTenantsAsync(filters, cancellation: cancellationToken);
+        var tenants = await tenantCollection.GetTenantsAsync(filters, cancellation: cancellationToken);
         var tenant = tenants.FirstOrDefault();
 
         if (tenant is null)

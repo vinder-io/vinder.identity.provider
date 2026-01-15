@@ -1,6 +1,6 @@
 namespace Vinder.Identity.Application.Handlers.Permission;
 
-public sealed class PermissionUpdateHandler(IPermissionRepository repository, ITenantProvider tenantProvider) :
+public sealed class PermissionUpdateHandler(IPermissionCollection collection, ITenantProvider tenantProvider) :
     IRequestHandler<PermissionUpdateScheme, Result<PermissionDetailsScheme>>
 {
     public async Task<Result<PermissionDetailsScheme>> Handle(PermissionUpdateScheme request, CancellationToken cancellationToken)
@@ -10,7 +10,7 @@ public sealed class PermissionUpdateHandler(IPermissionRepository repository, IT
             .WithIdentifier(request.PermissionId)
             .Build();
 
-        var permissions = await repository.GetPermissionsAsync(filters, cancellation: cancellationToken);
+        var permissions = await collection.GetPermissionsAsync(filters, cancellation: cancellationToken);
         var permission = permissions.FirstOrDefault();
 
         if (permission is null)
@@ -20,7 +20,7 @@ public sealed class PermissionUpdateHandler(IPermissionRepository repository, IT
 
         permission = PermissionMapper.AsPermission(request, permission, tenant);
 
-        var updatedPermission = await repository.UpdateAsync(permission, cancellation: cancellationToken);
+        var updatedPermission = await collection.UpdateAsync(permission, cancellation: cancellationToken);
 
         return Result<PermissionDetailsScheme>.Success(PermissionMapper.AsResponse(updatedPermission));
     }

@@ -1,6 +1,6 @@
 namespace Vinder.Identity.Application.Handlers.Group;
 
-public sealed class AssignPermissionToGroupHandler(IGroupRepository groupRepository, IPermissionRepository permissionRepository) :
+public sealed class AssignPermissionToGroupHandler(IGroupCollection groupCollection, IPermissionCollection permissionCollection) :
     IRequestHandler<AssignGroupPermissionScheme, Result<GroupDetailsScheme>>
 {
     public async Task<Result<GroupDetailsScheme>> Handle(
@@ -14,7 +14,7 @@ public sealed class AssignPermissionToGroupHandler(IGroupRepository groupReposit
             .WithName(request.PermissionName.ToLower())
             .Build();
 
-        var groups = await groupRepository.GetGroupsAsync(groupFilters, cancellation: cancellationToken);
+        var groups = await groupCollection.GetGroupsAsync(groupFilters, cancellation: cancellationToken);
         var group = groups.FirstOrDefault();
 
         if (group is null)
@@ -22,7 +22,7 @@ public sealed class AssignPermissionToGroupHandler(IGroupRepository groupReposit
             return Result<GroupDetailsScheme>.Failure(GroupErrors.GroupDoesNotExist);
         }
 
-        var permissions = await permissionRepository.GetPermissionsAsync(permissionFilters, cancellation: cancellationToken);
+        var permissions = await permissionCollection.GetPermissionsAsync(permissionFilters, cancellation: cancellationToken);
         var existingPermission = permissions.FirstOrDefault();
 
         if (existingPermission is null)
@@ -37,7 +37,7 @@ public sealed class AssignPermissionToGroupHandler(IGroupRepository groupReposit
 
         group.Permissions.Add(existingPermission);
 
-        await groupRepository.UpdateAsync(group, cancellation: cancellationToken);
+        await groupCollection.UpdateAsync(group, cancellation: cancellationToken);
 
         return Result<GroupDetailsScheme>.Success(GroupMapper.AsResponse(group));
     }

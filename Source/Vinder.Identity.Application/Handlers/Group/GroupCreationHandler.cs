@@ -1,6 +1,6 @@
 namespace Vinder.Identity.Application.Handlers.Group;
 
-public sealed class GroupCreationHandler(IGroupRepository groupRepository, ITenantProvider tenantProvider) :
+public sealed class GroupCreationHandler(IGroupCollection groupCollection, ITenantProvider tenantProvider) :
     IRequestHandler<GroupCreationScheme, Result<GroupDetailsScheme>>
 {
     public async Task<Result<GroupDetailsScheme>> Handle(
@@ -13,7 +13,7 @@ public sealed class GroupCreationHandler(IGroupRepository groupRepository, ITena
             .WithName(group.Name)
             .Build();
 
-        var groups = await groupRepository.GetGroupsAsync(filters, cancellation: cancellationToken);
+        var groups = await groupCollection.GetGroupsAsync(filters, cancellation: cancellationToken);
         var existingGroup = groups.FirstOrDefault();
 
         if (existingGroup is not null)
@@ -21,7 +21,7 @@ public sealed class GroupCreationHandler(IGroupRepository groupRepository, ITena
             return Result<GroupDetailsScheme>.Failure(GroupErrors.GroupAlreadyExists);
         }
 
-        await groupRepository.InsertAsync(group, cancellation: cancellationToken);
+        await groupCollection.InsertAsync(group, cancellation: cancellationToken);
 
         return Result<GroupDetailsScheme>.Success(GroupMapper.AsResponse(group));
     }

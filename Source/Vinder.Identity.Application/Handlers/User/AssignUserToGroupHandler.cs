@@ -1,6 +1,6 @@
 namespace Vinder.Identity.Application.Handlers.User;
 
-public sealed class AssignUserToGroupHandler(IUserRepository userRepository, IGroupRepository groupRepository) :
+public sealed class AssignUserToGroupHandler(IUserCollection userCollection, IGroupCollection groupCollection) :
     IRequestHandler<AssignUserToGroupScheme, Result>
 {
     public async Task<Result> Handle(AssignUserToGroupScheme request, CancellationToken cancellationToken)
@@ -9,7 +9,7 @@ public sealed class AssignUserToGroupHandler(IUserRepository userRepository, IGr
             .WithIdentifier(request.UserId)
             .Build();
 
-        var matchingUsers = await userRepository.GetUsersAsync(userFilters, cancellationToken);
+        var matchingUsers = await userCollection.GetUsersAsync(userFilters, cancellationToken);
         var existingUser = matchingUsers.FirstOrDefault();
 
         if (existingUser is null)
@@ -21,7 +21,7 @@ public sealed class AssignUserToGroupHandler(IUserRepository userRepository, IGr
             .WithIdentifier(request.GroupId)
             .Build();
 
-        var matchingGroups = await groupRepository.GetGroupsAsync(groupFilters, cancellationToken);
+        var matchingGroups = await groupCollection.GetGroupsAsync(groupFilters, cancellationToken);
         var existingGroup = matchingGroups.FirstOrDefault();
 
         if (existingGroup is null)
@@ -36,7 +36,7 @@ public sealed class AssignUserToGroupHandler(IUserRepository userRepository, IGr
 
         existingUser.Groups.Add(existingGroup);
 
-        await userRepository.UpdateAsync(existingUser, cancellationToken);
+        await userCollection.UpdateAsync(existingUser, cancellationToken);
 
         return Result.Success();
     }

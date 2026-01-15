@@ -1,6 +1,6 @@
 namespace Vinder.Identity.Application.Handlers.User;
 
-public sealed class AssignUserPermissionHandler(IUserRepository userRepository, IPermissionRepository permissionRepository) :
+public sealed class AssignUserPermissionHandler(IUserCollection userCollection, IPermissionCollection permissionCollection) :
     IRequestHandler<AssignUserPermissionScheme, Result>
 {
     public async Task<Result> Handle(AssignUserPermissionScheme request, CancellationToken cancellationToken)
@@ -13,7 +13,7 @@ public sealed class AssignUserPermissionHandler(IUserRepository userRepository, 
             .WithName(request.PermissionName.ToLower())
             .Build();
 
-        var users = await userRepository.GetUsersAsync(userFilters, cancellation: cancellationToken);
+        var users = await userCollection.GetUsersAsync(userFilters, cancellation: cancellationToken);
         var user = users.FirstOrDefault();
 
         if (user is null)
@@ -21,7 +21,7 @@ public sealed class AssignUserPermissionHandler(IUserRepository userRepository, 
             return Result.Failure(UserErrors.UserDoesNotExist);
         }
 
-        var permissions = await permissionRepository.GetPermissionsAsync(permissionFilters, cancellation: cancellationToken);
+        var permissions = await permissionCollection.GetPermissionsAsync(permissionFilters, cancellation: cancellationToken);
         var existingPermission = permissions.FirstOrDefault();
 
         if (existingPermission is null)
@@ -36,7 +36,7 @@ public sealed class AssignUserPermissionHandler(IUserRepository userRepository, 
 
         user.Permissions.Add(existingPermission);
 
-        await userRepository.UpdateAsync(user, cancellation: cancellationToken);
+        await userCollection.UpdateAsync(user, cancellation: cancellationToken);
 
         return Result.Success();
     }

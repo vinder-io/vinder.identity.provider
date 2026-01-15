@@ -35,11 +35,11 @@ public sealed class JwtSecurityTokenServiceTests : IClassFixture<MongoDatabaseFi
             .Returns(tenant);
 
         _groupCollection
-            .Setup(repository => repository.GetGroupsAsync(It.IsAny<GroupFilters>(), It.IsAny<CancellationToken>()))
+            .Setup(collection => collection.GetGroupsAsync(It.IsAny<GroupFilters>(), It.IsAny<CancellationToken>()))
             .ReturnsAsync([  ]);
 
         _secretCollection
-            .Setup(repository => repository.GetSecretAsync(It.IsAny<CancellationToken>()))
+            .Setup(collection => collection.GetSecretAsync(It.IsAny<CancellationToken>()))
             .ReturnsAsync(secret);
 
         _jwtSecurityTokenService = new JwtSecurityTokenService(

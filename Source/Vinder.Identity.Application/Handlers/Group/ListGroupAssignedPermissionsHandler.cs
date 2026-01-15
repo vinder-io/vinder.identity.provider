@@ -1,6 +1,6 @@
 namespace Vinder.Identity.Application.Handlers.Group;
 
-public sealed class ListGroupAssignedPermissionsHandler(IGroupRepository repository) :
+public sealed class ListGroupAssignedPermissionsHandler(IGroupCollection collection) :
     IRequestHandler<ListGroupAssignedPermissionsParameters, Result<IReadOnlyCollection<PermissionDetailsScheme>>>
 {
     public async Task<Result<IReadOnlyCollection<PermissionDetailsScheme>>> Handle(
@@ -10,7 +10,7 @@ public sealed class ListGroupAssignedPermissionsHandler(IGroupRepository reposit
             .WithIdentifier(request.GroupId)
             .Build();
 
-        var groups = await repository.GetGroupsAsync(filters, cancellationToken);
+        var groups = await collection.GetGroupsAsync(filters, cancellationToken);
         var group = groups.FirstOrDefault();
 
         return group is not null

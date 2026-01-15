@@ -35,11 +35,11 @@ public sealed class AuthenticationServiceTests :
         var tenant = _fixture.Create<Tenant>();
 
         _secretCollection
-            .Setup(repository => repository.GetSecretAsync(It.IsAny<CancellationToken>()))
+            .Setup(collection => collection.GetSecretAsync(It.IsAny<CancellationToken>()))
             .ReturnsAsync(secret);
 
         _groupCollection
-            .Setup(repository => repository.GetGroupsAsync(It.IsAny<GroupFilters>(), It.IsAny<CancellationToken>()))
+            .Setup(collection => collection.GetGroupsAsync(It.IsAny<GroupFilters>(), It.IsAny<CancellationToken>()))
             .ReturnsAsync([  ]);
 
         _hostProvider.Setup(provider => provider.Address)
@@ -66,7 +66,7 @@ public sealed class AuthenticationServiceTests :
     [Fact(DisplayName = "[security] - when valid credentials are provided, then returns access and refresh tokens")]
     public async Task WhenValidCredentialsAreProvided_ThenReturnsAccessAndRefreshTokens()
     {
-        /* arrange: create a user with a known password and insert into repository */
+        /* arrange: create a user with a known password and insert into collection */
         var tenant = _fixture.Create<Tenant>();
 
         _tenantProvider.Setup(provider => provider.GetCurrentTenant())

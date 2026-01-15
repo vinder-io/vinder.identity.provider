@@ -1,6 +1,6 @@
 namespace Vinder.Identity.Application.Handlers.Tenant;
 
-public sealed class TenantUpdateHandler(ITenantRepository repository) :
+public sealed class TenantUpdateHandler(ITenantCollection collection) :
     IRequestHandler<TenantUpdateScheme, Result<TenantDetailsScheme>>
 {
     public async Task<Result<TenantDetailsScheme>> Handle(TenantUpdateScheme request, CancellationToken cancellationToken)
@@ -9,7 +9,7 @@ public sealed class TenantUpdateHandler(ITenantRepository repository) :
             .WithIdentifier(request.TenantId)
             .Build();
 
-        var tenants = await repository.GetTenantsAsync(filters, cancellation: cancellationToken);
+        var tenants = await collection.GetTenantsAsync(filters, cancellation: cancellationToken);
         var tenant = tenants.FirstOrDefault();
 
         if (tenant is null)
@@ -19,7 +19,7 @@ public sealed class TenantUpdateHandler(ITenantRepository repository) :
 
         tenant = TenantMapper.AsTenant(request, tenant);
 
-        var updatedTenant = await repository.UpdateAsync(tenant, cancellation: cancellationToken);
+        var updatedTenant = await collection.UpdateAsync(tenant, cancellation: cancellationToken);
 
         return Result<TenantDetailsScheme>.Success(TenantMapper.AsResponse(updatedTenant));
     }

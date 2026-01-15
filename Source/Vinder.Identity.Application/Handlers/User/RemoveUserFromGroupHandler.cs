@@ -1,6 +1,6 @@
 namespace Vinder.Identity.Application.Handlers.User;
 
-public sealed class RemoveUserFromGroupHandler(IUserRepository userRepository, IGroupRepository groupRepository) :
+public sealed class RemoveUserFromGroupHandler(IUserCollection userCollection, IGroupCollection groupCollection) :
     IRequestHandler<RemoveUserFromGroupScheme, Result>
 {
     public async Task<Result> Handle(RemoveUserFromGroupScheme request, CancellationToken cancellationToken)
@@ -13,10 +13,10 @@ public sealed class RemoveUserFromGroupHandler(IUserRepository userRepository, I
             .WithIdentifier(request.GroupId)
             .Build();
 
-        var users = await userRepository.GetUsersAsync(userFilters, cancellationToken);
+        var users = await userCollection.GetUsersAsync(userFilters, cancellationToken);
         var user = users.FirstOrDefault();
 
-        var groups = await groupRepository.GetGroupsAsync(groupFilters, cancellationToken);
+        var groups = await groupCollection.GetGroupsAsync(groupFilters, cancellationToken);
         var group = groups.FirstOrDefault();
 
         if (user is null)
@@ -43,7 +43,7 @@ public sealed class RemoveUserFromGroupHandler(IUserRepository userRepository, I
 
         user.Groups.Remove(groupToRemove);
 
-        await userRepository.UpdateAsync(user, cancellationToken);
+        await userCollection.UpdateAsync(user, cancellationToken);
 
         return Result.Success();
     }

@@ -1,6 +1,6 @@
 namespace Vinder.Identity.Application.Handlers.Tenant;
 
-public sealed class FetchTenantsHandler(ITenantRepository repository) :
+public sealed class FetchTenantsHandler(ITenantCollection collection) :
     IRequestHandler<TenantFetchParameters, Result<Pagination<TenantDetailsScheme>>>
 {
     public async Task<Result<Pagination<TenantDetailsScheme>>> Handle(
@@ -8,8 +8,8 @@ public sealed class FetchTenantsHandler(ITenantRepository repository) :
     {
         var filters = TenantMapper.AsFilters(parameters);
 
-        var tenants = await repository.GetTenantsAsync(filters, cancellationToken);
-        var totalTenants = await repository.CountAsync(filters, cancellationToken);
+        var tenants = await collection.GetTenantsAsync(filters, cancellationToken);
+        var totalTenants = await collection.CountAsync(filters, cancellationToken);
 
         var pagination = new Pagination<TenantDetailsScheme>
         {

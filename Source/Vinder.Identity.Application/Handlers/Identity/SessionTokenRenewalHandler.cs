@@ -1,6 +1,6 @@
 namespace Vinder.Identity.Application.Handlers.Identity;
 
-public sealed class SessionTokenRenewalHandler(IUserRepository userRepository, ISecurityTokenService tokenService) :
+public sealed class SessionTokenRenewalHandler(IUserCollection userCollection, ISecurityTokenService tokenService) :
     IRequestHandler<SessionTokenRenewalScheme, Result<AuthenticationResult>>
 {
     public async Task<Result<AuthenticationResult>> Handle(SessionTokenRenewalScheme request, CancellationToken cancellationToken)
@@ -23,7 +23,7 @@ public sealed class SessionTokenRenewalHandler(IUserRepository userRepository, I
             .WithSecurityToken(refreshToken.Value)
             .Build();
 
-        var users = await userRepository.GetUsersAsync(userFilters, cancellation: cancellationToken);
+        var users = await userCollection.GetUsersAsync(userFilters, cancellation: cancellationToken);
         var user = users.FirstOrDefault();
 
         if (user is null)

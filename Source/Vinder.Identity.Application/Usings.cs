@@ -1,12 +1,11 @@
 /* global usings for System namespaces here */
 
 global using System.Text.Json.Serialization;
-global using System.Security.Cryptography;
 
 /* global usings for Vinder namespaces here */
 
 global using Vinder.Internal.Essentials.Patterns;
-global using Vinder.Internal.Essentials.Filters;
+global using Vinder.Internal.Essentials.Filtering;
 
 global using Vinder.Identity.Domain.Errors;
 global using Vinder.Identity.Common.Constants;

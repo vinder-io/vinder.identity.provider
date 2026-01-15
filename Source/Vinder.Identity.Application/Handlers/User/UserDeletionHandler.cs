@@ -1,6 +1,6 @@
 namespace Vinder.Identity.Application.Handlers.User;
 
-public sealed class UserDeletionHandler(IUserRepository repository) : IRequestHandler<UserDeletionScheme, Result>
+public sealed class UserDeletionHandler(IUserCollection collection) : IRequestHandler<UserDeletionScheme, Result>
 {
     public async Task<Result> Handle(UserDeletionScheme request, CancellationToken cancellationToken)
     {
@@ -8,7 +8,7 @@ public sealed class UserDeletionHandler(IUserRepository repository) : IRequestHa
             .WithIdentifier(request.UserId)
             .Build();
 
-        var users = await repository.GetUsersAsync(filters, cancellation: cancellationToken);
+        var users = await collection.GetUsersAsync(filters, cancellation: cancellationToken);
         var user = users.FirstOrDefault();
 
         if (user is null)
@@ -16,7 +16,7 @@ public sealed class UserDeletionHandler(IUserRepository repository) : IRequestHa
             return Result.Failure(UserErrors.UserDoesNotExist);
         }
 
-        await repository.DeleteAsync(user, cancellation: cancellationToken);
+        await collection.DeleteAsync(user, cancellation: cancellationToken);
 
         return Result.Success();
     }

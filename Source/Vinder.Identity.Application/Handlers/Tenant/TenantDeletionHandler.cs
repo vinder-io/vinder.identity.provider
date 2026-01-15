@@ -1,6 +1,6 @@
 namespace Vinder.Identity.Application.Handlers.Tenant;
 
-public sealed class TenantDeletionHandler(ITenantRepository repository) : IRequestHandler<TenantDeletionScheme, Result>
+public sealed class TenantDeletionHandler(ITenantCollection collection) : IRequestHandler<TenantDeletionScheme, Result>
 {
     public async Task<Result> Handle(TenantDeletionScheme request, CancellationToken cancellationToken)
     {
@@ -8,7 +8,7 @@ public sealed class TenantDeletionHandler(ITenantRepository repository) : IReque
             .WithIdentifier(request.TenantId)
             .Build();
 
-        var tenants = await repository.GetTenantsAsync(filters, cancellation: cancellationToken);
+        var tenants = await collection.GetTenantsAsync(filters, cancellation: cancellationToken);
         var tenant = tenants.FirstOrDefault();
 
         if (tenant is null)
@@ -16,7 +16,7 @@ public sealed class TenantDeletionHandler(ITenantRepository repository) : IReque
             return Result.Failure(TenantErrors.TenantDoesNotExist);
         }
 
-        await repository.DeleteAsync(tenant, cancellation: cancellationToken);
+        await collection.DeleteAsync(tenant, cancellation: cancellationToken);
 
         return Result.Success();
     }

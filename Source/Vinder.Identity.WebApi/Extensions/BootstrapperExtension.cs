@@ -7,10 +7,10 @@ public static class BootstrapperExtension
     {
         using var scope = builder.ApplicationServices.CreateScope();
 
-        var tenantRepository = scope.ServiceProvider.GetRequiredService<ITenantCollection>();
-        var userRepository = scope.ServiceProvider.GetRequiredService<IUserCollection>();
+        var tenantCollection = scope.ServiceProvider.GetRequiredService<ITenantCollection>();
+        var userCollection = scope.ServiceProvider.GetRequiredService<IUserCollection>();
         var scopeRepository = scope.ServiceProvider.GetRequiredService<IScopeCollection>();
-        var permissionRepository = scope.ServiceProvider.GetRequiredService<IPermissionCollection>();
+        var permissionCollection = scope.ServiceProvider.GetRequiredService<IPermissionCollection>();
 
         var tenantProvider = scope.ServiceProvider.GetRequiredService<ITenantProvider>();
         var credentialsGenerator = scope.ServiceProvider.GetRequiredService<IClientCredentialsGenerator>();
@@ -24,7 +24,7 @@ public static class BootstrapperExtension
             .WithName("master")
             .Build();
 
-        var tenants = await tenantRepository.GetTenantsAsync(tenantFilters, cancellation: default);
+        var tenants = await tenantCollection.GetTenantsAsync(tenantFilters, cancellation: default);
         var tenant = tenants.FirstOrDefault();
 
         if (tenant is not null)
@@ -72,15 +72,15 @@ public static class BootstrapperExtension
 
         tenantProvider.SetTenant(defaultTenant);
 
-        await tenantRepository.InsertAsync(defaultTenant);
+        await tenantCollection.InsertAsync(defaultTenant);
         await scopeRepository.InsertManyAsync(scopes);
-        await permissionRepository.InsertManyAsync(defaultTenant.Permissions);
+        await permissionCollection.InsertManyAsync(defaultTenant.Permissions);
 
         var userFilters = new UserFiltersBuilder()
             .WithUsername(settings.Administration.Username)
             .Build();
 
-        var existingUsers = await userRepository.GetUsersAsync(userFilters);
+        var existingUsers = await userCollection.GetUsersAsync(userFilters);
         var rootUser = existingUsers.FirstOrDefault();
 
         if (rootUser is null)
@@ -93,7 +93,7 @@ public static class BootstrapperExtension
                 PasswordHash = await passwordHasher.HashPasswordAsync(settings.Administration.Password)
             };
 
-            await userRepository.InsertAsync(rootUser);
+            await userCollection.InsertAsync(rootUser);
         }
     }
 }

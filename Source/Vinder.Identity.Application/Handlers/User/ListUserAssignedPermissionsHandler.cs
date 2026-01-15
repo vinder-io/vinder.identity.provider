@@ -1,6 +1,6 @@
 namespace Vinder.Identity.Application.Handlers.User;
 
-public sealed class ListUserAssignedPermissionsHandler(IUserRepository repository) :
+public sealed class ListUserAssignedPermissionsHandler(IUserCollection collection) :
     IRequestHandler<ListUserAssignedPermissionsParameters, Result<IReadOnlyCollection<PermissionDetailsScheme>>>
 {
     public async Task<Result<IReadOnlyCollection<PermissionDetailsScheme>>> Handle(
@@ -10,7 +10,7 @@ public sealed class ListUserAssignedPermissionsHandler(IUserRepository repositor
             .WithIdentifier(request.UserId)
             .Build();
 
-        var users = await repository.GetUsersAsync(filters, cancellationToken);
+        var users = await collection.GetUsersAsync(filters, cancellationToken);
         var user = users.FirstOrDefault();
 
         return user is not null

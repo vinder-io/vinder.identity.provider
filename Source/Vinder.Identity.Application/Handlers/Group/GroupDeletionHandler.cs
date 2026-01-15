@@ -1,6 +1,6 @@
 namespace Vinder.Identity.Application.Handlers.Group;
 
-public sealed class GroupDeletionHandler(IGroupRepository repository) : IRequestHandler<GroupDeletionScheme, Result>
+public sealed class GroupDeletionHandler(IGroupCollection collection) : IRequestHandler<GroupDeletionScheme, Result>
 {
     public async Task<Result> Handle(GroupDeletionScheme request, CancellationToken cancellationToken)
     {
@@ -8,7 +8,7 @@ public sealed class GroupDeletionHandler(IGroupRepository repository) : IRequest
             .WithIdentifier(request.GroupId)
             .Build();
 
-        var groups = await repository.GetGroupsAsync(filters, cancellation: cancellationToken);
+        var groups = await collection.GetGroupsAsync(filters, cancellation: cancellationToken);
         var group = groups.FirstOrDefault();
 
         if (group is null)
@@ -16,7 +16,7 @@ public sealed class GroupDeletionHandler(IGroupRepository repository) : IRequest
             return Result.Failure(GroupErrors.GroupDoesNotExist);
         }
 
-        await repository.DeleteAsync(group, cancellation: cancellationToken);
+        await collection.DeleteAsync(group, cancellation: cancellationToken);
 
         return Result.Success();
     }

@@ -1,6 +1,6 @@
 namespace Vinder.Identity.Application.Handlers.Permission;
 
-public sealed class PermissionCreationHandler(IPermissionRepository repository, ITenantProvider tenantProvider) :
+public sealed class PermissionCreationHandler(IPermissionCollection collection, ITenantProvider tenantProvider) :
     IRequestHandler<PermissionCreationScheme, Result<PermissionDetailsScheme>>
 {
     public async Task<Result<PermissionDetailsScheme>> Handle(PermissionCreationScheme request, CancellationToken cancellationToken)
@@ -10,7 +10,7 @@ public sealed class PermissionCreationHandler(IPermissionRepository repository, 
             .WithName(request.Name)
             .Build();
 
-        var permissions = await repository.GetPermissionsAsync(filters, cancellation: cancellationToken);
+        var permissions = await collection.GetPermissionsAsync(filters, cancellation: cancellationToken);
         var existingPermission = permissions.FirstOrDefault();
 
         if (existingPermission is not null)
@@ -19,7 +19,7 @@ public sealed class PermissionCreationHandler(IPermissionRepository repository, 
         }
 
         var permission = PermissionMapper.AsPermission(request, tenant);
-        var createdPermission = await repository.InsertAsync(permission, cancellation: cancellationToken);
+        var createdPermission = await collection.InsertAsync(permission, cancellation: cancellationToken);
 
         return Result<PermissionDetailsScheme>.Success(PermissionMapper.AsResponse(createdPermission));
     }

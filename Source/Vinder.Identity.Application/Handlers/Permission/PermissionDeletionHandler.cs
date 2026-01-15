@@ -1,6 +1,6 @@
 namespace Vinder.Identity.Application.Handlers.Permission;
 
-public sealed class PermissionDeletionHandler(IPermissionRepository repository) : IRequestHandler<PermissionDeletionScheme, Result>
+public sealed class PermissionDeletionHandler(IPermissionCollection collection) : IRequestHandler<PermissionDeletionScheme, Result>
 {
     public async Task<Result> Handle(PermissionDeletionScheme request, CancellationToken cancellationToken)
     {
@@ -8,7 +8,7 @@ public sealed class PermissionDeletionHandler(IPermissionRepository repository) 
             .WithIdentifier(request.PermissionId)
             .Build();
 
-        var permissions = await repository.GetPermissionsAsync(filters, cancellation: cancellationToken);
+        var permissions = await collection.GetPermissionsAsync(filters, cancellation: cancellationToken);
         var permission = permissions.FirstOrDefault();
 
         if (permission is null)
@@ -16,7 +16,7 @@ public sealed class PermissionDeletionHandler(IPermissionRepository repository) 
             return Result.Failure(PermissionErrors.PermissionDoesNotExist);
         }
 
-        await repository.DeleteAsync(permission, cancellation: cancellationToken);
+        await collection.DeleteAsync(permission, cancellation: cancellationToken);
 
         return Result.Success();
     }

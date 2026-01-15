@@ -1,7 +1,7 @@
 namespace Vinder.Identity.Application.Handlers.Identity;
 
 public sealed class IdentityEnrollmentHandler(
-    IUserRepository userRepository,
+    IUserCollection userCollection,
     IPasswordHasher passwordHasher,
     ITenantProvider tenantProvider
 ) : IRequestHandler<IdentityEnrollmentCredentials, Result<UserDetailsScheme>>
@@ -12,7 +12,7 @@ public sealed class IdentityEnrollmentHandler(
             .WithUsername(request.Username)
             .Build();
 
-        var users = await userRepository.GetUsersAsync(filters, cancellationToken);
+        var users = await userCollection.GetUsersAsync(filters, cancellationToken);
         var user = users.FirstOrDefault();
 
         if (user is not null)
@@ -25,7 +25,7 @@ public sealed class IdentityEnrollmentHandler(
 
         identity.PasswordHash = await passwordHasher.HashPasswordAsync(request.Password);
 
-        await userRepository.InsertAsync(identity, cancellationToken);
+        await userCollection.InsertAsync(identity, cancellation: cancellationToken);
 
         return Result<UserDetailsScheme>.Success(UserMapper.AsResponse(identity));
     }
