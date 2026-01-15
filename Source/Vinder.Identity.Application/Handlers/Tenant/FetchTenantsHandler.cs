@@ -4,7 +4,7 @@ public sealed class FetchTenantsHandler(ITenantCollection collection) :
     IMessageHandler<TenantFetchParameters, Result<Pagination<TenantDetailsScheme>>>
 {
     public async Task<Result<Pagination<TenantDetailsScheme>>> HandleAsync(
-        TenantFetchParameters parameters, CancellationToken cancellation)
+        TenantFetchParameters parameters, CancellationToken cancellation = default)
     {
         var filters = TenantMapper.AsFilters(parameters);
 

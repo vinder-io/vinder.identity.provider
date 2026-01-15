@@ -3,7 +3,7 @@ namespace Vinder.Identity.Application.Handlers.Tenant;
 public sealed class RevokeTenantPermissionHandler(ITenantCollection tenantCollection, IPermissionCollection permissionCollection) :
     IMessageHandler<RevokeTenantPermissionScheme, Result>
 {
-    public async Task<Result> HandleAsync(RevokeTenantPermissionScheme parameters, CancellationToken cancellation)
+    public async Task<Result> HandleAsync(RevokeTenantPermissionScheme parameters, CancellationToken cancellation = default)
     {
         var permissionFilters = new PermissionFiltersBuilder()
             .WithIdentifier(parameters.PermissionId)

@@ -4,7 +4,7 @@ public sealed class TenantCreationHandler(ITenantCollection collection, IClientC
     IMessageHandler<TenantCreationScheme, Result<TenantDetailsScheme>>
 {
     public async Task<Result<TenantDetailsScheme>> HandleAsync(
-        TenantCreationScheme parameters, CancellationToken cancellation)
+        TenantCreationScheme parameters, CancellationToken cancellation = default)
     {
         var filters = new TenantFiltersBuilder()
             .WithName(parameters.Name)

@@ -4,7 +4,7 @@ public sealed class AssignPermissionToTenantHandler(ITenantCollection tenantColl
     IMessageHandler<AssignTenantPermissionScheme, Result<IReadOnlyCollection<PermissionDetailsScheme>>>
 {
     public async Task<Result<IReadOnlyCollection<PermissionDetailsScheme>>> HandleAsync(
-        AssignTenantPermissionScheme parameters, CancellationToken cancellationToken)
+        AssignTenantPermissionScheme parameters, CancellationToken cancellation = default)
     {
         var tenantFilters = new TenantFiltersBuilder()
             .WithIdentifier(parameters.TenantId)
@@ -14,7 +14,7 @@ public sealed class AssignPermissionToTenantHandler(ITenantCollection tenantColl
             .WithName(parameters.PermissionName.ToLower())
             .Build();
 
-        var tenants = await tenantCollection.GetTenantsAsync(tenantFilters, cancellation: cancellationToken);
+        var tenants = await tenantCollection.GetTenantsAsync(tenantFilters, cancellation: cancellation);
         var tenant = tenants.FirstOrDefault();
 
         if (tenant is null)
@@ -22,7 +22,7 @@ public sealed class AssignPermissionToTenantHandler(ITenantCollection tenantColl
             return Result<IReadOnlyCollection<PermissionDetailsScheme>>.Failure(TenantErrors.TenantDoesNotExist);
         }
 
-        var permissions = await permissionCollection.GetPermissionsAsync(permissionFilters, cancellation: cancellationToken);
+        var permissions = await permissionCollection.GetPermissionsAsync(permissionFilters, cancellation: cancellation);
         var existingPermission = permissions.FirstOrDefault();
 
         if (existingPermission is null)
@@ -37,7 +37,7 @@ public sealed class AssignPermissionToTenantHandler(ITenantCollection tenantColl
 
         tenant.Permissions.Add(existingPermission);
 
-        await tenantCollection.UpdateAsync(tenant, cancellation: cancellationToken);
+        await tenantCollection.UpdateAsync(tenant, cancellation: cancellation);
 
         return Result<IReadOnlyCollection<PermissionDetailsScheme>>.Success(PermissionMapper.AsResponse(tenant.Permissions));
     }
