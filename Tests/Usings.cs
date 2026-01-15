@@ -31,6 +31,8 @@ global using Vinder.Identity.Application.Providers;
 global using Vinder.Identity.Application.Payloads.Identity;
 global using Vinder.Identity.Application.Payloads.User;
 global using Vinder.Identity.Application.Payloads.Scope;
+global using Vinder.Identity.Application.Payloads.Tenant;
+global using Vinder.Identity.Application.Payloads.Permission;
 
 global using Vinder.Identity.Infrastructure.Persistence;
 global using Vinder.Identity.Infrastructure.Security;
