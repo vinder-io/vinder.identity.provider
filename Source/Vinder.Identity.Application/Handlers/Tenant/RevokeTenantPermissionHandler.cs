@@ -29,13 +29,7 @@ public sealed class RevokeTenantPermissionHandler(ITenantCollection tenantCollec
             return Result.Failure(PermissionErrors.PermissionDoesNotExist);
         }
 
-        #pragma warning disable S1764
-
-        // sonar suggests changing the lambda parameter name to avoid confusion,
-        // but we prefer keeping it as 'permission' for readability. it does not interfere
-        // with the outer variable because C# differentiates the lambda parameter from the argument.
-
-        var permissionToRemove = tenant.Permissions.FirstOrDefault(permission => permission.Id == permission.Id);
+        var permissionToRemove = tenant.Permissions.FirstOrDefault(p => p.Id == permission.Id);
         if (permissionToRemove is null)
         {
             return Result.Failure(TenantErrors.PermissionNotAssigned);
