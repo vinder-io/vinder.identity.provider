@@ -1,4 +1,4 @@
-namespace Vinder.Identity.Domain.Repositories;
+namespace Vinder.Identity.Domain.Collections;
 
 public interface IScopeRepository : IAggregateCollection<Scope>
 {
