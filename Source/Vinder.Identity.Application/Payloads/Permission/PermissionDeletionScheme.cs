@@ -1,6 +1,6 @@
 namespace Vinder.Identity.Application.Payloads.Permission;
 
-public sealed record PermissionDeletionScheme : IRequest<Result>
+public sealed record PermissionDeletionScheme : IMessage<Result>
 {
     public string PermissionId { get; init; } = default!;
 }

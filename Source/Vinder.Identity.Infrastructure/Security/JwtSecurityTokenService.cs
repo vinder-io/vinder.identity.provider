@@ -1,10 +1,10 @@
 namespace Vinder.Identity.Infrastructure.Security;
 
 public sealed class JwtSecurityTokenService(
-    ISecretRepository secretRepository,
-    ITokenRepository repository,
+    ISecretCollection secretCollection,
+    ITokenCollection tokenCollection,
     ITenantProvider tenantProvider,
-    IGroupRepository groupRepository,
+    IGroupCollection groupCollection,
     IHostInformationProvider host
 ) : ISecurityTokenService
 {
@@ -17,7 +17,7 @@ public sealed class JwtSecurityTokenService(
             .WithTenantId(user.TenantId)
             .Build();
 
-        var matchingGroups = await groupRepository.GetGroupsAsync(filters, cancellation);
+        var matchingGroups = await groupCollection.GetGroupsAsync(filters, cancellation);
         var groups = matchingGroups
             .Where(group => user.Groups.Any(userGroup => userGroup.Id == group.Id))
             .ToList();
@@ -137,7 +137,7 @@ public sealed class JwtSecurityTokenService(
             ExpiresAt = tokenDescriptor.Expires.Value,
         };
 
-        await repository.InsertAsync(securityToken, cancellation);
+        await tokenCollection.InsertAsync(securityToken, cancellation: cancellation);
 
         return Result<SecurityToken>.Success(securityToken);
     }
@@ -183,7 +183,7 @@ public sealed class JwtSecurityTokenService(
             .WithType(TokenType.Refresh)
             .Build();
 
-        var tokens = await repository.GetTokensAsync(filters, cancellation);
+        var tokens = await tokenCollection.GetTokensAsync(filters, cancellation);
         var existingToken = tokens.FirstOrDefault();
 
         if (existingToken is null)
@@ -199,7 +199,7 @@ public sealed class JwtSecurityTokenService(
         existingToken.Revoked = true;
         existingToken.IsDeleted = true;
 
-        await repository.UpdateAsync(existingToken, cancellation);
+        await tokenCollection.UpdateAsync(existingToken, cancellation);
 
         return Result.Success();
     }
@@ -211,13 +211,13 @@ public sealed class JwtSecurityTokenService(
 
     private async Task<RsaSecurityKey> GetPrivateKeyAsync(CancellationToken cancellation = default)
     {
-        var secret = await secretRepository.GetSecretAsync(cancellation);
+        var secret = await secretCollection.GetSecretAsync(cancellation);
         return Common.Utilities.RsaHelper.CreateSecurityKeyFromPrivateKey(secret.PrivateKey);
     }
 
     private async Task<RsaSecurityKey> GetPublicKeyAsync(CancellationToken cancellation = default)
     {
-        var secret = await secretRepository.GetSecretAsync(cancellation);
+        var secret = await secretCollection.GetSecretAsync(cancellation);
         return Common.Utilities.RsaHelper.CreateSecurityKeyFromPublicKey(secret.PublicKey);
     }
 }

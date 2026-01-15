@@ -1,7 +1,7 @@
 namespace Vinder.Identity.Application.Payloads.Group;
 
 public sealed record GroupsFetchParameters :
-    IRequest<Result<Pagination<GroupDetailsScheme>>>
+    IMessage<Result<Pagination<GroupDetailsScheme>>>
 {
     public string? Id { get; set; }
     public string? TenantId { get; set; }

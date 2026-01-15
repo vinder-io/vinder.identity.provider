@@ -1,18 +1,18 @@
 namespace Vinder.Identity.Application.Handlers.Identity;
 
 public sealed class IdentityEnrollmentHandler(
-    IUserRepository userRepository,
+    IUserCollection userCollection,
     IPasswordHasher passwordHasher,
     ITenantProvider tenantProvider
-) : IRequestHandler<IdentityEnrollmentCredentials, Result<UserDetailsScheme>>
+) : IMessageHandler<IdentityEnrollmentCredentials, Result<UserDetailsScheme>>
 {
-    public async Task<Result<UserDetailsScheme>> Handle(IdentityEnrollmentCredentials request, CancellationToken cancellationToken)
+    public async Task<Result<UserDetailsScheme>> HandleAsync(IdentityEnrollmentCredentials parameters, CancellationToken cancellation)
     {
         var filters = new UserFiltersBuilder()
-            .WithUsername(request.Username)
+            .WithUsername(parameters.Username)
             .Build();
 
-        var users = await userRepository.GetUsersAsync(filters, cancellationToken);
+        var users = await userCollection.GetUsersAsync(filters, cancellation);
         var user = users.FirstOrDefault();
 
         if (user is not null)
@@ -21,11 +21,11 @@ public sealed class IdentityEnrollmentHandler(
         }
 
         var tenant = tenantProvider.GetCurrentTenant();
-        var identity = UserMapper.AsUser(request, tenant.Id);
+        var identity = UserMapper.AsUser(parameters, tenant.Id);
 
-        identity.PasswordHash = await passwordHasher.HashPasswordAsync(request.Password);
+        identity.PasswordHash = await passwordHasher.HashPasswordAsync(parameters.Password);
 
-        await userRepository.InsertAsync(identity, cancellationToken);
+        await userCollection.InsertAsync(identity, cancellation: cancellation);
 
         return Result<UserDetailsScheme>.Success(UserMapper.AsResponse(identity));
     }

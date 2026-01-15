@@ -17,9 +17,9 @@ global using Microsoft.OpenApi.Models;
 
 /* global usings for Vinder namespaces here */
 
-global using Vinder.Identity.Domain.Entities;
+global using Vinder.Identity.Domain.Aggregates;
 global using Vinder.Identity.Domain.Filtering.Builders;
-global using Vinder.Identity.Domain.Repositories;
+global using Vinder.Identity.Domain.Collections;
 
 global using Vinder.Identity.Common.Constants;
 global using Vinder.Identity.Common.Configuration;
@@ -48,5 +48,5 @@ global using Vinder.Internal.Essentials.Utilities;
 
 /* global usings for third-party namespaces here */
 
-global using MediatR;
+global using Vinder.Dispatcher.Contracts;
 global using Scalar.AspNetCore;

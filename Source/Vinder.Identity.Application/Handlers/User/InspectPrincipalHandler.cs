@@ -1,10 +1,10 @@
 namespace Vinder.Identity.Application.Handlers.User;
 
 public sealed class InspectPrincipalHandler(IPrincipalProvider principalProvider) :
-    IRequestHandler<InspectPrincipalParameters, Result<PrincipalDetailsScheme>>
+    IMessageHandler<InspectPrincipalParameters, Result<PrincipalDetailsScheme>>
 {
-    public Task<Result<PrincipalDetailsScheme>> Handle(
-        InspectPrincipalParameters request, CancellationToken cancellationToken)
+    public Task<Result<PrincipalDetailsScheme>> HandleAsync(
+        InspectPrincipalParameters parameters, CancellationToken cancellation)
     {
         var user = principalProvider.GetCurrentPrincipal();
 

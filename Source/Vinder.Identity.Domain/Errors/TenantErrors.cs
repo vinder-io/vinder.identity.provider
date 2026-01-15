@@ -21,4 +21,14 @@ public static class TenantErrors
         Code: "#VINDER-IDP-ERR-TNT-409",
         Description: "A tenant with the same name already exists. See https://bit.ly/errors-reference for more details."
     );
+
+    public static readonly Error TenantAlreadyHasPermission = new(
+        Code: "#VINDER-IDP-ERR-TNT-415",
+        Description: "The tenant already has the specified permission assigned. See https://bit.ly/errors-reference for more details."
+    );
+
+    public static readonly Error PermissionNotAssigned = new(
+        Code: "#VINDER-IDP-ERR-TNT-416",
+        Description: "The tenant does not have the specified permission assigned. See https://bit.ly/errors-reference for more details."
+    );
 }

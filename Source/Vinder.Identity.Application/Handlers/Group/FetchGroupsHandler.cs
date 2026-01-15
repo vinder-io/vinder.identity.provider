@@ -1,15 +1,15 @@
 namespace Vinder.Identity.Application.Handlers.Group;
 
-public sealed class FetchGroupsHandler(IGroupRepository repository) :
-    IRequestHandler<GroupsFetchParameters, Result<Pagination<GroupDetailsScheme>>>
+public sealed class FetchGroupsHandler(IGroupCollection collection) :
+    IMessageHandler<GroupsFetchParameters, Result<Pagination<GroupDetailsScheme>>>
 {
-    public async Task<Result<Pagination<GroupDetailsScheme>>> Handle(
+    public async Task<Result<Pagination<GroupDetailsScheme>>> HandleAsync(
         GroupsFetchParameters parameters, CancellationToken cancellationToken)
     {
         var filters = GroupMapper.AsFilters(parameters);
 
-        var groups = await repository.GetGroupsAsync(filters, cancellation: cancellationToken);
-        var totalGroups = await repository.CountAsync(filters, cancellation: cancellationToken);
+        var groups = await collection.GetGroupsAsync(filters, cancellation: cancellationToken);
+        var totalGroups = await collection.CountAsync(filters, cancellation: cancellationToken);
 
         var pagination = new Pagination<GroupDetailsScheme>
         {

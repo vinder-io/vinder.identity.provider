@@ -1,11 +1,9 @@
-using System.Security.Cryptography;
-
 namespace Vinder.Identity.TestSuite.IntegrationTests.Security;
 
 public sealed class AuthenticationServiceTests :
     IClassFixture<MongoDatabaseFixture>, IAsyncLifetime
 {
-    private readonly UserRepository _userRepository;
+    private readonly UserCollection _userCollection;
     private readonly PasswordHasher _passwordHasher;
     private readonly ISecurityTokenService _tokenService;
     private readonly IMongoDatabase _database;
@@ -16,18 +14,18 @@ public sealed class AuthenticationServiceTests :
 
     private readonly Mock<ITenantProvider> _tenantProvider = new();
     private readonly Mock<IHostInformationProvider> _hostProvider = new();
-    private readonly Mock<ISecretRepository> _secretRepository = new();
-    private readonly Mock<IGroupRepository> _groupRepository = new();
+    private readonly Mock<ISecretCollection> _secretCollection = new();
+    private readonly Mock<IGroupCollection> _groupCollection = new();
 
     public AuthenticationServiceTests(MongoDatabaseFixture mongoFixture)
     {
         _mongoFixture = mongoFixture;
         _database = mongoFixture.Database;
 
-        _userRepository = new UserRepository(_database, _tenantProvider.Object);
+        _userCollection = new UserCollection(_database, _tenantProvider.Object);
         _passwordHasher = new PasswordHasher();
 
-        var tokenRepository = new TokenRepository(_database, _tenantProvider.Object);
+        var tokenCollection = new TokenCollection(_database, _tenantProvider.Object);
         var secret = new Secret
         {
             PrivateKey = Convert.ToBase64String(_rsa.ExportRSAPrivateKey()),
@@ -36,12 +34,12 @@ public sealed class AuthenticationServiceTests :
 
         var tenant = _fixture.Create<Tenant>();
 
-        _secretRepository
-            .Setup(repository => repository.GetSecretAsync(It.IsAny<CancellationToken>()))
+        _secretCollection
+            .Setup(collection => collection.GetSecretAsync(It.IsAny<CancellationToken>()))
             .ReturnsAsync(secret);
 
-        _groupRepository
-            .Setup(repository => repository.GetGroupsAsync(It.IsAny<GroupFilters>(), It.IsAny<CancellationToken>()))
+        _groupCollection
+            .Setup(collection => collection.GetGroupsAsync(It.IsAny<GroupFilters>(), It.IsAny<CancellationToken>()))
             .ReturnsAsync([  ]);
 
         _hostProvider.Setup(provider => provider.Address)
@@ -51,15 +49,15 @@ public sealed class AuthenticationServiceTests :
             .Returns(tenant);
 
         _tokenService = new JwtSecurityTokenService(
-            secretRepository: _secretRepository.Object,
-            repository: tokenRepository,
+            secretCollection: _secretCollection.Object,
+            tokenCollection: tokenCollection,
             tenantProvider: _tenantProvider.Object,
-            groupRepository: _groupRepository.Object,
+            groupCollection: _groupCollection.Object,
             host: _hostProvider.Object
         );
 
         _authenticationService = new AuthenticationService(
-            userRepository: _userRepository,
+            userCollection: _userCollection,
             passwordHasher: _passwordHasher,
             tokenService: _tokenService
         );
@@ -68,7 +66,7 @@ public sealed class AuthenticationServiceTests :
     [Fact(DisplayName = "[security] - when valid credentials are provided, then returns access and refresh tokens")]
     public async Task WhenValidCredentialsAreProvided_ThenReturnsAccessAndRefreshTokens()
     {
-        /* arrange: create a user with a known password and insert into repository */
+        /* arrange: create a user with a known password and insert into collection */
         var tenant = _fixture.Create<Tenant>();
 
         _tenantProvider.Setup(provider => provider.GetCurrentTenant())
@@ -81,7 +79,7 @@ public sealed class AuthenticationServiceTests :
             .With(user => user.IsDeleted, false)
             .Create();
 
-        await _userRepository.InsertAsync(user);
+        await _userCollection.InsertAsync(user);
 
         /* act: authenticate with valid credentials */
         var credentials = new AuthenticationCredentials
@@ -116,7 +114,7 @@ public sealed class AuthenticationServiceTests :
             .With(user => user.TenantId, tenant.Id)
             .Create();
 
-        await _userRepository.InsertAsync(user);
+        await _userCollection.InsertAsync(user);
 
         var credentials = new AuthenticationCredentials
         {

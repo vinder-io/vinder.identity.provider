@@ -1,6 +1,6 @@
 namespace Vinder.Identity.Application.Payloads.Group;
 
-public sealed record GroupDeletionScheme : IRequest<Result>
+public sealed record GroupDeletionScheme : IMessage<Result>
 {
     public string GroupId { get; init; } = default!;
 }

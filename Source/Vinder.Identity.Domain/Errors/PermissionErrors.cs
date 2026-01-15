@@ -9,6 +9,6 @@ public static class PermissionErrors
 
     public static readonly Error PermissionDoesNotExist = new(
         Code: "#VINDER-IDP-ERR-PRM-404",
-        Description: "The permission with the specified ID does not exist. See https://bit.ly/errors-reference for more details."
+        Description: "The specified permission does not exist. See https://bit.ly/errors-reference for more details."
     );
 }

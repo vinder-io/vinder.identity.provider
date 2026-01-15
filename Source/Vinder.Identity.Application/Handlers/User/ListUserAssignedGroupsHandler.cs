@@ -1,16 +1,16 @@
 namespace Vinder.Identity.Application.Handlers.User;
 
-public sealed class ListUserAssignedGroupsHandler(IUserRepository repository) :
-    IRequestHandler<ListUserAssignedGroupsParameters, Result<IReadOnlyCollection<GroupBasicDetailsScheme>>>
+public sealed class ListUserAssignedGroupsHandler(IUserCollection collection) :
+    IMessageHandler<ListUserAssignedGroupsParameters, Result<IReadOnlyCollection<GroupBasicDetailsScheme>>>
 {
-    public async Task<Result<IReadOnlyCollection<GroupBasicDetailsScheme>>> Handle(
-        ListUserAssignedGroupsParameters request, CancellationToken cancellationToken)
+    public async Task<Result<IReadOnlyCollection<GroupBasicDetailsScheme>>> HandleAsync(
+        ListUserAssignedGroupsParameters parameters, CancellationToken cancellation)
     {
         var filters = new UserFiltersBuilder()
-            .WithIdentifier(request.UserId)
+            .WithIdentifier(parameters.UserId)
             .Build();
 
-        var users = await repository.GetUsersAsync(filters, cancellationToken);
+        var users = await collection.GetUsersAsync(filters, cancellation);
         var user = users.FirstOrDefault();
 
         return user is not null

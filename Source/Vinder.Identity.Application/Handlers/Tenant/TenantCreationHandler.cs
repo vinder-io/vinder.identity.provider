@@ -1,24 +1,24 @@
 namespace Vinder.Identity.Application.Handlers.Tenant;
 
-public sealed class TenantCreationHandler(ITenantRepository repository, IClientCredentialsGenerator credentialsGenerator) :
-    IRequestHandler<TenantCreationScheme, Result<TenantDetailsScheme>>
+public sealed class TenantCreationHandler(ITenantCollection collection, IClientCredentialsGenerator credentialsGenerator) :
+    IMessageHandler<TenantCreationScheme, Result<TenantDetailsScheme>>
 {
-    public async Task<Result<TenantDetailsScheme>> Handle(
-        TenantCreationScheme request, CancellationToken cancellationToken)
+    public async Task<Result<TenantDetailsScheme>> HandleAsync(
+        TenantCreationScheme parameters, CancellationToken cancellation)
     {
         var filters = new TenantFiltersBuilder()
-            .WithName(request.Name)
+            .WithName(parameters.Name)
             .Build();
 
-        var tenants = await repository.GetTenantsAsync(filters, cancellationToken);
+        var tenants = await collection.GetTenantsAsync(filters, cancellation);
         if (tenants.Count > 0)
         {
             return Result<TenantDetailsScheme>.Failure(TenantErrors.TenantAlreadyExists);
         }
 
-        var credentials = await credentialsGenerator.GenerateAsync(request.Name, cancellation: cancellationToken);
+        var credentials = await credentialsGenerator.GenerateAsync(parameters.Name, cancellation: cancellation);
         var tenant = TenantMapper.AsTenant(
-            tenant: request,
+            tenant: parameters,
             clientId: credentials.ClientId,
             secretHash: credentials.ClientSecret
         );
@@ -27,14 +27,14 @@ public sealed class TenantCreationHandler(ITenantRepository repository, IClientC
             .WithName("master")
             .Build();
 
-        var matchingTenants = await repository.GetTenantsAsync(masterFilters, cancellationToken);
+        var matchingTenants = await collection.GetTenantsAsync(masterFilters, cancellation);
         var defaultTenant = matchingTenants.FirstOrDefault()!;
 
         tenant.Permissions = defaultTenant.Permissions
             .Where(permission => DefaultTenantPermissions.InitialPermissions.Contains(permission.Name))
             .ToList();
 
-        await repository.InsertAsync(tenant, cancellationToken);
+        await collection.InsertAsync(tenant, cancellation: cancellation);
 
         return Result<TenantDetailsScheme>.Success(TenantMapper.AsResponse(tenant));
     }

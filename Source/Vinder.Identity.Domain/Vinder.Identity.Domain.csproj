@@ -7,7 +7,7 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <PackageReference Include="Vinder.Internal.Essentials" Version="1.0.7" />
+    <PackageReference Include="Vinder.Internal.Essentials" Version="1.0.12" />
   </ItemGroup>
 
 </Project>

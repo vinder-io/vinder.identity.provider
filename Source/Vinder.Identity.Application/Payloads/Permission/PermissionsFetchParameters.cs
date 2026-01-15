@@ -1,7 +1,7 @@
 namespace Vinder.Identity.Application.Payloads.Permission;
 
 public sealed record PermissionsFetchParameters :
-    IRequest<Result<Pagination<PermissionDetailsScheme>>>
+    IMessage<Result<Pagination<PermissionDetailsScheme>>>
 {
     public string? Id { get; init; }
     public string? Name { get; set; }

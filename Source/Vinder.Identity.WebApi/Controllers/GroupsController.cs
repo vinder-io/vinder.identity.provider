@@ -3,14 +3,14 @@ namespace Vinder.Identity.WebApi.Controllers;
 [ApiController]
 [TenantRequired]
 [Route("api/v1/groups")]
-public sealed class GroupsController(IMediator mediator) : ControllerBase
+public sealed class GroupsController(IDispatcher dispatcher) : ControllerBase
 {
     [HttpGet]
     [Authorize(Roles = Permissions.ViewGroups)]
     public async Task<IActionResult> GetGroupsAsync(
         [FromQuery] GroupsFetchParameters request, CancellationToken cancellation)
     {
-        var result = await mediator.Send(request, cancellation);
+        var result = await dispatcher.DispatchAsync(request, cancellation);
 
         // we know the switch here is not strictly necessary since we only handle the success case,
         // but we keep it for consistency with the rest of the codebase and to follow established patterns.
@@ -24,7 +24,7 @@ public sealed class GroupsController(IMediator mediator) : ControllerBase
     [Authorize(Roles = Permissions.CreateGroup)]
     public async Task<IActionResult> CreateGroupAsync(GroupCreationScheme request, CancellationToken cancellation)
     {
-        var result = await mediator.Send(request, cancellation);
+        var result = await dispatcher.DispatchAsync(request, cancellation);
 
         return result switch
         {
@@ -40,7 +40,7 @@ public sealed class GroupsController(IMediator mediator) : ControllerBase
     [Authorize(Roles = Permissions.EditGroup)]
     public async Task<IActionResult> UpdateGroupAsync(string id, GroupUpdateScheme request, CancellationToken cancellation)
     {
-        var result = await mediator.Send(request with { GroupId = id }, cancellation);
+        var result = await dispatcher.DispatchAsync(request with { GroupId = id }, cancellation);
 
         return result switch
         {
@@ -56,7 +56,7 @@ public sealed class GroupsController(IMediator mediator) : ControllerBase
     [Authorize(Roles = Permissions.DeleteGroup)]
     public async Task<IActionResult> DeleteGroupAsync(string id, CancellationToken cancellation)
     {
-        var result = await mediator.Send(new GroupDeletionScheme { GroupId = id }, cancellation);
+        var result = await dispatcher.DispatchAsync(new GroupDeletionScheme { GroupId = id }, cancellation);
 
         return result switch
         {
@@ -75,7 +75,7 @@ public sealed class GroupsController(IMediator mediator) : ControllerBase
         [FromQuery] ListGroupAssignedPermissionsParameters request, CancellationToken cancellation
     )
     {
-        var result = await mediator.Send(request with { GroupId = id }, cancellation);
+        var result = await dispatcher.DispatchAsync(request with { GroupId = id }, cancellation);
 
         return result switch
         {
@@ -91,7 +91,7 @@ public sealed class GroupsController(IMediator mediator) : ControllerBase
     public async Task<IActionResult> AssignPermissionAsync(
         string id, AssignGroupPermissionScheme request, CancellationToken cancellation)
     {
-        var result = await mediator.Send(request with { GroupId = id }, cancellation);
+        var result = await dispatcher.DispatchAsync(request with { GroupId = id }, cancellation);
 
         return result switch
         {
@@ -114,7 +114,7 @@ public sealed class GroupsController(IMediator mediator) : ControllerBase
     public async Task<IActionResult> RevokePermissionAsync(string id, string permissionId, CancellationToken cancellation)
     {
         var request = new RevokeGroupPermissionScheme { GroupId = id, PermissionId = permissionId };
-        var result = await mediator.Send(request, cancellation);
+        var result = await dispatcher.DispatchAsync(request, cancellation);
 
         return result switch
         {

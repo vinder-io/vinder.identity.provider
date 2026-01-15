@@ -13,7 +13,7 @@ public sealed class TenantMiddleware(IMemoryCache cache, RequestDelegate next)
             return;
         }
 
-        var tenantRepository = context.RequestServices.GetRequiredService<ITenantRepository>();
+        var tenantCollection = context.RequestServices.GetRequiredService<ITenantCollection>();
         var tenantProvider = context.RequestServices.GetRequiredService<ITenantProvider>();
 
         var tenantHeaderKey = context.Request.Headers.Keys
@@ -44,7 +44,7 @@ public sealed class TenantMiddleware(IMemoryCache cache, RequestDelegate next)
                 .WithName(tenantName)
                 .Build();
 
-            var tenants = await tenantRepository.GetTenantsAsync(filters, context.RequestAborted);
+            var tenants = await tenantCollection.GetTenantsAsync(filters, context.RequestAborted);
 
             tenant = tenants.FirstOrDefault();
 

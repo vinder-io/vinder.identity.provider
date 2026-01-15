@@ -6,7 +6,7 @@ public static class AuthenticationExtension
     public static IServiceCollection AddJwtAuthentication(this IServiceCollection services)
     {
         var serviceProvider = services.BuildServiceProvider();
-        var secretRepository = serviceProvider.GetRequiredService<ISecretRepository>();
+        var secretRepository = serviceProvider.GetRequiredService<ISecretCollection>();
 
         var secret = secretRepository.GetSecretAsync().GetAwaiter().GetResult();
         var publicKey = Common.Utilities.RsaHelper.CreateSecurityKeyFromPublicKey(secret.PublicKey);

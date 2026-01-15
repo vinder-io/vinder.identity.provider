@@ -1,20 +1,19 @@
 /* global usings for System namespaces here */
 
 global using System.Text.Json.Serialization;
-global using System.Security.Cryptography;
 
 /* global usings for Vinder namespaces here */
 
 global using Vinder.Internal.Essentials.Patterns;
-global using Vinder.Internal.Essentials.Filters;
+global using Vinder.Internal.Essentials.Filtering;
 
 global using Vinder.Identity.Domain.Errors;
 global using Vinder.Identity.Common.Constants;
 
-global using Vinder.Identity.Domain.Entities;
+global using Vinder.Identity.Domain.Aggregates;
 global using Vinder.Identity.Domain.Filtering;
 global using Vinder.Identity.Domain.Filtering.Builders;
-global using Vinder.Identity.Domain.Repositories;
+global using Vinder.Identity.Domain.Collections;
 
 global using Vinder.Identity.Application.Payloads.Common;
 global using Vinder.Identity.Application.Payloads.Identity;
@@ -33,4 +32,4 @@ global using Vinder.Identity.Application.Mappers;
 /* global usings for third-party namespaces here */
 
 global using FluentValidation;
-global using MediatR;
+global using Vinder.Dispatcher.Contracts;

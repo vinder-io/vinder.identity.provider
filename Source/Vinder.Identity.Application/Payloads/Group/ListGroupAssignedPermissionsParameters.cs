@@ -1,7 +1,7 @@
 namespace Vinder.Identity.Application.Payloads.Group;
 
 public sealed record ListGroupAssignedPermissionsParameters :
-    IRequest<Result<IReadOnlyCollection<PermissionDetailsScheme>>>
+    IMessage<Result<IReadOnlyCollection<PermissionDetailsScheme>>>
 {
     public string GroupId { get; init; } = default!;
     public string? PermissionName { get; init; }

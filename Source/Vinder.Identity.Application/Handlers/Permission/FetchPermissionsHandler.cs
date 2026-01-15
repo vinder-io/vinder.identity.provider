@@ -1,15 +1,15 @@
 namespace Vinder.Identity.Application.Handlers.Permission;
 
-public sealed class FetchPermissionsHandler(IPermissionRepository repository) :
-    IRequestHandler<PermissionsFetchParameters, Result<Pagination<PermissionDetailsScheme>>>
+public sealed class FetchPermissionsHandler(IPermissionCollection collection) :
+    IMessageHandler<PermissionsFetchParameters, Result<Pagination<PermissionDetailsScheme>>>
 {
-    public async Task<Result<Pagination<PermissionDetailsScheme>>> Handle(
-        PermissionsFetchParameters parameters, CancellationToken cancellationToken)
+    public async Task<Result<Pagination<PermissionDetailsScheme>>> HandleAsync(
+        PermissionsFetchParameters parameters, CancellationToken cancellation)
     {
         var filters = PermissionMapper.AsFilters(parameters);
 
-        var permissions = await repository.GetPermissionsAsync(filters, cancellation: cancellationToken);
-        var totalPermission = await repository.CountAsync(filters, cancellation: cancellationToken);
+        var permissions = await collection.GetPermissionsAsync(filters, cancellation: cancellation);
+        var totalPermission = await collection.CountAsync(filters, cancellation: cancellation);
 
         var pagination = new Pagination<PermissionDetailsScheme>
         {

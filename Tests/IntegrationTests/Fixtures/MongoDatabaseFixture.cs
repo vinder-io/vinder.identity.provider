@@ -12,8 +12,7 @@ public sealed class MongoDatabaseFixture : IAsyncLifetime
 
     public MongoDatabaseFixture()
     {
-        _container = new ContainerBuilder()
-            .WithImage("mongo:latest")
+        _container = new ContainerBuilder("mongo:latest")
             .WithCleanUp(true)
             .WithExposedPort(27017)
             .WithPortBinding(0, 27017)

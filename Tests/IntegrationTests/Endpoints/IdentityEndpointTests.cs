@@ -139,7 +139,7 @@ public sealed class IdentityEndpointTests(IntegrationEnvironmentFixture factory)
         var scope = factory.Services.CreateScope();
         var tokenService = scope.ServiceProvider.GetRequiredService<ISecurityTokenService>();
 
-        var refreshToken = _fixture.Build<SecurityToken>()
+        var refreshToken = _fixture.Build<Domain.Aggregates.SecurityToken>()
             .With(token => token.Value, authenticationResult.RefreshToken)
             .With(token => token.Type, TokenType.Refresh)
             .Create();

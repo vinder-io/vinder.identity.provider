@@ -19,8 +19,7 @@ public sealed class PrincipalMiddleware(RequestDelegate next)
             return;
         }
 
-        var userRepository = context.RequestServices.GetRequiredService<IUserRepository>();
-
+        var userCollection = context.RequestServices.GetRequiredService<IUserCollection>();
         var userIdClaim = context.User.FindFirst(ClaimTypes.NameIdentifier);
 
         if (userIdClaim == null || string.IsNullOrWhiteSpace(userIdClaim.Value))
@@ -33,7 +32,7 @@ public sealed class PrincipalMiddleware(RequestDelegate next)
             .WithIdentifier(userIdClaim.Value)
             .Build();
 
-        var users = await userRepository.GetUsersAsync(filters, context.RequestAborted);
+        var users = await userCollection.GetUsersAsync(filters, context.RequestAborted);
         var user = users.FirstOrDefault();
 
         if (user is not null)

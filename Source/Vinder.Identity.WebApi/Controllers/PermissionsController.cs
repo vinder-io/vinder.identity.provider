@@ -3,13 +3,13 @@ namespace Vinder.Identity.WebApi.Controllers;
 [ApiController]
 [TenantRequired]
 [Route("api/v1/permissions")]
-public sealed class PermissionsController(IMediator mediator) : ControllerBase
+public sealed class PermissionsController(IDispatcher dispatcher) : ControllerBase
 {
     [HttpGet]
     [Authorize]
     public async Task<IActionResult> GetPermissionsAsync([FromQuery] PermissionsFetchParameters request, CancellationToken cancellation)
     {
-        var result = await mediator.Send(request, cancellation);
+        var result = await dispatcher.DispatchAsync(request, cancellation);
 
         // we know the switch here is not strictly necessary since we only handle the success case,
         // but we keep it for consistency with the rest of the codebase and to follow established patterns.
@@ -23,7 +23,7 @@ public sealed class PermissionsController(IMediator mediator) : ControllerBase
     [Authorize(Roles = Permissions.CreatePermission)]
     public async Task<IActionResult> CreatePermissionAsync(PermissionCreationScheme request, CancellationToken cancellation)
     {
-        var result = await mediator.Send(request, cancellation);
+        var result = await dispatcher.DispatchAsync(request, cancellation);
 
         return result switch
         {
@@ -39,7 +39,7 @@ public sealed class PermissionsController(IMediator mediator) : ControllerBase
     [Authorize(Roles = Permissions.EditPermission)]
     public async Task<IActionResult> UpdatePermissionAsync(string id, PermissionUpdateScheme request, CancellationToken cancellation)
     {
-        var result = await mediator.Send(request with { PermissionId = id }, cancellation);
+        var result = await dispatcher.DispatchAsync(request with { PermissionId = id }, cancellation);
 
         return result switch
         {
@@ -55,7 +55,7 @@ public sealed class PermissionsController(IMediator mediator) : ControllerBase
     [Authorize(Roles = Permissions.DeletePermission)]
     public async Task<IActionResult> DeletePermissionAsync(string id, CancellationToken cancellation)
     {
-        var result = await mediator.Send(new PermissionDeletionScheme { PermissionId = id }, cancellation);
+        var result = await dispatcher.DispatchAsync(new PermissionDeletionScheme { PermissionId = id }, cancellation);
 
         return result switch
         {

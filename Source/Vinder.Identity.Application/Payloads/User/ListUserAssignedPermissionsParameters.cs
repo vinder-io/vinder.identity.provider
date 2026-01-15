@@ -1,7 +1,7 @@
 namespace Vinder.Identity.Application.Payloads.User;
 
 public sealed record ListUserAssignedPermissionsParameters :
-    IRequest<Result<IReadOnlyCollection<PermissionDetailsScheme>>>
+    IMessage<Result<IReadOnlyCollection<PermissionDetailsScheme>>>
 {
     public string UserId { get; init; } = default!;
     public string? PermissionName { get; init; }

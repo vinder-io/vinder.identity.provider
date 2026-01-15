@@ -12,8 +12,8 @@ global using Microsoft.Extensions.Hosting;
 /* global usings for Vinder namespaces here */
 
 global using Vinder.Identity.Common.Configuration;
-global using Vinder.Identity.Domain.Repositories;
-global using Vinder.Identity.Domain.Entities;
+global using Vinder.Identity.Domain.Collections;
+global using Vinder.Identity.Domain.Aggregates;
 
 global using Vinder.Identity.Application.Services;
 global using Vinder.Identity.Application.Providers;
@@ -33,8 +33,9 @@ global using Vinder.Identity.Application.Validators.Scope;
 global using Vinder.Identity.Application.Handlers.Identity;
 
 global using Vinder.Identity.Infrastructure.Providers;
-global using Vinder.Identity.Infrastructure.Repositories;
+global using Vinder.Identity.Infrastructure.Persistence;
 global using Vinder.Identity.Infrastructure.Security;
+global using Vinder.Dispatcher.Extensions;
 
 /* global usings for third-party namespaces here */
 

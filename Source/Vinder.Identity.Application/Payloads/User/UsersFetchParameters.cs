@@ -1,7 +1,7 @@
 namespace Vinder.Identity.Application.Payloads.User;
 
 public sealed record UsersFetchParameters :
-    IRequest<Result<Pagination<UserDetailsScheme>>>
+    IMessage<Result<Pagination<UserDetailsScheme>>>
 {
     public string? Id { get; init; }
     public string? Username { get; init; }

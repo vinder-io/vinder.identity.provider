@@ -1,15 +1,15 @@
 namespace Vinder.Identity.Application.Handlers.User;
 
-public sealed class AssignUserToGroupHandler(IUserRepository userRepository, IGroupRepository groupRepository) :
-    IRequestHandler<AssignUserToGroupScheme, Result>
+public sealed class AssignUserToGroupHandler(IUserCollection userCollection, IGroupCollection groupCollection) :
+    IMessageHandler<AssignUserToGroupScheme, Result>
 {
-    public async Task<Result> Handle(AssignUserToGroupScheme request, CancellationToken cancellationToken)
+    public async Task<Result> HandleAsync(AssignUserToGroupScheme parameters, CancellationToken cancellation)
     {
         var userFilters = new UserFiltersBuilder()
-            .WithIdentifier(request.UserId)
+            .WithIdentifier(parameters.UserId)
             .Build();
 
-        var matchingUsers = await userRepository.GetUsersAsync(userFilters, cancellationToken);
+        var matchingUsers = await userCollection.GetUsersAsync(userFilters, cancellation);
         var existingUser = matchingUsers.FirstOrDefault();
 
         if (existingUser is null)
@@ -18,10 +18,10 @@ public sealed class AssignUserToGroupHandler(IUserRepository userRepository, IGr
         }
 
         var groupFilters = new GroupFiltersBuilder()
-            .WithIdentifier(request.GroupId)
+            .WithIdentifier(parameters.GroupId)
             .Build();
 
-        var matchingGroups = await groupRepository.GetGroupsAsync(groupFilters, cancellationToken);
+        var matchingGroups = await groupCollection.GetGroupsAsync(groupFilters, cancellation);
         var existingGroup = matchingGroups.FirstOrDefault();
 
         if (existingGroup is null)
@@ -29,14 +29,14 @@ public sealed class AssignUserToGroupHandler(IUserRepository userRepository, IGr
             return Result.Failure(GroupErrors.GroupDoesNotExist);
         }
 
-        if (existingUser.Groups.Any(group => group.Id == request.GroupId))
+        if (existingUser.Groups.Any(group => group.Id == parameters.GroupId))
         {
             return Result.Failure(UserErrors.UserAlreadyInGroup);
         }
 
         existingUser.Groups.Add(existingGroup);
 
-        await userRepository.UpdateAsync(existingUser, cancellationToken);
+        await userCollection.UpdateAsync(existingUser, cancellation);
 
         return Result.Success();
     }

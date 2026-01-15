@@ -1,15 +1,15 @@
 namespace Vinder.Identity.Application.Handlers.User;
 
-public sealed class FetchUsersHandler(IUserRepository repository) :
-    IRequestHandler<UsersFetchParameters, Result<Pagination<UserDetailsScheme>>>
+public sealed class FetchUsersHandler(IUserCollection collection) :
+    IMessageHandler<UsersFetchParameters, Result<Pagination<UserDetailsScheme>>>
 {
-    public async Task<Result<Pagination<UserDetailsScheme>>> Handle(
-        UsersFetchParameters parameters, CancellationToken cancellationToken)
+    public async Task<Result<Pagination<UserDetailsScheme>>> HandleAsync(
+        UsersFetchParameters parameters, CancellationToken cancellation)
     {
         var filters = UserMapper.AsFilters(parameters);
 
-        var users = await repository.GetUsersAsync(filters, cancellationToken);
-        var totalUsers = await repository.CountAsync(filters, cancellationToken);
+        var users = await collection.GetUsersAsync(filters, cancellation);
+        var totalUsers = await collection.CountAsync(filters, cancellation);
 
         var pagination = new Pagination<UserDetailsScheme>
         {
