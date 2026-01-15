@@ -13,12 +13,12 @@ public static class DataPersistenceExtension
             return database;
         });
 
-        services.AddScoped<IUserCollection, UserCollection>();
-        services.AddScoped<IPermissionCollection, PermissionCollection>();
-        services.AddScoped<IGroupCollection, GroupCollection>();
-        services.AddScoped<IScopeCollection, ScopesCollection>();
-        services.AddScoped<ITokenCollection, TokenCollection>();
-        services.AddScoped<ITenantCollection, TenantCollection>();
-        services.AddScoped<ISecretCollection, SecretCollection>();
+        services.AddTransient<IUserCollection, UserCollection>();
+        services.AddTransient<IPermissionCollection, PermissionCollection>();
+        services.AddTransient<IGroupCollection, GroupCollection>();
+        services.AddTransient<IScopeCollection, ScopesCollection>();
+        services.AddTransient<ITokenCollection, TokenCollection>();
+        services.AddTransient<ITenantCollection, TenantCollection>();
+        services.AddTransient<ISecretCollection, SecretCollection>();
     }
 }
