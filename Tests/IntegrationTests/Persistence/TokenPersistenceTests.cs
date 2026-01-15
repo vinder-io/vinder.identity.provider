@@ -370,6 +370,8 @@ public sealed class TokenPersistenceTests : IClassFixture<MongoDatabaseFixture>,
         Assert.Equal(expectedCount, filteredCount);
     }
 
+    #pragma warning disable S2325
+
     public async Task DisposeAsync() => await Task.CompletedTask;
     public async Task InitializeAsync()
     {
