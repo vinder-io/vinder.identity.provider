@@ -3,15 +3,16 @@ namespace Vinder.Identity.Application.Handlers.Identity;
 public sealed class ClientAuthenticationHandler(
     ITenantCollection tenantCollection,
     ISecurityTokenService tokenService
-) : IRequestHandler<ClientAuthenticationCredentials, Result<ClientAuthenticationResult>>
+) : IMessageHandler<ClientAuthenticationCredentials, Result<ClientAuthenticationResult>>
 {
-    public async Task<Result<ClientAuthenticationResult>> Handle(ClientAuthenticationCredentials request, CancellationToken cancellationToken)
+    public async Task<Result<ClientAuthenticationResult>> HandleAsync(
+        ClientAuthenticationCredentials parameters, CancellationToken cancellation)
     {
         var filters = new TenantFiltersBuilder()
-            .WithClientId(request.ClientId)
+            .WithClientId(parameters.ClientId)
             .Build();
 
-        var tenants = await tenantCollection.GetTenantsAsync(filters, cancellation: cancellationToken);
+        var tenants = await tenantCollection.GetTenantsAsync(filters, cancellation: cancellation);
         var tenant = tenants.FirstOrDefault();
 
         if (tenant is null)
@@ -19,12 +20,12 @@ public sealed class ClientAuthenticationHandler(
             return Result<ClientAuthenticationResult>.Failure(AuthenticationErrors.ClientNotFound);
         }
 
-        if (request.ClientSecret != tenant.SecretHash)
+        if (parameters.ClientSecret != tenant.SecretHash)
         {
             return Result<ClientAuthenticationResult>.Failure(AuthenticationErrors.InvalidClientCredentials);
         }
 
-        var tokenResult = await tokenService.GenerateAccessTokenAsync(tenant, cancellationToken);
+        var tokenResult = await tokenService.GenerateAccessTokenAsync(tenant, cancellation);
         if (tokenResult.IsFailure)
         {
             return Result<ClientAuthenticationResult>.Failure(tokenResult.Error);

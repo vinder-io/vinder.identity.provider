@@ -13,7 +13,7 @@
 
   <ItemGroup>
     <PackageReference Include="FluentValidation" Version="12.1.1" />
-    <PackageReference Include="MediatR" Version="14.0.0" />
+    <PackageReference Include="Vinder.Dispatcher" Version="1.0.3" />
   </ItemGroup>
 
 </Project>

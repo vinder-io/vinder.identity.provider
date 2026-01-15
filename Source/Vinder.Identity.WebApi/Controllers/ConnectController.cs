@@ -2,7 +2,7 @@ namespace Vinder.Identity.WebApi.Controllers;
 
 [ApiController]
 [Route("api/v1/openid/connect")]
-public sealed class ConnectController(IMediator mediator) : ControllerBase
+public sealed class ConnectController(IDispatcher dispatcher) : ControllerBase
 {
     [HttpPost("token")]
     public async Task<IActionResult> AuthenticateClientAsync(
@@ -10,7 +10,7 @@ public sealed class ConnectController(IMediator mediator) : ControllerBase
         CancellationToken cancellation
     )
     {
-        var result = await mediator.Send(request, cancellation);
+        var result = await dispatcher.DispatchAsync(request, cancellation);
 
         return result switch
         {

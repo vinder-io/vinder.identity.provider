@@ -1,19 +1,19 @@
 namespace Vinder.Identity.Application.Handlers.Identity;
 
 public sealed class SessionTokenRenewalHandler(IUserCollection userCollection, ISecurityTokenService tokenService) :
-    IRequestHandler<SessionTokenRenewalScheme, Result<AuthenticationResult>>
+    IMessageHandler<SessionTokenRenewalScheme, Result<AuthenticationResult>>
 {
-    public async Task<Result<AuthenticationResult>> Handle(SessionTokenRenewalScheme request, CancellationToken cancellationToken)
+    public async Task<Result<AuthenticationResult>> HandleAsync(SessionTokenRenewalScheme parameters, CancellationToken cancellation)
     {
-        var refreshToken = TokenMapper.AsRefreshToken(request.RefreshToken);
-        var validationResult = await tokenService.ValidateRefreshTokenAsync(refreshToken, cancellationToken);
+        var refreshToken = TokenMapper.AsRefreshToken(parameters.RefreshToken);
+        var validationResult = await tokenService.ValidateRefreshTokenAsync(refreshToken, cancellation);
 
         if (validationResult.IsFailure)
         {
             return Result<AuthenticationResult>.Failure(validationResult.Error);
         }
 
-        var revokeResult = await tokenService.RevokeRefreshTokenAsync(refreshToken, cancellationToken);
+        var revokeResult = await tokenService.RevokeRefreshTokenAsync(refreshToken, cancellation);
         if (revokeResult.IsFailure)
         {
             return Result<AuthenticationResult>.Failure(revokeResult.Error);
@@ -23,7 +23,7 @@ public sealed class SessionTokenRenewalHandler(IUserCollection userCollection, I
             .WithSecurityToken(refreshToken.Value)
             .Build();
 
-        var users = await userCollection.GetUsersAsync(userFilters, cancellation: cancellationToken);
+        var users = await userCollection.GetUsersAsync(userFilters, cancellation: cancellation);
         var user = users.FirstOrDefault();
 
         if (user is null)
@@ -31,13 +31,13 @@ public sealed class SessionTokenRenewalHandler(IUserCollection userCollection, I
             return Result<AuthenticationResult>.Failure(AuthenticationErrors.UserNotFound);
         }
 
-        var accessTokenResult = await tokenService.GenerateAccessTokenAsync(user, cancellationToken);
+        var accessTokenResult = await tokenService.GenerateAccessTokenAsync(user, cancellation);
         if (accessTokenResult.IsFailure)
         {
             return Result<AuthenticationResult>.Failure(accessTokenResult.Error);
         }
 
-        var refreshTokenResult = await tokenService.GenerateRefreshTokenAsync(user, cancellationToken);
+        var refreshTokenResult = await tokenService.GenerateRefreshTokenAsync(user, cancellation);
         if (refreshTokenResult.IsFailure)
         {
             return Result<AuthenticationResult>.Failure(refreshTokenResult.Error);

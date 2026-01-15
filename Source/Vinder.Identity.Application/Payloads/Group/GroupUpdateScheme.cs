@@ -1,6 +1,6 @@
 namespace Vinder.Identity.Application.Payloads.Group;
 
-public sealed record GroupUpdateScheme : IRequest<Result<GroupDetailsScheme>>
+public sealed record GroupUpdateScheme : IMessage<Result<GroupDetailsScheme>>
 {
     [JsonIgnore]
     public string GroupId { get; init; } = default!;

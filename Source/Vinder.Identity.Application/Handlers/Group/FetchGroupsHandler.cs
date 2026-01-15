@@ -1,9 +1,9 @@
 namespace Vinder.Identity.Application.Handlers.Group;
 
 public sealed class FetchGroupsHandler(IGroupCollection collection) :
-    IRequestHandler<GroupsFetchParameters, Result<Pagination<GroupDetailsScheme>>>
+    IMessageHandler<GroupsFetchParameters, Result<Pagination<GroupDetailsScheme>>>
 {
-    public async Task<Result<Pagination<GroupDetailsScheme>>> Handle(
+    public async Task<Result<Pagination<GroupDetailsScheme>>> HandleAsync(
         GroupsFetchParameters parameters, CancellationToken cancellationToken)
     {
         var filters = GroupMapper.AsFilters(parameters);

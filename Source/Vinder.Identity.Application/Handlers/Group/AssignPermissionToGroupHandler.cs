@@ -1,17 +1,17 @@
 namespace Vinder.Identity.Application.Handlers.Group;
 
 public sealed class AssignPermissionToGroupHandler(IGroupCollection groupCollection, IPermissionCollection permissionCollection) :
-    IRequestHandler<AssignGroupPermissionScheme, Result<GroupDetailsScheme>>
+    IMessageHandler<AssignGroupPermissionScheme, Result<GroupDetailsScheme>>
 {
-    public async Task<Result<GroupDetailsScheme>> Handle(
-        AssignGroupPermissionScheme request, CancellationToken cancellationToken)
+    public async Task<Result<GroupDetailsScheme>> HandleAsync(
+        AssignGroupPermissionScheme parameters, CancellationToken cancellationToken)
     {
         var groupFilters = new GroupFiltersBuilder()
-            .WithIdentifier(request.GroupId)
+            .WithIdentifier(parameters.GroupId)
             .Build();
 
         var permissionFilters = new PermissionFiltersBuilder()
-            .WithName(request.PermissionName.ToLower())
+            .WithName(parameters.PermissionName.ToLower())
             .Build();
 
         var groups = await groupCollection.GetGroupsAsync(groupFilters, cancellation: cancellationToken);

@@ -1,10 +1,10 @@
 namespace Vinder.Identity.Application.Handlers.OpenID;
 
 public sealed class FetchOpenIDConfigurationHandler(IHostInformationProvider host) :
-    IRequestHandler<FetchOpenIDConfigurationParameters, Result<OpenIDConfigurationScheme>>
+    IMessageHandler<FetchOpenIDConfigurationParameters, Result<OpenIDConfigurationScheme>>
 {
-    public Task<Result<OpenIDConfigurationScheme>> Handle(
-        FetchOpenIDConfigurationParameters request, CancellationToken cancellationToken)
+    public Task<Result<OpenIDConfigurationScheme>> HandleAsync(
+        FetchOpenIDConfigurationParameters parameters, CancellationToken cancellation)
     {
         var configuration = OpenIDMapper.AsConfiguration(host.Address);
 

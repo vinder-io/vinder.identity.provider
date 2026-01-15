@@ -1,22 +1,22 @@
 namespace Vinder.Identity.Application.Handlers.User;
 
 public sealed class RevokeUserPermissionHandler(IUserCollection userCollection, IPermissionCollection permissionCollection) :
-    IRequestHandler<RevokeUserPermissionScheme, Result>
+    IMessageHandler<RevokeUserPermissionScheme, Result>
 {
-    public async Task<Result> Handle(RevokeUserPermissionScheme request, CancellationToken cancellationToken)
+    public async Task<Result> HandleAsync(RevokeUserPermissionScheme parameters, CancellationToken cancellation)
     {
         var permissionFilters = new PermissionFiltersBuilder()
-            .WithIdentifier(request.PermissionId)
+            .WithIdentifier(parameters.PermissionId)
             .Build();
 
         var userFilters = new UserFiltersBuilder()
-            .WithIdentifier(request.UserId)
+            .WithIdentifier(parameters.UserId)
             .Build();
 
-        var users = await userCollection.GetUsersAsync(userFilters, cancellationToken);
+        var users = await userCollection.GetUsersAsync(userFilters, cancellation);
         var user = users.FirstOrDefault();
 
-        var permissions = await permissionCollection.GetPermissionsAsync(permissionFilters, cancellationToken);
+        var permissions = await permissionCollection.GetPermissionsAsync(permissionFilters, cancellation);
         var permission = permissions.FirstOrDefault();
 
         if (user is null)
@@ -43,7 +43,7 @@ public sealed class RevokeUserPermissionHandler(IUserCollection userCollection, 
 
         user.Permissions.Remove(permissionToRemove);
 
-        await userCollection.UpdateAsync(user, cancellationToken);
+        await userCollection.UpdateAsync(user, cancellation);
 
         return Result.Success();
     }

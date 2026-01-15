@@ -32,4 +32,4 @@ global using Vinder.Identity.Application.Mappers;
 /* global usings for third-party namespaces here */
 
 global using FluentValidation;
-global using MediatR;
+global using Vinder.Dispatcher.Contracts;

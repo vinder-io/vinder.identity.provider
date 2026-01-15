@@ -1,22 +1,22 @@
 namespace Vinder.Identity.Application.Handlers.Group;
 
 public sealed class RevokeGroupPermissionHandler(IGroupCollection groupCollection, IPermissionCollection permissionCollection) :
-    IRequestHandler<RevokeGroupPermissionScheme, Result>
+    IMessageHandler<RevokeGroupPermissionScheme, Result>
 {
-    public async Task<Result> Handle(RevokeGroupPermissionScheme request, CancellationToken cancellationToken)
+    public async Task<Result> HandleAsync(RevokeGroupPermissionScheme parameters, CancellationToken cancellation)
     {
         var permissionFilters = new PermissionFiltersBuilder()
-            .WithIdentifier(request.PermissionId)
+            .WithIdentifier(parameters.PermissionId)
             .Build();
 
         var groupFilters = new GroupFiltersBuilder()
-            .WithIdentifier(request.GroupId)
+            .WithIdentifier(parameters.GroupId)
             .Build();
 
-        var groups = await groupCollection.GetGroupsAsync(groupFilters, cancellationToken);
+        var groups = await groupCollection.GetGroupsAsync(groupFilters, cancellation);
         var group = groups.FirstOrDefault();
 
-        var permissions = await permissionCollection.GetPermissionsAsync(permissionFilters, cancellationToken);
+        var permissions = await permissionCollection.GetPermissionsAsync(permissionFilters, cancellation);
         var permission = permissions.FirstOrDefault();
 
         if (group is null)
@@ -43,7 +43,7 @@ public sealed class RevokeGroupPermissionHandler(IGroupCollection groupCollectio
 
         group.Permissions.Remove(permissionToRemove);
 
-        await groupCollection.UpdateAsync(group, cancellationToken);
+        await groupCollection.UpdateAsync(group, cancellation);
 
         return Result.Success();
     }

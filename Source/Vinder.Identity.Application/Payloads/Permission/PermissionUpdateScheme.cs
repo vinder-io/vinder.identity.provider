@@ -1,6 +1,6 @@
 namespace Vinder.Identity.Application.Payloads.Permission;
 
-public sealed record PermissionUpdateScheme : IRequest<Result<PermissionDetailsScheme>>
+public sealed record PermissionUpdateScheme : IMessage<Result<PermissionDetailsScheme>>
 {
     [JsonIgnore]
     public string PermissionId { get; init; } = default!;

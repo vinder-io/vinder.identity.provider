@@ -1,16 +1,16 @@
 namespace Vinder.Identity.Application.Handlers.Group;
 
 public sealed class GroupUpdateHandler(IGroupCollection collection) :
-    IRequestHandler<GroupUpdateScheme, Result<GroupDetailsScheme>>
+    IMessageHandler<GroupUpdateScheme, Result<GroupDetailsScheme>>
 {
-    public async Task<Result<GroupDetailsScheme>> Handle(
-        GroupUpdateScheme request, CancellationToken cancellationToken)
+    public async Task<Result<GroupDetailsScheme>> HandleAsync(
+        GroupUpdateScheme parameters, CancellationToken cancellation)
     {
         var filters = new GroupFiltersBuilder()
-            .WithIdentifier(request.GroupId)
+            .WithIdentifier(parameters.GroupId)
             .Build();
 
-        var groups = await collection.GetGroupsAsync(filters, cancellation: cancellationToken);
+        var groups = await collection.GetGroupsAsync(filters, cancellation: cancellation);
         var group = groups.FirstOrDefault();
 
         if (group is null)
@@ -18,9 +18,9 @@ public sealed class GroupUpdateHandler(IGroupCollection collection) :
             return Result<GroupDetailsScheme>.Failure(GroupErrors.GroupDoesNotExist);
         }
 
-        group = GroupMapper.AsGroup(request, group);
+        group = GroupMapper.AsGroup(parameters, group);
 
-        var updatedGroup = await collection.UpdateAsync(group, cancellation: cancellationToken);
+        var updatedGroup = await collection.UpdateAsync(group, cancellation: cancellation);
 
         return Result<GroupDetailsScheme>.Success(GroupMapper.AsResponse(updatedGroup));
     }

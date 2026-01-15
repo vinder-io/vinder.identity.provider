@@ -3,13 +3,13 @@ namespace Vinder.Identity.WebApi.Controllers;
 [ApiController]
 [TenantRequired]
 [Route("api/v1/tenants")]
-public sealed class TenantsController(IMediator mediator) : ControllerBase
+public sealed class TenantsController(IDispatcher dispatcher) : ControllerBase
 {
     [HttpGet]
     [Authorize(Roles = Permissions.ViewTenants)]
     public async Task<IActionResult> GetTenantsAsync([FromQuery] TenantFetchParameters request, CancellationToken cancellation)
     {
-        var result = await mediator.Send(request, cancellation);
+        var result = await dispatcher.DispatchAsync(request, cancellation);
 
         // we know the switch here is not strictly necessary since we only handle the success case,
         // but we keep it for consistency with the rest of the codebase and to follow established patterns.
@@ -23,7 +23,7 @@ public sealed class TenantsController(IMediator mediator) : ControllerBase
     [Authorize(Roles = Permissions.CreateTenant)]
     public async Task<IActionResult> CreateTenantAsync(TenantCreationScheme request, CancellationToken cancellation)
     {
-        var result = await mediator.Send(request, cancellation);
+        var result = await dispatcher.DispatchAsync(request, cancellation);
 
         return result switch
         {
@@ -40,7 +40,7 @@ public sealed class TenantsController(IMediator mediator) : ControllerBase
     public async Task<IActionResult> UpdateTenantAsync(
         string id, TenantUpdateScheme request, CancellationToken cancellation)
     {
-        var result = await mediator.Send(request with { TenantId = id }, cancellation);
+        var result = await dispatcher.DispatchAsync(request with { TenantId = id }, cancellation);
 
         return result switch
         {
@@ -56,7 +56,7 @@ public sealed class TenantsController(IMediator mediator) : ControllerBase
     [Authorize(Roles = Permissions.DeleteTenant)]
     public async Task<IActionResult> DeleteTenantAsync(string id, CancellationToken cancellation)
     {
-        var result = await mediator.Send(new TenantDeletionScheme { TenantId = id }, cancellation);
+        var result = await dispatcher.DispatchAsync(new TenantDeletionScheme { TenantId = id }, cancellation);
 
         return result switch
         {

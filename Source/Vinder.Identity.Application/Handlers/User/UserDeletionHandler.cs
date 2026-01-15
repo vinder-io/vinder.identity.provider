@@ -1,14 +1,14 @@
 namespace Vinder.Identity.Application.Handlers.User;
 
-public sealed class UserDeletionHandler(IUserCollection collection) : IRequestHandler<UserDeletionScheme, Result>
+public sealed class UserDeletionHandler(IUserCollection collection) : IMessageHandler<UserDeletionScheme, Result>
 {
-    public async Task<Result> Handle(UserDeletionScheme request, CancellationToken cancellationToken)
+    public async Task<Result> HandleAsync(UserDeletionScheme parameters, CancellationToken cancellation)
     {
         var filters = new UserFiltersBuilder()
-            .WithIdentifier(request.UserId)
+            .WithIdentifier(parameters.UserId)
             .Build();
 
-        var users = await collection.GetUsersAsync(filters, cancellation: cancellationToken);
+        var users = await collection.GetUsersAsync(filters, cancellation: cancellation);
         var user = users.FirstOrDefault();
 
         if (user is null)
@@ -16,7 +16,7 @@ public sealed class UserDeletionHandler(IUserCollection collection) : IRequestHa
             return Result.Failure(UserErrors.UserDoesNotExist);
         }
 
-        await collection.DeleteAsync(user, cancellation: cancellationToken);
+        await collection.DeleteAsync(user, cancellation: cancellation);
 
         return Result.Success();
     }

@@ -1,6 +1,6 @@
 namespace Vinder.Identity.Application.Payloads.Scope;
 
-public sealed record ScopeCreationScheme : IRequest<Result<ScopeDetailsScheme>>
+public sealed record ScopeCreationScheme : IMessage<Result<ScopeDetailsScheme>>
 {
     public string Name { get; init; } = default!;
     public string Description { get; init; } = default!;

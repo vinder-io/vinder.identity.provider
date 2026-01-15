@@ -2,14 +2,14 @@ namespace Vinder.Identity.WebApi.Controllers;
 
 [ApiController]
 [Route("api/v1/identity")]
-public sealed class IdentityController(IMediator mediator) : ControllerBase
+public sealed class IdentityController(IDispatcher dispatcher) : ControllerBase
 {
     [HttpGet("principal")]
     [Authorize]
     [TenantRequired]
     public async Task<IActionResult> GetPrincipalAsync([FromQuery] InspectPrincipalParameters request, CancellationToken cancellation)
     {
-        var result = await mediator.Send(request, cancellation);
+        var result = await dispatcher.DispatchAsync(request, cancellation);
 
         return result switch
         {
@@ -25,7 +25,7 @@ public sealed class IdentityController(IMediator mediator) : ControllerBase
     [TenantRequired]
     public async Task<IActionResult> EnrollIdentityAsync(IdentityEnrollmentCredentials request, CancellationToken cancellation)
     {
-        var result = await mediator.Send(request, cancellation);
+        var result = await dispatcher.DispatchAsync(request, cancellation);
 
         return result switch
         {
@@ -41,7 +41,7 @@ public sealed class IdentityController(IMediator mediator) : ControllerBase
     [TenantRequired]
     public async Task<IActionResult> AuthenticateAsync(AuthenticationCredentials request, CancellationToken cancellation)
     {
-        var result = await mediator.Send(request, cancellation);
+        var result = await dispatcher.DispatchAsync(request, cancellation);
 
         return result switch
         {
@@ -60,7 +60,7 @@ public sealed class IdentityController(IMediator mediator) : ControllerBase
     [TenantRequired]
     public async Task<IActionResult> RefreshTokenAsync(SessionTokenRenewalScheme request, CancellationToken cancellation)
     {
-        var result = await mediator.Send(request, cancellation);
+        var result = await dispatcher.DispatchAsync(request, cancellation);
 
         return result switch
         {
@@ -88,7 +88,7 @@ public sealed class IdentityController(IMediator mediator) : ControllerBase
     [TenantRequired]
     public async Task<IActionResult> InvalidateSessionAsync(SessionInvalidationScheme request, CancellationToken cancellation)
     {
-        var result = await mediator.Send(request, cancellation);
+        var result = await dispatcher.DispatchAsync(request, cancellation);
 
         return result switch
         {
