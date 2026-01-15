@@ -25,7 +25,7 @@ public static class WebInfrastructureExtension
                 document.Components.SecuritySchemes[SecuritySchemes.Bearer] = new OpenApiSecurityScheme
                 {
                     Type = SecuritySchemeType.Http,
-                    Scheme = "Bearer",
+                    Scheme = "bearer",
                     BearerFormat = "JWT",
                     Description = "Enter 'Bearer' and then your valid token."
                 };
