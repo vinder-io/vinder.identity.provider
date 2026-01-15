@@ -41,6 +41,8 @@ Errors in this category are related to issues with tenant identification and val
 | `#VINDER-IDP-ERR-TNT-400` | Tenant header is missing from the HTTP request | When the incoming request does not include the tenant header (`X-Tenant`) | Ensure the client sends the tenant header in each request       |
 | `#VINDER-IDP-ERR-TNT-404` | The specified tenant does not exist             | When the tenant header value does not match any tenant in the system | Verify tenant name correctness or register the tenant           |
 | `#VINDER-IDP-ERR-TNT-409` | A tenant with the same name already exists      | When trying to create a tenant that already exists in the system | Ensure the tenant name is unique before attempting to create it |
+| `#VINDER-IDP-ERR-TNT-415` | The tenant already has the specified permission assigned | When trying to assign a permission that the tenant already has | Check existing permissions before assignment to avoid duplicates |
+| `#VINDER-IDP-ERR-TNT-416` | The tenant does not have the specified permission assigned | When trying to remove a permission that the tenant does not have | Verify the tenant's permissions before attempting removal |
 | `#VINDER-IDP-ERR-TNT-500` | No HTTP context available to retrieve tenant information | When code runs outside of an HTTP context (e.g., background jobs like Hangfire) where `HttpContext` is not available | Ensure tenant resolution logic accounts for non-HTTP scenarios, e.g., pass tenant info explicitly in background job parameters |
 
 # Group Errors
