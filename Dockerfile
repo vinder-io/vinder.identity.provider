@@ -8,26 +8,26 @@ FROM mcr.microsoft.com/dotnet/sdk:9.0 AS build
 WORKDIR /src
 
 # copy project files to restore dependencies
-COPY ["Source/Vinder.IdentityProvider.WebApi/Vinder.IdentityProvider.WebApi.csproj", "Vinder.IdentityProvider.WebApi/"]
+COPY ["Source/Vinder.Identity.WebApi/Vinder.Identity.WebApi.csproj", "Vinder.Identity.WebApi/"]
 
 # copy the entire solution 'n related projects
-COPY ["Vinder.IdentityProvider.sln", "./"]
+COPY ["Vinder.Identity.sln", "./"]
 
 # restore dependencies for the project
-RUN dotnet restore "Vinder.IdentityProvider.WebApi/Vinder.IdentityProvider.WebApi.csproj"
+RUN dotnet restore "Vinder.Identity.WebApi/Vinder.Identity.WebApi.csproj"
 
 # copy all source code into the container
 COPY Source/ ./Source/
 
 # set working directory to the web project
-WORKDIR "/src/Source/Vinder.IdentityProvider.WebApi"
+WORKDIR "/src/Source/Vinder.Identity.WebApi"
 
 # build in Release mode
-RUN dotnet build "Vinder.IdentityProvider.WebApi.csproj" -c Release -o /app/build
+RUN dotnet build "Vinder.Identity.WebApi.csproj" -c Release -o /app/build
 
 # publish the project for production
 FROM build AS publish
-RUN dotnet publish "Vinder.IdentityProvider.WebApi.csproj" -c Release -o /app/publish /p:UseAppHost=false
+RUN dotnet publish "Vinder.Identity.WebApi.csproj" -c Release -o /app/publish /p:UseAppHost=false
 
 # final image to run the app
 FROM base AS final
@@ -37,4 +37,4 @@ WORKDIR /app
 COPY --from=publish /app/publish .
 
 # set the command to start the application
-ENTRYPOINT ["dotnet", "Vinder.IdentityProvider.WebApi.dll"]
+ENTRYPOINT ["dotnet", "Vinder.Identity.WebApi.dll"]

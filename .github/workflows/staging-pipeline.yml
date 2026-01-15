@@ -27,7 +27,7 @@ jobs:
 
       - name: publish application
         run: |
-          dotnet publish Source/Vinder.IdentityProvider.WebApi \
+          dotnet publish Source/Vinder.Identity.WebApi \
             -c Release \
             -r win-x64 \
             -o ./publish

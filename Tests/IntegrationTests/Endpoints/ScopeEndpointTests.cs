@@ -1,4 +1,4 @@
-namespace Vinder.IdentityProvider.TestSuite.IntegrationTests.Endpoints;
+namespace Vinder.Identity.TestSuite.IntegrationTests.Endpoints;
 
 public sealed class ScopesEndpointTests(IntegrationEnvironmentFixture factory) :
     IClassFixture<IntegrationEnvironmentFixture>

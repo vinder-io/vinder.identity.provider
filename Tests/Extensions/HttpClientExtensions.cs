@@ -1,4 +1,4 @@
-namespace Vinder.IdentityProvider.TestSuite.Extensions;
+namespace Vinder.Identity.TestSuite.Extensions;
 
 public static class HttpClientExtensions
 {

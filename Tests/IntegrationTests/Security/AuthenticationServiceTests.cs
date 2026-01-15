@@ -1,6 +1,6 @@
 using System.Security.Cryptography;
 
-namespace Vinder.IdentityProvider.TestSuite.IntegrationTests.Security;
+namespace Vinder.Identity.TestSuite.IntegrationTests.Security;
 
 public sealed class AuthenticationServiceTests :
     IClassFixture<MongoDatabaseFixture>, IAsyncLifetime

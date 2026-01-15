@@ -1,4 +1,4 @@
-namespace Vinder.IdentityProvider.TestSuite.IntegrationTests.Repositories;
+namespace Vinder.Identity.TestSuite.IntegrationTests.Repositories;
 
 public sealed class UserRepositoryTests : IClassFixture<MongoDatabaseFixture>, IAsyncLifetime
 {

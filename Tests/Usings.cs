@@ -15,26 +15,26 @@ global using Vinder.Internal.Essentials.Filters;
 global using Vinder.Internal.Essentials.Patterns;
 global using Vinder.Internal.Essentials.Utilities;
 
-global using Vinder.IdentityProvider.Domain.Entities;
-global using Vinder.IdentityProvider.Domain.Filtering;
-global using Vinder.IdentityProvider.Domain.Filtering.Builders;
-global using Vinder.IdentityProvider.Domain.Repositories;
+global using Vinder.Identity.Domain.Entities;
+global using Vinder.Identity.Domain.Filtering;
+global using Vinder.Identity.Domain.Filtering.Builders;
+global using Vinder.Identity.Domain.Repositories;
 
-global using Vinder.IdentityProvider.Application.Services;
-global using Vinder.IdentityProvider.Application.Providers;
+global using Vinder.Identity.Application.Services;
+global using Vinder.Identity.Application.Providers;
 
-global using Vinder.IdentityProvider.Application.Payloads.Identity;
-global using Vinder.IdentityProvider.Application.Payloads.User;
-global using Vinder.IdentityProvider.Application.Payloads.Scope;
+global using Vinder.Identity.Application.Payloads.Identity;
+global using Vinder.Identity.Application.Payloads.User;
+global using Vinder.Identity.Application.Payloads.Scope;
 
-global using Vinder.IdentityProvider.Infrastructure.Repositories;
-global using Vinder.IdentityProvider.Infrastructure.Security;
+global using Vinder.Identity.Infrastructure.Repositories;
+global using Vinder.Identity.Infrastructure.Security;
 
-global using Vinder.IdentityProvider.Domain.Errors;
-global using Vinder.IdentityProvider.WebApi;
+global using Vinder.Identity.Domain.Errors;
+global using Vinder.Identity.WebApi;
 
-global using Vinder.IdentityProvider.TestSuite.Extensions;
-global using Vinder.IdentityProvider.TestSuite.IntegrationTests.Fixtures;
+global using Vinder.Identity.TestSuite.Extensions;
+global using Vinder.Identity.TestSuite.IntegrationTests.Fixtures;
 
 /* global usings for third-party namespaces here */
 

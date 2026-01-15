@@ -4,10 +4,10 @@ using System.Security.Cryptography;
 
 using Microsoft.IdentityModel.Tokens;
 
-using Vinder.IdentityProvider.Infrastructure.Constants;
-using Vinder.IdentityProvider.Common.Utilities;
+using Vinder.Identity.Infrastructure.Constants;
+using Vinder.Identity.Common.Utilities;
 
-namespace Vinder.IdentityProvider.TestSuite.IntegrationTests.Security;
+namespace Vinder.Identity.TestSuite.IntegrationTests.Security;
 
 public sealed class JwtSecurityTokenServiceTests : IClassFixture<MongoDatabaseFixture>, IAsyncLifetime
 {
