@@ -67,4 +67,67 @@ public sealed class TenantsController(IDispatcher dispatcher) : ControllerBase
                 StatusCode(StatusCodes.Status404NotFound, result.Error),
         };
     }
+
+    [HttpGet("{id}/permissions")]
+    [Authorize(Roles = Permissions.ViewPermissions)]
+    public async Task<IActionResult> GetTenantPermissionsAsync(
+        [FromRoute] string id, [FromQuery] ListTenantAssignedPermissionsParameters request, CancellationToken cancellation
+    )
+    {
+        var result = await dispatcher.DispatchAsync(request with { TenantId = id }, cancellation);
+
+        return result switch
+        {
+            { IsSuccess: true } => StatusCode(StatusCodes.Status200OK, result.Data),
+
+            { IsFailure: true } when result.Error == TenantErrors.TenantDoesNotExist =>
+                StatusCode(StatusCodes.Status404NotFound, result.Error),
+        };
+    }
+
+    [HttpPost("{id}/permissions")]
+    [Authorize(Roles = Permissions.AssignPermissions)]
+    public async Task<IActionResult> AssignPermissionAsync(
+        [FromRoute] string id, [FromBody] AssignTenantPermissionScheme request, CancellationToken cancellation)
+    {
+        var result = await dispatcher.DispatchAsync(request with { TenantId = id }, cancellation);
+
+        return result switch
+        {
+            { IsSuccess: true } =>
+                StatusCode(StatusCodes.Status200OK, result.Data),
+
+            { IsFailure: true } when result.Error == TenantErrors.TenantDoesNotExist =>
+                StatusCode(StatusCodes.Status404NotFound, result.Error),
+
+            { IsFailure: true } when result.Error == PermissionErrors.PermissionDoesNotExist =>
+                StatusCode(StatusCodes.Status404NotFound, result.Error),
+
+            { IsFailure: true } when result.Error == TenantErrors.TenantAlreadyHasPermission =>
+                StatusCode(StatusCodes.Status409Conflict, result.Error),
+        };
+    }
+
+    [HttpDelete("{id}/permissions/{permissionId}")]
+    [Authorize(Roles = Permissions.RevokePermissions)]
+    public async Task<IActionResult> RevokePermissionAsync([FromRoute] string id, [FromRoute] string permissionId, CancellationToken cancellation)
+    {
+        var request = new RevokeTenantPermissionScheme { TenantId = id, PermissionId = permissionId };
+        var result = await dispatcher.DispatchAsync(request, cancellation);
+
+        return result switch
+        {
+            { IsSuccess: true } =>
+                StatusCode(StatusCodes.Status204NoContent),
+
+            { IsFailure: true } when result.Error == TenantErrors.TenantDoesNotExist =>
+                StatusCode(StatusCodes.Status404NotFound, result.Error),
+
+            { IsFailure: true } when result.Error == PermissionErrors.PermissionDoesNotExist =>
+                StatusCode(StatusCodes.Status404NotFound, result.Error),
+
+            { IsFailure: true } when result.Error == TenantErrors.PermissionNotAssigned =>
+                StatusCode(StatusCodes.Status409Conflict, result.Error)
+        };
+    }
 }

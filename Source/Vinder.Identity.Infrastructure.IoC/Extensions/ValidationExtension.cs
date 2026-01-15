@@ -25,6 +25,7 @@ public static class ValidationExtension
         services.AddTransient<IValidator<TenantUpdateScheme>, TenantUpdateValidator>();
 
         services.AddTransient<IValidator<AssignUserPermissionScheme>, AssignUserPermissionValidator>();
+        services.AddTransient<IValidator<AssignTenantPermissionScheme>, AssignTenantPermissionValidator>();
         services.AddTransient<IValidator<ScopeCreationScheme>, ScopeCreationValidator>();
     }
 }
