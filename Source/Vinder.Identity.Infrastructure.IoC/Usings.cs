@@ -35,6 +35,7 @@ global using Vinder.Identity.Application.Handlers.Identity;
 global using Vinder.Identity.Infrastructure.Providers;
 global using Vinder.Identity.Infrastructure.Persistence;
 global using Vinder.Identity.Infrastructure.Security;
+global using Vinder.Dispatcher.Extensions;
 
 /* global usings for third-party namespaces here */
 
