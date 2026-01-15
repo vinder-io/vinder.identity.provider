@@ -1,6 +1,6 @@
 namespace Vinder.Identity.Domain.Repositories;
 
-public interface IPermissionRepository : IBaseRepository<Permission>
+public interface IPermissionRepository : IAggregateCollection<Permission>
 {
     public Task<IReadOnlyCollection<Permission>> GetPermissionsAsync(
         PermissionFilters filters,

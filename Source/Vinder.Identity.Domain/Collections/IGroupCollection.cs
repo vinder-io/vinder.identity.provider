@@ -1,14 +1,14 @@
 namespace Vinder.Identity.Domain.Repositories;
 
-public interface ITenantRepository : IBaseRepository<Tenant>
+public interface IGroupCollection : IAggregateCollection<Group>
 {
-    public Task<IReadOnlyCollection<Tenant>> GetTenantsAsync(
-        TenantFilters filters,
+    public Task<IReadOnlyCollection<Group>> GetGroupsAsync(
+        GroupFilters filters,
         CancellationToken cancellation = default
     );
 
     public Task<long> CountAsync(
-        TenantFilters filters,
+        GroupFilters filters,
         CancellationToken cancellation = default
     );
 }

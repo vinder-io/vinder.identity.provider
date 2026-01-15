@@ -1,6 +1,6 @@
 namespace Vinder.Identity.Domain.Repositories;
 
-public interface IUserRepository : IBaseRepository<User>
+public interface IUserCollection : IAggregateCollection<User>
 {
     public Task<IReadOnlyCollection<User>> GetUsersAsync(
         UserFilters filters,

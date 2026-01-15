@@ -1,6 +1,6 @@
 namespace Vinder.Identity.Domain.Repositories;
 
-public interface ISecretRepository : IBaseRepository<Secret>
+public interface ISecretCollection : IAggregateCollection<Secret>
 {
     public Task<Secret> GetSecretAsync(CancellationToken cancellation = default);
 }
