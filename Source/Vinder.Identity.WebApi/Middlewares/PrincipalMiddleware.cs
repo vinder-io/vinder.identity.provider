@@ -19,8 +19,7 @@ public sealed class PrincipalMiddleware(RequestDelegate next)
             return;
         }
 
-        var userRepository = context.RequestServices.GetRequiredService<IUserRepository>();
-
+        var userRepository = context.RequestServices.GetRequiredService<IUserCollection>();
         var userIdClaim = context.User.FindFirst(ClaimTypes.NameIdentifier);
 
         if (userIdClaim == null || string.IsNullOrWhiteSpace(userIdClaim.Value))

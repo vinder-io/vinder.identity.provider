@@ -1,18 +1,18 @@
-namespace Vinder.Identity.TestSuite.IntegrationTests.Repositories;
+namespace Vinder.Identity.TestSuite.IntegrationTests.Persistence;
 
-public sealed class PermissionRepositoryTests : IClassFixture<MongoDatabaseFixture>, IAsyncLifetime
+public sealed class PermissionPersistenceTests : IClassFixture<MongoDatabaseFixture>, IAsyncLifetime
 {
-    private readonly IPermissionRepository _permissionRepository;
+    private readonly IPermissionCollection _permissionCollection;
     private readonly IMongoDatabase _database;
     private readonly MongoDatabaseFixture _mongoFixture;
     private readonly Mock<ITenantProvider> _tenantProvider = new();
     private readonly Fixture _fixture = new();
 
-    public PermissionRepositoryTests(MongoDatabaseFixture fixture)
+    public PermissionPersistenceTests(MongoDatabaseFixture fixture)
     {
         _mongoFixture = fixture;
         _database = fixture.Database;
-        _permissionRepository = new PermissionRepository(_database, _tenantProvider.Object);
+        _permissionCollection = new PermissionCollection(_database, _tenantProvider.Object);
     }
 
     [Fact(DisplayName = "[infrastructure] - when inserting a permission, then it must persist in the database")]
@@ -35,9 +35,9 @@ public sealed class PermissionRepositoryTests : IClassFixture<MongoDatabaseFixtu
             .Build();
 
         /* act: persist permission and query using name filter */
-        await _permissionRepository.InsertAsync(permission);
+        await _permissionCollection.InsertAsync(permission);
 
-        var result = await _permissionRepository.GetPermissionsAsync(filters, CancellationToken.None);
+        var result = await _permissionCollection.GetPermissionsAsync(filters, CancellationToken.None);
         var retrievedPermission = result.FirstOrDefault();
 
         /* assert: permission must be retrieved with same id and name */
@@ -62,20 +62,20 @@ public sealed class PermissionRepositoryTests : IClassFixture<MongoDatabaseFixtu
             .With(permission => permission.TenantId, tenant.Id)
             .Create();
 
-        await _permissionRepository.InsertAsync(permission);
+        await _permissionCollection.InsertAsync(permission);
 
         /* act: update name and save */
         var newName = "updated.permission";
 
         permission.Name = newName;
 
-        await _permissionRepository.UpdateAsync(permission);
+        await _permissionCollection.UpdateAsync(permission);
 
         var filters = new PermissionFiltersBuilder()
             .WithName(newName)
             .Build();
 
-        var result = await _permissionRepository.GetPermissionsAsync(filters, CancellationToken.None);
+        var result = await _permissionCollection.GetPermissionsAsync(filters, CancellationToken.None);
         var updatedPermission = result.FirstOrDefault();
 
         /* assert: updated permission must be found with new name */
@@ -100,16 +100,16 @@ public sealed class PermissionRepositoryTests : IClassFixture<MongoDatabaseFixtu
             .With(permission => permission.TenantId, tenant.Id)
             .Create();
 
-        await _permissionRepository.InsertAsync(permission);
+        await _permissionCollection.InsertAsync(permission);
 
         var filters = new PermissionFiltersBuilder()
             .WithName(permission.Name)
             .Build();
 
         /* act: delete permission and query by name */
-        var deleted = await _permissionRepository.DeleteAsync(permission);
+        var deleted = await _permissionCollection.DeleteAsync(permission);
 
-        var resultAfterDelete = await _permissionRepository.GetPermissionsAsync(filters, CancellationToken.None);
+        var resultAfterDelete = await _permissionCollection.GetPermissionsAsync(filters, CancellationToken.None);
 
         /* assert: no permissions should be returned after delete */
         Assert.DoesNotContain(resultAfterDelete, permission => permission.Id == permission.Id);
@@ -121,7 +121,7 @@ public sealed class PermissionRepositoryTests : IClassFixture<MongoDatabaseFixtu
             .Build();
 
         /* act: refetch permissions including deleted */
-        var resultWithDeleted = await _permissionRepository.GetPermissionsAsync(filtersWithDeleted, CancellationToken.None);
+        var resultWithDeleted = await _permissionCollection.GetPermissionsAsync(filtersWithDeleted, CancellationToken.None);
 
         /* assert: permission should be returned when including deleted permissions */
         Assert.Contains(resultWithDeleted, permission => permission.Id == permission.Id);
@@ -151,15 +151,15 @@ public sealed class PermissionRepositoryTests : IClassFixture<MongoDatabaseFixtu
             .With(permission => permission.IsDeleted, false)
             .Create();
 
-        await _permissionRepository.InsertAsync(permission1);
-        await _permissionRepository.InsertAsync(permission2);
+        await _permissionCollection.InsertAsync(permission1);
+        await _permissionCollection.InsertAsync(permission2);
 
         var filters = new PermissionFiltersBuilder()
             .WithName("filter1")
             .Build();
 
         /* act: query permissions filtered by name */
-        var filteredPermissions = await _permissionRepository.GetPermissionsAsync(filters, CancellationToken.None);
+        var filteredPermissions = await _permissionCollection.GetPermissionsAsync(filters, CancellationToken.None);
 
         /* assert: only permission1 should be returned */
         Assert.Single(filteredPermissions);
@@ -185,7 +185,7 @@ public sealed class PermissionRepositoryTests : IClassFixture<MongoDatabaseFixtu
 
         foreach (var permission in permissions)
         {
-            await _permissionRepository.InsertAsync(permission);
+            await _permissionCollection.InsertAsync(permission);
         }
 
         /* arrange: prepare filters for page 1 with page size 5 */
@@ -194,7 +194,7 @@ public sealed class PermissionRepositoryTests : IClassFixture<MongoDatabaseFixtu
             .Build();
 
         /* act: get first page */
-        var page1Results = await _permissionRepository.GetPermissionsAsync(filtersPage1, CancellationToken.None);
+        var page1Results = await _permissionCollection.GetPermissionsAsync(filtersPage1, CancellationToken.None);
 
         /* assert: page 1 should return exactly 5 permissions */
         Assert.Equal(5, page1Results.Count);
@@ -205,7 +205,7 @@ public sealed class PermissionRepositoryTests : IClassFixture<MongoDatabaseFixtu
             .Build();
 
         /* act: get second page */
-        var page2Results = await _permissionRepository.GetPermissionsAsync(filtersPage2, CancellationToken.None);
+        var page2Results = await _permissionCollection.GetPermissionsAsync(filtersPage2, CancellationToken.None);
 
         /* assert: page 2 should return exactly 5 permissions */
         Assert.Equal(5, page2Results.Count);
@@ -230,7 +230,7 @@ public sealed class PermissionRepositoryTests : IClassFixture<MongoDatabaseFixtu
 
         foreach (var permission in permissions)
         {
-            await _permissionRepository.InsertAsync(permission);
+            await _permissionCollection.InsertAsync(permission);
         }
 
         /* arrange: prepare filters with IsDeleted = false */
@@ -238,7 +238,7 @@ public sealed class PermissionRepositoryTests : IClassFixture<MongoDatabaseFixtu
             .Build();
 
         /* act: count permissions matching filters */
-        var total = await _permissionRepository.CountAsync(filters);
+        var total = await _permissionCollection.CountAsync(filters);
 
         /* assert: should return 10 */
         Assert.Equal(10, total);

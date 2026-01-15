@@ -1,6 +1,6 @@
 namespace Vinder.Identity.Domain.Collections;
 
-public interface ITokenRepository : IAggregateCollection<SecurityToken>
+public interface ITokenCollection : IAggregateCollection<SecurityToken>
 {
     public Task<IReadOnlyCollection<SecurityToken>> GetTokensAsync(
         TokenFilters filters,

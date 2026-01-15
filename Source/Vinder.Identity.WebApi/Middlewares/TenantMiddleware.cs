@@ -13,7 +13,7 @@ public sealed class TenantMiddleware(IMemoryCache cache, RequestDelegate next)
             return;
         }
 
-        var tenantRepository = context.RequestServices.GetRequiredService<ITenantRepository>();
+        var tenantRepository = context.RequestServices.GetRequiredService<ITenantCollection>();
         var tenantProvider = context.RequestServices.GetRequiredService<ITenantProvider>();
 
         var tenantHeaderKey = context.Request.Headers.Keys

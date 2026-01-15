@@ -1,18 +1,18 @@
-namespace Vinder.Identity.TestSuite.IntegrationTests.Repositories;
+namespace Vinder.Identity.TestSuite.IntegrationTests.Persistence;
 
-public sealed class GroupRepositoryTests : IClassFixture<MongoDatabaseFixture>, IAsyncLifetime
+public sealed class GroupPersistenceTests : IClassFixture<MongoDatabaseFixture>, IAsyncLifetime
 {
-    private readonly IGroupRepository _groupRepository;
+    private readonly IGroupCollection _groupCollection;
     private readonly IMongoDatabase _database;
     private readonly MongoDatabaseFixture _mongoFixture;
     private readonly Mock<ITenantProvider> _tenantProvider = new();
     private readonly Fixture _fixture = new();
 
-    public GroupRepositoryTests(MongoDatabaseFixture fixture)
+    public GroupPersistenceTests(MongoDatabaseFixture fixture)
     {
         _mongoFixture = fixture;
         _database = fixture.Database;
-        _groupRepository = new GroupRepository(_database, _tenantProvider.Object);
+        _groupCollection = new GroupCollection(_database, _tenantProvider.Object);
     }
 
     [Fact(DisplayName = "[infrastructure] - when inserting a group, then it must persist in the database")]
@@ -35,9 +35,9 @@ public sealed class GroupRepositoryTests : IClassFixture<MongoDatabaseFixture>, 
             .Build();
 
         /* act: persist group and query using name filter */
-        await _groupRepository.InsertAsync(group);
+        await _groupCollection.InsertAsync(group);
 
-        var result = await _groupRepository.GetGroupsAsync(filters, CancellationToken.None);
+        var result = await _groupCollection.GetGroupsAsync(filters, CancellationToken.None);
         var retrievedGroup = result.FirstOrDefault();
 
         /* assert: group must be retrieved with same id and name */
@@ -62,20 +62,20 @@ public sealed class GroupRepositoryTests : IClassFixture<MongoDatabaseFixture>, 
             .With(group => group.TenantId, tenant.Id)
             .Create();
 
-        await _groupRepository.InsertAsync(group);
+        await _groupCollection.InsertAsync(group);
 
         /* act: update name and save */
         var newName = "updated.group";
 
         group.Name = newName;
 
-        await _groupRepository.UpdateAsync(group);
+        await _groupCollection.UpdateAsync(group);
 
         var filters = new GroupFiltersBuilder()
             .WithName(newName)
             .Build();
 
-        var result = await _groupRepository.GetGroupsAsync(filters, CancellationToken.None);
+        var result = await _groupCollection.GetGroupsAsync(filters, CancellationToken.None);
         var updatedGroup = result.FirstOrDefault();
 
         /* assert: updated group must be found with new name */
@@ -100,16 +100,16 @@ public sealed class GroupRepositoryTests : IClassFixture<MongoDatabaseFixture>, 
             .With(group => group.TenantId, tenant.Id)
             .Create();
 
-        await _groupRepository.InsertAsync(group);
+        await _groupCollection.InsertAsync(group);
 
         var filters = new GroupFiltersBuilder()
             .WithName(group.Name)
             .Build();
 
         /* act: delete group and query by name */
-        var deleted = await _groupRepository.DeleteAsync(group);
+        var deleted = await _groupCollection.DeleteAsync(group);
 
-        var resultAfterDelete = await _groupRepository.GetGroupsAsync(filters, CancellationToken.None);
+        var resultAfterDelete = await _groupCollection.GetGroupsAsync(filters, CancellationToken.None);
 
         /* assert: no groups should be returned after delete */
         Assert.DoesNotContain(resultAfterDelete, g => g.Id == group.Id);
@@ -121,7 +121,7 @@ public sealed class GroupRepositoryTests : IClassFixture<MongoDatabaseFixture>, 
             .Build();
 
         /* act: refetch groups including deleted */
-        var resultWithDeleted = await _groupRepository.GetGroupsAsync(filtersWithDeleted, CancellationToken.None);
+        var resultWithDeleted = await _groupCollection.GetGroupsAsync(filtersWithDeleted, CancellationToken.None);
 
         /* assert: group should be returned when including deleted groups */
         Assert.Contains(resultWithDeleted, g => g.Id == group.Id);
@@ -149,15 +149,15 @@ public sealed class GroupRepositoryTests : IClassFixture<MongoDatabaseFixture>, 
             .With(group => group.TenantId, tenant.Id)
             .Create();
 
-        await _groupRepository.InsertAsync(group1);
-        await _groupRepository.InsertAsync(group2);
+        await _groupCollection.InsertAsync(group1);
+        await _groupCollection.InsertAsync(group2);
 
         var filters = new GroupFiltersBuilder()
             .WithIdentifier(group1.Id)
             .Build();
 
         /* act: query groups filtered by id */
-        var filteredGroups = await _groupRepository.GetGroupsAsync(filters, CancellationToken.None);
+        var filteredGroups = await _groupCollection.GetGroupsAsync(filters, CancellationToken.None);
 
         /* assert: only group1 should be returned */
         Assert.Single(filteredGroups);
@@ -182,15 +182,15 @@ public sealed class GroupRepositoryTests : IClassFixture<MongoDatabaseFixture>, 
             .With(group => group.IsDeleted, false)
             .Create();
 
-        await _groupRepository.InsertAsync(group1);
-        await _groupRepository.InsertAsync(group2);
+        await _groupCollection.InsertAsync(group1);
+        await _groupCollection.InsertAsync(group2);
 
         var filters = new GroupFiltersBuilder()
             .WithTenantId(tenant.Id)
             .Build();
 
         /* act: query groups filtered by tenant id */
-        var filteredGroups = await _groupRepository.GetGroupsAsync(filters, CancellationToken.None);
+        var filteredGroups = await _groupCollection.GetGroupsAsync(filters, CancellationToken.None);
 
         /* assert: only group1 should be returned */
         Assert.Single(filteredGroups);
@@ -218,15 +218,15 @@ public sealed class GroupRepositoryTests : IClassFixture<MongoDatabaseFixture>, 
             .With(group => group.TenantId, tenant.Id)
             .Create();
 
-        await _groupRepository.InsertAsync(group1);
-        await _groupRepository.InsertAsync(group2);
+        await _groupCollection.InsertAsync(group1);
+        await _groupCollection.InsertAsync(group2);
 
         var filters = new GroupFiltersBuilder()
             .WithName("filter1")
             .Build();
 
         /* act: query groups filtered by name */
-        var filteredGroups = await _groupRepository.GetGroupsAsync(filters, CancellationToken.None);
+        var filteredGroups = await _groupCollection.GetGroupsAsync(filters, CancellationToken.None);
 
         /* assert: only group1 should be returned */
         Assert.Single(filteredGroups);
@@ -252,7 +252,7 @@ public sealed class GroupRepositoryTests : IClassFixture<MongoDatabaseFixture>, 
 
         foreach (var group in groups)
         {
-            await _groupRepository.InsertAsync(group);
+            await _groupCollection.InsertAsync(group);
         }
 
         /* arrange: prepare filters for page 1 with page size 5 */
@@ -261,7 +261,7 @@ public sealed class GroupRepositoryTests : IClassFixture<MongoDatabaseFixture>, 
             .Build();
 
         /* act: get first page */
-        var page1Results = await _groupRepository.GetGroupsAsync(filtersPage1, CancellationToken.None);
+        var page1Results = await _groupCollection.GetGroupsAsync(filtersPage1, CancellationToken.None);
 
         /* assert: page 1 should return exactly 5 groups */
         Assert.Equal(5, page1Results.Count);
@@ -272,7 +272,7 @@ public sealed class GroupRepositoryTests : IClassFixture<MongoDatabaseFixture>, 
             .Build();
 
         /* act: get second page */
-        var page2Results = await _groupRepository.GetGroupsAsync(filtersPage2, CancellationToken.None);
+        var page2Results = await _groupCollection.GetGroupsAsync(filtersPage2, CancellationToken.None);
 
         /* assert: page 2 should return exactly 5 groups */
         Assert.Equal(5, page2Results.Count);
@@ -297,7 +297,7 @@ public sealed class GroupRepositoryTests : IClassFixture<MongoDatabaseFixture>, 
 
         foreach (var group in groups)
         {
-            await _groupRepository.InsertAsync(group);
+            await _groupCollection.InsertAsync(group);
         }
 
         /* arrange: prepare filters with IsDeleted = false */
@@ -306,7 +306,7 @@ public sealed class GroupRepositoryTests : IClassFixture<MongoDatabaseFixture>, 
             .Build();
 
         /* act: count groups matching filters */
-        var total = await _groupRepository.CountAsync(filters);
+        var total = await _groupCollection.CountAsync(filters);
 
         /* assert: should return 10 */
         Assert.Equal(10, total);
@@ -331,7 +331,7 @@ public sealed class GroupRepositoryTests : IClassFixture<MongoDatabaseFixture>, 
 
         foreach (var group in groups)
         {
-            await _groupRepository.InsertAsync(group);
+            await _groupCollection.InsertAsync(group);
         }
 
         /* arrange: prepare filters with IsDeleted = true */
@@ -340,7 +340,7 @@ public sealed class GroupRepositoryTests : IClassFixture<MongoDatabaseFixture>, 
             .Build();
 
         /* act: count groups matching filters */
-        var total = await _groupRepository.CountAsync(filters);
+        var total = await _groupCollection.CountAsync(filters);
 
         /* assert: should return 0 */
         Assert.Equal(0, total);

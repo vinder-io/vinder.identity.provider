@@ -1,17 +1,17 @@
-namespace Vinder.Identity.TestSuite.IntegrationTests.Repositories;
+namespace Vinder.Identity.TestSuite.IntegrationTests.Persistence;
 
-public sealed class TenantRepositoryTests : IClassFixture<MongoDatabaseFixture>, IAsyncLifetime
+public sealed class TenantPersistenceTests : IClassFixture<MongoDatabaseFixture>, IAsyncLifetime
 {
-    private readonly ITenantRepository _tenantRepository;
+    private readonly ITenantCollection _tenantCollection;
     private readonly IMongoDatabase _database;
     private readonly MongoDatabaseFixture _mongoFixture;
     private readonly Fixture _fixture = new();
 
-    public TenantRepositoryTests(MongoDatabaseFixture fixture)
+    public TenantPersistenceTests(MongoDatabaseFixture fixture)
     {
         _mongoFixture = fixture;
         _database = fixture.Database;
-        _tenantRepository = new TenantRepository(_database);
+        _tenantCollection = new TenantCollection(_database);
     }
 
     [Fact(DisplayName = "[infrastructure] - when inserting a tenant, then it must persist in the database")]
@@ -28,9 +28,9 @@ public sealed class TenantRepositoryTests : IClassFixture<MongoDatabaseFixture>,
             .Build();
 
         /* act: persist tenant and query using name filter */
-        await _tenantRepository.InsertAsync(tenant);
+        await _tenantCollection.InsertAsync(tenant);
 
-        var result = await _tenantRepository.GetTenantsAsync(filters, CancellationToken.None);
+        var result = await _tenantCollection.GetTenantsAsync(filters, CancellationToken.None);
         var retrievedTenant = result.FirstOrDefault();
 
         /* assert: tenant must be retrieved with same id and name */
@@ -48,20 +48,20 @@ public sealed class TenantRepositoryTests : IClassFixture<MongoDatabaseFixture>,
             .With(tenant => tenant.IsDeleted, false)
             .Create();
 
-        await _tenantRepository.InsertAsync(tenant);
+        await _tenantCollection.InsertAsync(tenant);
 
         /* act: update name and save */
         var newName = "updated.name";
 
         tenant.Name = newName;
 
-        await _tenantRepository.UpdateAsync(tenant);
+        await _tenantCollection.UpdateAsync(tenant);
 
         var filters = new TenantFiltersBuilder()
             .WithName(newName)
             .Build();
 
-        var result = await _tenantRepository.GetTenantsAsync(filters, CancellationToken.None);
+        var result = await _tenantCollection.GetTenantsAsync(filters, CancellationToken.None);
         var updatedTenant = result.FirstOrDefault();
 
         /* assert: updated tenant must be found with new name */
@@ -80,16 +80,16 @@ public sealed class TenantRepositoryTests : IClassFixture<MongoDatabaseFixture>,
             .With(tenant => tenant.IsDeleted, false)
             .Create();
 
-        await _tenantRepository.InsertAsync(tenant);
+        await _tenantCollection.InsertAsync(tenant);
 
         var filters = new TenantFiltersBuilder()
             .WithName(tenant.Name)
             .Build();
 
         /* act: delete tenant and query by name */
-        var deleted = await _tenantRepository.DeleteAsync(tenant);
+        var deleted = await _tenantCollection.DeleteAsync(tenant);
 
-        var resultAfterDelete = await _tenantRepository.GetTenantsAsync(filters, CancellationToken.None);
+        var resultAfterDelete = await _tenantCollection.GetTenantsAsync(filters, CancellationToken.None);
 
         /* assert: no tenants should be returned after delete */
         Assert.DoesNotContain(resultAfterDelete, t => t.Id == tenant.Id);
@@ -101,7 +101,7 @@ public sealed class TenantRepositoryTests : IClassFixture<MongoDatabaseFixture>,
             .Build();
 
         /* act: refetch tenants including deleted */
-        var resultWithDeleted = await _tenantRepository.GetTenantsAsync(filtersWithDeleted, CancellationToken.None);
+        var resultWithDeleted = await _tenantCollection.GetTenantsAsync(filtersWithDeleted, CancellationToken.None);
 
         /* assert: tenant should be returned when including deleted tenants */
         Assert.Contains(resultWithDeleted, t => t.Id == tenant.Id);
@@ -124,15 +124,15 @@ public sealed class TenantRepositoryTests : IClassFixture<MongoDatabaseFixture>,
             .With(tenant => tenant.IsDeleted, false)
             .Create();
 
-        await _tenantRepository.InsertAsync(tenant1);
-        await _tenantRepository.InsertAsync(tenant2);
+        await _tenantCollection.InsertAsync(tenant1);
+        await _tenantCollection.InsertAsync(tenant2);
 
         var filters = new TenantFiltersBuilder()
             .WithName("filter1")
             .Build();
 
         /* act: query tenants filtered by name */
-        var filteredTenants = await _tenantRepository.GetTenantsAsync(filters, CancellationToken.None);
+        var filteredTenants = await _tenantCollection.GetTenantsAsync(filters, CancellationToken.None);
 
         /* assert: only tenant1 should be returned */
         Assert.Single(filteredTenants);
@@ -152,7 +152,7 @@ public sealed class TenantRepositoryTests : IClassFixture<MongoDatabaseFixture>,
 
         foreach (var tenant in tenants)
         {
-            await _tenantRepository.InsertAsync(tenant);
+            await _tenantCollection.InsertAsync(tenant);
         }
 
         /* arrange: prepare filters for page 1 with page size 5 */
@@ -161,7 +161,7 @@ public sealed class TenantRepositoryTests : IClassFixture<MongoDatabaseFixture>,
             .Build();
 
         /* act: get first page */
-        var page1Results = await _tenantRepository.GetTenantsAsync(filtersPage1, CancellationToken.None);
+        var page1Results = await _tenantCollection.GetTenantsAsync(filtersPage1, CancellationToken.None);
 
         /* assert: page 1 should return exactly 5 tenants */
         Assert.Equal(5, page1Results.Count);
@@ -172,7 +172,7 @@ public sealed class TenantRepositoryTests : IClassFixture<MongoDatabaseFixture>,
             .Build();
 
         /* act: get second page */
-        var page2Results = await _tenantRepository.GetTenantsAsync(filtersPage2, CancellationToken.None);
+        var page2Results = await _tenantCollection.GetTenantsAsync(filtersPage2, CancellationToken.None);
 
         /* assert: page 2 should return exactly 5 tenants */
         Assert.Equal(5, page2Results.Count);
@@ -190,7 +190,7 @@ public sealed class TenantRepositoryTests : IClassFixture<MongoDatabaseFixture>,
             .With(tenant => tenant.IsDeleted, false)
             .Create();
 
-        await _tenantRepository.InsertAsync(tenant);
+        await _tenantCollection.InsertAsync(tenant);
 
         var filters = new TenantFiltersBuilder()
             .WithClientId(clientId)
@@ -198,7 +198,7 @@ public sealed class TenantRepositoryTests : IClassFixture<MongoDatabaseFixture>,
             .Build();
 
         /* act: query tenants filtered by client id and name */
-        var result = await _tenantRepository.GetTenantsAsync(filters, CancellationToken.None);
+        var result = await _tenantCollection.GetTenantsAsync(filters, CancellationToken.None);
         var retrievedTenant = result.FirstOrDefault();
 
         /* assert: only tenant with matching client id is returned */
@@ -228,7 +228,7 @@ public sealed class TenantRepositoryTests : IClassFixture<MongoDatabaseFixture>,
 
             tenants.Add(tenant);
 
-            await _tenantRepository.InsertAsync(tenant);
+            await _tenantCollection.InsertAsync(tenant);
         }
 
         /* act: count tenants filtered by clientId1 and IsDeleted = false */
@@ -237,7 +237,7 @@ public sealed class TenantRepositoryTests : IClassFixture<MongoDatabaseFixture>,
             .WithIsDeleted(false)
             .Build();
 
-        var filteredCount = await _tenantRepository.CountAsync(filters, CancellationToken.None);
+        var filteredCount = await _tenantCollection.CountAsync(filters, CancellationToken.None);
         var expectedCount = tenants.Count(tenant => tenant.ClientId == clientId1 && !tenant.IsDeleted);
 
         /* assert: expected count of tenants for client */

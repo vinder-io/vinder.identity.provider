@@ -4,21 +4,26 @@ global using System.Net;
 global using System.Net.Http.Headers;
 global using System.Net.Http.Json;
 
+global using System.IdentityModel.Tokens.Jwt;
+global using System.Security.Cryptography;
+global using System.Security.Claims;
+
 /* global using for Microsoft namespaces here */
 
 global using Microsoft.AspNetCore.Mvc.Testing;
+global using Microsoft.IdentityModel.Tokens;
 global using Microsoft.Extensions.DependencyInjection;
 
 /* global using for Vinder namespaces here */
 
-global using Vinder.Internal.Essentials.Filters;
+global using Vinder.Internal.Essentials.Filtering;
 global using Vinder.Internal.Essentials.Patterns;
 global using Vinder.Internal.Essentials.Utilities;
 
 global using Vinder.Identity.Domain.Aggregates;
 global using Vinder.Identity.Domain.Filtering;
 global using Vinder.Identity.Domain.Filtering.Builders;
-global using Vinder.Identity.Domain.Repositories;
+global using Vinder.Identity.Domain.Collections;
 
 global using Vinder.Identity.Application.Services;
 global using Vinder.Identity.Application.Providers;
@@ -27,8 +32,9 @@ global using Vinder.Identity.Application.Payloads.Identity;
 global using Vinder.Identity.Application.Payloads.User;
 global using Vinder.Identity.Application.Payloads.Scope;
 
-global using Vinder.Identity.Infrastructure.Repositories;
+global using Vinder.Identity.Infrastructure.Persistence;
 global using Vinder.Identity.Infrastructure.Security;
+global using Vinder.Identity.Infrastructure.Constants;
 
 global using Vinder.Identity.Domain.Errors;
 global using Vinder.Identity.WebApi;

@@ -1,6 +1,6 @@
 namespace Vinder.Identity.Domain.Collections;
 
-public interface IScopeRepository : IAggregateCollection<Scope>
+public interface IScopeCollection : IAggregateCollection<Scope>
 {
     public Task<IReadOnlyCollection<Scope>> GetScopesAsync(
         ScopeFilters filters,

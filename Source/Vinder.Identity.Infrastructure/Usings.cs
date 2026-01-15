@@ -12,12 +12,11 @@ global using Microsoft.IdentityModel.Tokens;
 
 global using Vinder.Internal.Infrastructure.Persistence;
 global using Vinder.Internal.Infrastructure.Persistence.Pipelines;
-global using Vinder.Internal.Infrastructure.Persistence.Repositories;
 global using Vinder.Internal.Essentials.Patterns;
 
 global using Vinder.Identity.Domain.Aggregates;
 global using Vinder.Identity.Domain.Errors;
-global using Vinder.Identity.Domain.Repositories;
+global using Vinder.Identity.Domain.Collections;
 global using Vinder.Identity.Domain.Filtering;
 global using Vinder.Identity.Domain.Filtering.Builders;
 

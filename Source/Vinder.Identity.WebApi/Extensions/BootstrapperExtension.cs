@@ -7,10 +7,10 @@ public static class BootstrapperExtension
     {
         using var scope = builder.ApplicationServices.CreateScope();
 
-        var tenantRepository = scope.ServiceProvider.GetRequiredService<ITenantRepository>();
-        var userRepository = scope.ServiceProvider.GetRequiredService<IUserRepository>();
-        var scopeRepository = scope.ServiceProvider.GetRequiredService<IScopeRepository>();
-        var permissionRepository = scope.ServiceProvider.GetRequiredService<IPermissionRepository>();
+        var tenantRepository = scope.ServiceProvider.GetRequiredService<ITenantCollection>();
+        var userRepository = scope.ServiceProvider.GetRequiredService<IUserCollection>();
+        var scopeRepository = scope.ServiceProvider.GetRequiredService<IScopeCollection>();
+        var permissionRepository = scope.ServiceProvider.GetRequiredService<IPermissionCollection>();
 
         var tenantProvider = scope.ServiceProvider.GetRequiredService<ITenantProvider>();
         var credentialsGenerator = scope.ServiceProvider.GetRequiredService<IClientCredentialsGenerator>();

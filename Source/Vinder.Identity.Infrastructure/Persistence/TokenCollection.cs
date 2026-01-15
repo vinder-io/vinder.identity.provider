@@ -1,8 +1,8 @@
-namespace Vinder.Identity.Infrastructure.Repositories;
+namespace Vinder.Identity.Infrastructure.Persistence;
 
-public sealed class TokenRepository(IMongoDatabase database, ITenantProvider tenantProvider) :
-    BaseRepository<SecurityToken>(database, Collections.Tokens),
-    ITokenRepository
+public sealed class TokenCollection(IMongoDatabase database, ITenantProvider tenantProvider) :
+    AggregateCollection<SecurityToken>(database, Collections.Tokens),
+    ITokenCollection
 {
     public async Task<IReadOnlyCollection<SecurityToken>> GetTokensAsync(TokenFilters filters, CancellationToken cancellation = default)
     {

@@ -1,18 +1,18 @@
-namespace Vinder.Identity.TestSuite.IntegrationTests.Repositories;
+namespace Vinder.Identity.TestSuite.IntegrationTests.Persistence;
 
-public sealed class UserRepositoryTests : IClassFixture<MongoDatabaseFixture>, IAsyncLifetime
+public sealed class UserPersistenceTests : IClassFixture<MongoDatabaseFixture>, IAsyncLifetime
 {
-    private readonly IUserRepository _userRepository;
+    private readonly IUserCollection _userCollection;
     private readonly IMongoDatabase _database;
     private readonly MongoDatabaseFixture _mongoFixture;
     private readonly Mock<ITenantProvider> _tenantProvider = new();
     private readonly Fixture _fixture = new();
 
-    public UserRepositoryTests(MongoDatabaseFixture fixture)
+    public UserPersistenceTests(MongoDatabaseFixture fixture)
     {
         _mongoFixture = fixture;
         _database = fixture.Database;
-        _userRepository = new UserRepository(_database, _tenantProvider.Object);
+        _userCollection = new UserCollection(_database, _tenantProvider.Object);
     }
 
     [Fact(DisplayName = "[infrastructure] - when inserting a user, then it must persist in the database")]
@@ -35,9 +35,9 @@ public sealed class UserRepositoryTests : IClassFixture<MongoDatabaseFixture>, I
             .Build();
 
         /* act: persist user and query using username filter */
-        await _userRepository.InsertAsync(user);
+        await _userCollection.InsertAsync(user);
 
-        var result = await _userRepository.GetUsersAsync(filters, CancellationToken.None);
+        var result = await _userCollection.GetUsersAsync(filters, CancellationToken.None);
         var retrievedUser = result.FirstOrDefault();
 
         /* assert: user must be retrieved with same id and username */
@@ -61,20 +61,20 @@ public sealed class UserRepositoryTests : IClassFixture<MongoDatabaseFixture>, I
             .With(user => user.TenantId, tenant.Id)
             .Create();
 
-        await _userRepository.InsertAsync(user);
+        await _userCollection.InsertAsync(user);
 
         /* act: update username and save */
         var newUsername = "updated.email@coding.com";
 
         user.Username = newUsername;
 
-        await _userRepository.UpdateAsync(user);
+        await _userCollection.UpdateAsync(user);
 
         var filters = new UserFiltersBuilder()
             .WithUsername(newUsername)
             .Build();
 
-        var result = await _userRepository.GetUsersAsync(filters, CancellationToken.None);
+        var result = await _userCollection.GetUsersAsync(filters, CancellationToken.None);
         var updatedUser = result.FirstOrDefault();
 
         /* assert: updated user must be found with new username */
@@ -99,16 +99,16 @@ public sealed class UserRepositoryTests : IClassFixture<MongoDatabaseFixture>, I
             .With(user => user.TenantId, tenant.Id)
             .Create();
 
-        await _userRepository.InsertAsync(user);
+        await _userCollection.InsertAsync(user);
 
         var filters = new UserFiltersBuilder()
             .WithUsername(user.Username)
             .Build();
 
         /* act: delete user and query by username */
-        var deleted = await _userRepository.DeleteAsync(user);
+        var deleted = await _userCollection.DeleteAsync(user);
 
-        var resultAfterDelete = await _userRepository.GetUsersAsync(filters, CancellationToken.None);
+        var resultAfterDelete = await _userCollection.GetUsersAsync(filters, CancellationToken.None);
 
         /* assert: no users should be returned after delete */
         Assert.DoesNotContain(resultAfterDelete, user => user.Id == user.Id);
@@ -120,7 +120,7 @@ public sealed class UserRepositoryTests : IClassFixture<MongoDatabaseFixture>, I
             .Build();
 
         /* act: refetch users including deleted */
-        var resultWithDeleted = await _userRepository.GetUsersAsync(filtersWithDeleted, CancellationToken.None);
+        var resultWithDeleted = await _userCollection.GetUsersAsync(filtersWithDeleted, CancellationToken.None);
 
         /* assert: user should be returned when including deleted users */
         Assert.Contains(resultWithDeleted, user => user.Id == user.Id);
@@ -150,15 +150,15 @@ public sealed class UserRepositoryTests : IClassFixture<MongoDatabaseFixture>, I
             .With(user => user.TenantId, tenant.Id)
             .Create();
 
-        await _userRepository.InsertAsync(user1);
-        await _userRepository.InsertAsync(user2);
+        await _userCollection.InsertAsync(user1);
+        await _userCollection.InsertAsync(user2);
 
         var filters = new UserFiltersBuilder()
             .WithUsername("filter1@coding.com")
             .Build();
 
         /* act: query users filtered by username */
-        var filteredUsers = await _userRepository.GetUsersAsync(filters, CancellationToken.None);
+        var filteredUsers = await _userCollection.GetUsersAsync(filters, CancellationToken.None);
 
         /* assert: only user1 should be returned */
         Assert.Single(filteredUsers);
@@ -184,7 +184,7 @@ public sealed class UserRepositoryTests : IClassFixture<MongoDatabaseFixture>, I
 
         foreach (var user in users)
         {
-            await _userRepository.InsertAsync(user);
+            await _userCollection.InsertAsync(user);
         }
 
         /* arrange: prepare filters for page 1 with page size 5 */
@@ -193,7 +193,7 @@ public sealed class UserRepositoryTests : IClassFixture<MongoDatabaseFixture>, I
             .Build();
 
         /* act: get first page */
-        var page1Results = await _userRepository.GetUsersAsync(filtersPage1, CancellationToken.None);
+        var page1Results = await _userCollection.GetUsersAsync(filtersPage1, CancellationToken.None);
 
         /* assert: page 1 should return exactly 5 users */
         Assert.Equal(5, page1Results.Count);
@@ -204,7 +204,7 @@ public sealed class UserRepositoryTests : IClassFixture<MongoDatabaseFixture>, I
             .Build();
 
         /* act: get second page */
-        var page2Results = await _userRepository.GetUsersAsync(filtersPage2, CancellationToken.None);
+        var page2Results = await _userCollection.GetUsersAsync(filtersPage2, CancellationToken.None);
 
         /* assert: page 2 should return exactly 5 users */
         Assert.Equal(5, page2Results.Count);
@@ -225,7 +225,7 @@ public sealed class UserRepositoryTests : IClassFixture<MongoDatabaseFixture>, I
             .With(user => user.IsDeleted, false)
             .Create();
 
-        await _userRepository.InsertAsync(user);
+        await _userCollection.InsertAsync(user);
 
         var filters = new UserFiltersBuilder()
             .WithTenantId(tenant.Id)
@@ -233,7 +233,7 @@ public sealed class UserRepositoryTests : IClassFixture<MongoDatabaseFixture>, I
             .Build();
 
         /* act: query users filtered by tenant id and username */
-        var result = await _userRepository.GetUsersAsync(filters, CancellationToken.None);
+        var result = await _userCollection.GetUsersAsync(filters, CancellationToken.None);
         var retrievedUser = result.FirstOrDefault();
 
         /* assert: only user with matching tenant id is returned */
@@ -266,7 +266,7 @@ public sealed class UserRepositoryTests : IClassFixture<MongoDatabaseFixture>, I
 
             users.Add(user);
 
-            await _userRepository.InsertAsync(user);
+            await _userCollection.InsertAsync(user);
         }
 
         /* act: count users filtered by tenant1 and IsDeleted = false */
@@ -275,7 +275,7 @@ public sealed class UserRepositoryTests : IClassFixture<MongoDatabaseFixture>, I
             .WithIsDeleted(false)
             .Build();
 
-        var filteredCount = await _userRepository.CountAsync(filters);
+        var filteredCount = await _userCollection.CountAsync(filters);
         var expectedCount = users.Count(user => user.TenantId == tenant1.Id && !user.IsDeleted);
 
         /* assert: expected count of users for tenant*/

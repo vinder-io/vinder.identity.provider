@@ -1,8 +1,8 @@
-namespace Vinder.Identity.Infrastructure.Repositories;
+namespace Vinder.Identity.Infrastructure.Persistence;
 
-public sealed class TenantRepository(IMongoDatabase database) :
-    BaseRepository<Tenant>(database, Collections.Tenants),
-    ITenantRepository
+public sealed class TenantCollection(IMongoDatabase database) :
+    AggregateCollection<Tenant>(database, Collections.Tenants),
+    ITenantCollection
 {
     public async Task<IReadOnlyCollection<Tenant>> GetTenantsAsync(TenantFilters filters, CancellationToken cancellation = default)
     {

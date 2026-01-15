@@ -1,34 +1,25 @@
-using System.IdentityModel.Tokens.Jwt;
-using System.Security.Claims;
-using System.Security.Cryptography;
-
-using Microsoft.IdentityModel.Tokens;
-
-using Vinder.Identity.Infrastructure.Constants;
-using Vinder.Identity.Common.Utilities;
-
 namespace Vinder.Identity.TestSuite.IntegrationTests.Security;
 
 public sealed class JwtSecurityTokenServiceTests : IClassFixture<MongoDatabaseFixture>, IAsyncLifetime
 {
     private readonly JwtSecurityTokenService _jwtSecurityTokenService;
-    private readonly TokenRepository _tokenRepository;
+    private readonly TokenCollection _tokenCollection;
     private readonly IMongoDatabase _database;
     private readonly MongoDatabaseFixture _mongoFixture;
     private readonly RSA _rsa = RSA.Create(2048);
     private readonly Fixture _fixture = new();
 
     private readonly Mock<ITenantProvider> _tenantProvider = new();
-    private readonly Mock<ISecretRepository> _secretRepository = new();
+    private readonly Mock<ISecretCollection> _secretCollection = new();
     private readonly Mock<IHostInformationProvider> _hostProvider = new();
-    private readonly Mock<IGroupRepository> _groupRepository = new();
+    private readonly Mock<IGroupCollection> _groupCollection = new();
 
     public JwtSecurityTokenServiceTests(MongoDatabaseFixture fixture)
     {
         _mongoFixture = fixture;
         _database = fixture.Database;
 
-        _tokenRepository = new TokenRepository(_database, _tenantProvider.Object);
+        _tokenCollection = new TokenCollection(_database, _tenantProvider.Object);
         _hostProvider
             .Setup(provider => provider.Address)
             .Returns(new Uri("http://localhost:5078"));
@@ -43,19 +34,19 @@ public sealed class JwtSecurityTokenServiceTests : IClassFixture<MongoDatabaseFi
         _tenantProvider.Setup(provider => provider.GetCurrentTenant())
             .Returns(tenant);
 
-        _groupRepository
+        _groupCollection
             .Setup(repository => repository.GetGroupsAsync(It.IsAny<GroupFilters>(), It.IsAny<CancellationToken>()))
             .ReturnsAsync([  ]);
 
-        _secretRepository
+        _secretCollection
             .Setup(repository => repository.GetSecretAsync(It.IsAny<CancellationToken>()))
             .ReturnsAsync(secret);
 
         _jwtSecurityTokenService = new JwtSecurityTokenService(
             tenantProvider: _tenantProvider.Object,
-            secretRepository: _secretRepository.Object,
-            groupRepository: _groupRepository.Object,
-            repository: _tokenRepository,
+            secretCollection: _secretCollection.Object,
+            groupCollection: _groupCollection.Object,
+            tokenCollection: _tokenCollection,
             host: _hostProvider.Object
         );
     }
@@ -130,7 +121,7 @@ public sealed class JwtSecurityTokenServiceTests : IClassFixture<MongoDatabaseFi
             .WithValue(result.Data.Value)
             .Build();
 
-        var tokens = await _tokenRepository.GetTokensAsync(filters);
+        var tokens = await _tokenCollection.GetTokensAsync(filters);
 
         Assert.Single(tokens);
         Assert.Equal(result.Data.Value, tokens.First().Value);
@@ -141,7 +132,7 @@ public sealed class JwtSecurityTokenServiceTests : IClassFixture<MongoDatabaseFi
     {
         /* arrange: create an expired token */
 
-        var secret = await _secretRepository.Object.GetSecretAsync();
+        var secret = await _secretCollection.Object.GetSecretAsync();
         var privateKey = Common.Utilities.RsaHelper.CreateSecurityKeyFromPrivateKey(secret.PrivateKey);
 
         var tokenHandler = new JwtSecurityTokenHandler();
@@ -161,7 +152,7 @@ public sealed class JwtSecurityTokenServiceTests : IClassFixture<MongoDatabaseFi
             .Returns(tenant);
 
         var token = tokenHandler.CreateToken(tokenDescriptor);
-        var expiredToken = new Domain.Entities.SecurityToken
+        var expiredToken = new Domain.Aggregates.SecurityToken
         {
             Value = tokenHandler.WriteToken(token),
             ExpiresAt = tokenDescriptor.Expires.Value
@@ -179,7 +170,7 @@ public sealed class JwtSecurityTokenServiceTests : IClassFixture<MongoDatabaseFi
     public async Task WhenValidatingTokenWithInvalidFormat_ThenItMustReturnInvalidTokenFormatError()
     {
         /* arrange: create a token with invalid format */
-        var invalidFormatToken = new Domain.Entities.SecurityToken
+        var invalidFormatToken = new Domain.Aggregates.SecurityToken
         {
             Value = "invalid-token-format",
             ExpiresAt = DateTime.UtcNow.AddMinutes(15)
@@ -225,7 +216,7 @@ public sealed class JwtSecurityTokenServiceTests : IClassFixture<MongoDatabaseFi
             .WithIsDeleted(true)
             .Build();
 
-        var tokens = await _tokenRepository.GetTokensAsync(filters);
+        var tokens = await _tokenCollection.GetTokensAsync(filters);
 
         Assert.Single(tokens);
 
@@ -242,7 +233,7 @@ public sealed class JwtSecurityTokenServiceTests : IClassFixture<MongoDatabaseFi
         _tenantProvider.Setup(provider => provider.GetCurrentTenant())
             .Returns(tenant);
 
-        var nonExistentToken = _fixture.Create<Domain.Entities.SecurityToken>();
+        var nonExistentToken = _fixture.Create<Domain.Aggregates.SecurityToken>();
 
         /* act: revoke the non-existent refresh token */
         var revokeResult = await _jwtSecurityTokenService.RevokeRefreshTokenAsync(nonExistentToken);

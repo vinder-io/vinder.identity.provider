@@ -1,8 +1,8 @@
-namespace Vinder.Identity.Infrastructure.Repositories;
+namespace Vinder.Identity.Infrastructure.Persistence;
 
-public sealed class GroupRepository(IMongoDatabase database, ITenantProvider tenantProvider) :
-    BaseRepository<Group>(database, Collections.Groups),
-    IGroupRepository
+public sealed class GroupCollection(IMongoDatabase database, ITenantProvider tenantProvider) :
+    AggregateCollection<Group>(database, Collections.Groups),
+    IGroupCollection
 {
     public async Task<IReadOnlyCollection<Group>> GetGroupsAsync(GroupFilters filters, CancellationToken cancellation = default)
     {

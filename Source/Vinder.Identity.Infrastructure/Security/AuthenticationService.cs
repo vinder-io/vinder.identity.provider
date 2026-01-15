@@ -1,6 +1,6 @@
 namespace Vinder.Identity.Infrastructure.Security;
 
-public sealed class AuthenticationService(IUserRepository userRepository, IPasswordHasher passwordHasher, ISecurityTokenService tokenService) : IAuthenticationService
+public sealed class AuthenticationService(IUserCollection userCollection, IPasswordHasher passwordHasher, ISecurityTokenService tokenService) : IAuthenticationService
 {
     public async Task<Result<AuthenticationResult>> AuthenticateAsync(AuthenticationCredentials credentials, CancellationToken cancellation = default)
     {
@@ -8,7 +8,7 @@ public sealed class AuthenticationService(IUserRepository userRepository, IPassw
             .WithUsername(credentials.Username)
             .Build();
 
-        var users = await userRepository.GetUsersAsync(filters, cancellation: cancellation);
+        var users = await userCollection.GetUsersAsync(filters, cancellation: cancellation);
         var user = users.FirstOrDefault();
 
         if (user is null)

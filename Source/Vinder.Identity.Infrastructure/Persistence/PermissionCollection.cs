@@ -1,8 +1,8 @@
-namespace Vinder.Identity.Infrastructure.Repositories;
+namespace Vinder.Identity.Infrastructure.Persistence;
 
-public sealed class PermissionRepository(IMongoDatabase database, ITenantProvider tenantProvider) :
-    BaseRepository<Permission>(database, Collections.Permissions),
-    IPermissionRepository
+public sealed class PermissionCollection(IMongoDatabase database, ITenantProvider tenantProvider) :
+    AggregateCollection<Permission>(database, Collections.Permissions),
+    IPermissionCollection
 {
     public async Task<IReadOnlyCollection<Permission>> GetPermissionsAsync(PermissionFilters filters, CancellationToken cancellation = default)
     {

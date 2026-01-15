@@ -1,8 +1,8 @@
-namespace Vinder.Identity.Infrastructure.Repositories;
+namespace Vinder.Identity.Infrastructure.Persistence;
 
-public sealed class UserRepository(IMongoDatabase database, ITenantProvider tenantProvider) :
-    BaseRepository<User>(database, Collections.Users),
-    IUserRepository
+public sealed class UserCollection(IMongoDatabase database, ITenantProvider tenantProvider) :
+    AggregateCollection<User>(database, Collections.Users),
+    IUserCollection
 {
     public async Task<IReadOnlyCollection<User>> GetUsersAsync(UserFilters filters, CancellationToken cancellation = default)
     {

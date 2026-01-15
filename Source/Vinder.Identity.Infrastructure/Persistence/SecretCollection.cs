@@ -1,8 +1,8 @@
-namespace Vinder.Identity.Infrastructure.Repositories;
+namespace Vinder.Identity.Infrastructure.Persistence;
 
-public sealed class SecretRepository(IMongoDatabase database) :
-    BaseRepository<Secret>(database, Collections.Secrets),
-    ISecretRepository
+public sealed class SecretCollection(IMongoDatabase database) :
+    AggregateCollection<Secret>(database, Collections.Secrets),
+    ISecretCollection
 {
     public async Task<Secret> GetSecretAsync(CancellationToken cancellation = default)
     {

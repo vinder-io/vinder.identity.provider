@@ -1,8 +1,8 @@
-namespace Vinder.Identity.Infrastructure.Repositories;
+namespace Vinder.Identity.Infrastructure.Persistence;
 
-public sealed class ScopesRepository(IMongoDatabase database) :
-    BaseRepository<Scope>(database, Collections.Scopes),
-    IScopeRepository
+public sealed class ScopesCollection(IMongoDatabase database) :
+    AggregateCollection<Scope>(database, Collections.Scopes),
+    IScopeCollection
 {
     public async Task<IReadOnlyCollection<Scope>> GetScopesAsync(
         ScopeFilters filters, CancellationToken cancellation = default)

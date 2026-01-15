@@ -14,7 +14,7 @@ global using Vinder.Identity.Common.Constants;
 global using Vinder.Identity.Domain.Aggregates;
 global using Vinder.Identity.Domain.Filtering;
 global using Vinder.Identity.Domain.Filtering.Builders;
-global using Vinder.Identity.Domain.Repositories;
+global using Vinder.Identity.Domain.Collections;
 
 global using Vinder.Identity.Application.Payloads.Common;
 global using Vinder.Identity.Application.Payloads.Identity;
