@@ -18,8 +18,10 @@ public partial class Program
 
         var app = builder.Build();
 
-        app.UseHttpPipeline();
         app.MapOpenApi();
+
+        app.UseHttpPipeline();
+        app.UseSpecification();
 
         await app.UseBootstrapperAsync();
         await app.RunAsync();
