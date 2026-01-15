@@ -9,10 +9,11 @@ global using System.Net.Mime;
 
 global using Microsoft.AspNetCore.Mvc;
 global using Microsoft.AspNetCore.Mvc.ModelBinding;
-global using Microsoft.Extensions.Caching.Memory;
 global using Microsoft.AspNetCore.Authorization;
 global using Microsoft.AspNetCore.Authentication.JwtBearer;
+global using Microsoft.Extensions.Caching.Memory;
 global using Microsoft.IdentityModel.Tokens;
+global using Microsoft.OpenApi.Models;
 
 /* global usings for Vinder namespaces here */
 
@@ -41,6 +42,7 @@ global using Vinder.Identity.WebApi.Extensions;
 global using Vinder.Identity.WebApi.Middlewares;
 global using Vinder.Identity.WebApi.Attributes;
 global using Vinder.Identity.WebApi.Binders;
+global using Vinder.Identity.WebApi.Constants;
 
 global using Vinder.Internal.Essentials.Utilities;
 

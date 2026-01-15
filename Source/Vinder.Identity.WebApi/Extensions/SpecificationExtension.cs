@@ -16,6 +16,11 @@ public static class SpecificationsExtension
             options.WithTitle("Vinder Identity | Reference");
             options.WithClassicLayout();
             options.ExpandAllTags();
+            options.AddPreferredSecuritySchemes(SecuritySchemes.Bearer);
+            options.AddClientCredentialsFlow(SecuritySchemes.OAuth2, flow =>
+            {
+                flow.WithCredentialsLocation(CredentialsLocation.Body);
+            });
         });
     }
 }
