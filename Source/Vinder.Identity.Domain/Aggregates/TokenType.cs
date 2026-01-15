@@ -1,4 +1,4 @@
-namespace Vinder.Identity.Domain.Entities;
+namespace Vinder.Identity.Domain.Aggregates;
 
 public enum TokenType
 {

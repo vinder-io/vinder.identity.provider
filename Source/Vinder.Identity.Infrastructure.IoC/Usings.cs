@@ -13,7 +13,7 @@ global using Microsoft.Extensions.Hosting;
 
 global using Vinder.Identity.Common.Configuration;
 global using Vinder.Identity.Domain.Repositories;
-global using Vinder.Identity.Domain.Entities;
+global using Vinder.Identity.Domain.Aggregates;
 
 global using Vinder.Identity.Application.Services;
 global using Vinder.Identity.Application.Providers;

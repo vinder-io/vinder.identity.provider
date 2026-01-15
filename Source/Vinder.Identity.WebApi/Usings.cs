@@ -17,7 +17,7 @@ global using Microsoft.OpenApi.Models;
 
 /* global usings for Vinder namespaces here */
 
-global using Vinder.Identity.Domain.Entities;
+global using Vinder.Identity.Domain.Aggregates;
 global using Vinder.Identity.Domain.Filtering.Builders;
 global using Vinder.Identity.Domain.Repositories;
 

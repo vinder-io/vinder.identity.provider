@@ -15,7 +15,7 @@ global using Vinder.Internal.Infrastructure.Persistence.Pipelines;
 global using Vinder.Internal.Infrastructure.Persistence.Repositories;
 global using Vinder.Internal.Essentials.Patterns;
 
-global using Vinder.Identity.Domain.Entities;
+global using Vinder.Identity.Domain.Aggregates;
 global using Vinder.Identity.Domain.Errors;
 global using Vinder.Identity.Domain.Repositories;
 global using Vinder.Identity.Domain.Filtering;
@@ -29,7 +29,7 @@ global using Vinder.Identity.Application.Services;
 global using Vinder.Identity.Application.Providers;
 global using Vinder.Identity.Application.Payloads.Client;
 
-global using SecurityToken = Vinder.Identity.Domain.Entities.SecurityToken;
+global using SecurityToken = Vinder.Identity.Domain.Aggregates.SecurityToken;
 
 /* global usings for third-party namespaces here */
 

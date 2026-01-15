@@ -15,7 +15,7 @@ global using Vinder.Internal.Essentials.Filters;
 global using Vinder.Internal.Essentials.Patterns;
 global using Vinder.Internal.Essentials.Utilities;
 
-global using Vinder.Identity.Domain.Entities;
+global using Vinder.Identity.Domain.Aggregates;
 global using Vinder.Identity.Domain.Filtering;
 global using Vinder.Identity.Domain.Filtering.Builders;
 global using Vinder.Identity.Domain.Repositories;
