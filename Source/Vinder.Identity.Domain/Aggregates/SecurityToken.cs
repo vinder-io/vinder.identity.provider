@@ -1,6 +1,6 @@
 namespace Vinder.Identity.Domain.Aggregates;
 
-public sealed class SecurityToken : Entity
+public sealed class SecurityToken : Aggregate
 {
     public string Value { get; set; } = default!;
     public bool Revoked { get; set; }

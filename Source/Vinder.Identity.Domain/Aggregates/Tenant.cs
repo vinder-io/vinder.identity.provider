@@ -1,6 +1,6 @@
 namespace Vinder.Identity.Domain.Aggregates;
 
-public sealed class Tenant : Entity
+public sealed class Tenant : Aggregate
 {
     public string Name { get; set; } = default!;
     public string? Description { get; set; }
