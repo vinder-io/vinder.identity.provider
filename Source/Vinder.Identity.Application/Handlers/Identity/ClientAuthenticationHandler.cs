@@ -1,9 +1,7 @@
 namespace Vinder.Identity.Application.Handlers.Identity;
 
-public sealed class ClientAuthenticationHandler(
-    ITenantCollection tenantCollection,
-    ISecurityTokenService tokenService
-) : IMessageHandler<ClientAuthenticationCredentials, Result<ClientAuthenticationResult>>
+public sealed class ClientAuthenticationHandler(ITenantCollection tenantCollection, ISecurityTokenService tokenService) :
+    IMessageHandler<ClientAuthenticationCredentials, Result<ClientAuthenticationResult>>
 {
     public async Task<Result<ClientAuthenticationResult>> HandleAsync(
         ClientAuthenticationCredentials parameters, CancellationToken cancellation = default)
