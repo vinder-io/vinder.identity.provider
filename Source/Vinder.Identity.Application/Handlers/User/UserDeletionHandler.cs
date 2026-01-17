@@ -4,7 +4,7 @@ public sealed class UserDeletionHandler(IUserCollection collection) : IMessageHa
 {
     public async Task<Result> HandleAsync(UserDeletionScheme parameters, CancellationToken cancellation = default)
     {
-        var filters = new UserFiltersBuilder()
+        var filters = UserFilters.WithSpecifications()
             .WithIdentifier(parameters.UserId)
             .Build();
 

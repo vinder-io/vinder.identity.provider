@@ -8,7 +8,7 @@ public sealed class ClientAuthenticationHandler(
     public async Task<Result<ClientAuthenticationResult>> HandleAsync(
         ClientAuthenticationCredentials parameters, CancellationToken cancellation = default)
     {
-        var filters = new TenantFiltersBuilder()
+        var filters = TenantFilters.WithSpecifications()
             .WithClientId(parameters.ClientId)
             .Build();
 

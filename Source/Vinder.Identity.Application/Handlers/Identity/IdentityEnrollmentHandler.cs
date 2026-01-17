@@ -8,7 +8,7 @@ public sealed class IdentityEnrollmentHandler(
 {
     public async Task<Result<UserDetailsScheme>> HandleAsync(IdentityEnrollmentCredentials parameters, CancellationToken cancellation = default)
     {
-        var filters = new UserFiltersBuilder()
+        var filters = UserFilters.WithSpecifications()
             .WithUsername(parameters.Username)
             .Build();
 

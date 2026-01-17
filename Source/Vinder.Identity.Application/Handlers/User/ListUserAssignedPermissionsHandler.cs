@@ -6,7 +6,7 @@ public sealed class ListUserAssignedPermissionsHandler(IUserCollection collectio
     public async Task<Result<IReadOnlyCollection<PermissionDetailsScheme>>> HandleAsync(
         ListUserAssignedPermissionsParameters parameters, CancellationToken cancellation = default)
     {
-        var filters = new UserFiltersBuilder()
+        var filters = UserFilters.WithSpecifications()
             .WithIdentifier(parameters.UserId)
             .Build();
 

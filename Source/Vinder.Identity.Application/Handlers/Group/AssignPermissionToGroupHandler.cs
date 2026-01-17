@@ -6,11 +6,11 @@ public sealed class AssignPermissionToGroupHandler(IGroupCollection groupCollect
     public async Task<Result<GroupDetailsScheme>> HandleAsync(
         AssignGroupPermissionScheme parameters, CancellationToken cancellation = default)
     {
-        var groupFilters = new GroupFiltersBuilder()
+        var groupFilters = GroupFilters.WithSpecifications()
             .WithIdentifier(parameters.GroupId)
             .Build();
 
-        var permissionFilters = new PermissionFiltersBuilder()
+        var permissionFilters = PermissionFilters.WithSpecifications()
             .WithName(parameters.PermissionName.ToLower())
             .Build();
 

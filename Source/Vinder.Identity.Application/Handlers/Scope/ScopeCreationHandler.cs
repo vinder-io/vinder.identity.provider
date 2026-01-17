@@ -6,7 +6,7 @@ public sealed class ScopeCreationHandler(IScopeCollection scopeCollection, ITena
     public async Task<Result<ScopeDetailsScheme>> HandleAsync(ScopeCreationScheme parameters, CancellationToken cancellation = default)
     {
         var tenant = tenantProvider.GetCurrentTenant();
-        var filters = new ScopeFiltersBuilder()
+        var filters = ScopeFilters.WithSpecifications()
             .WithName(parameters.Name)
             .Build();
 

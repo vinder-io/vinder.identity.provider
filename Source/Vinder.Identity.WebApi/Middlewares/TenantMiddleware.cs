@@ -1,4 +1,5 @@
-namespace Vinder.Identity.WebApi.Middlewares;
+using Vinder.Identity.Domain.Filtering;
+using Vinder.Identity.WebApi.Middlewares;
 
 public sealed class TenantMiddleware(IMemoryCache cache, RequestDelegate next)
 {
@@ -40,7 +41,7 @@ public sealed class TenantMiddleware(IMemoryCache cache, RequestDelegate next)
 
         if (!cache.TryGetValue(cacheKey, out Tenant? tenant))
         {
-            var filters = new TenantFiltersBuilder()
+            var filters = TenantFilters.WithSpecifications()
                 .WithName(tenantName)
                 .Build();
 

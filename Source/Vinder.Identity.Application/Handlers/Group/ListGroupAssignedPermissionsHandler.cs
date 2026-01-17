@@ -6,7 +6,7 @@ public sealed class ListGroupAssignedPermissionsHandler(IGroupCollection collect
     public async Task<Result<IReadOnlyCollection<PermissionDetailsScheme>>> HandleAsync(
         ListGroupAssignedPermissionsParameters parameters, CancellationToken cancellation = default)
     {
-        var filters = new GroupFiltersBuilder()
+        var filters = GroupFilters.WithSpecifications()
             .WithIdentifier(parameters.GroupId)
             .Build();
 

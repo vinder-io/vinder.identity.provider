@@ -19,7 +19,7 @@ public sealed class SessionTokenRenewalHandler(IUserCollection userCollection, I
             return Result<AuthenticationResult>.Failure(revokeResult.Error);
         }
 
-        var userFilters = new UserFiltersBuilder()
+        var userFilters = UserFilters.WithSpecifications()
             .WithSecurityToken(refreshToken.Value)
             .Build();
 

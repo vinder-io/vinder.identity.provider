@@ -13,7 +13,7 @@ public sealed class JwtSecurityTokenService(
 
     public async Task<Result<SecurityToken>> GenerateAccessTokenAsync(User user, CancellationToken cancellation = default)
     {
-        var filters = new GroupFiltersBuilder()
+        var filters = GroupFilters.WithSpecifications()
             .WithTenantId(user.TenantId)
             .Build();
 
@@ -178,7 +178,7 @@ public sealed class JwtSecurityTokenService(
 
     public async Task<Result> RevokeRefreshTokenAsync(SecurityToken token, CancellationToken cancellation = default)
     {
-        var filters = new TokenFiltersBuilder()
+        var filters = TokenFilters.WithSpecifications()
             .WithValue(token.Value)
             .WithType(TokenType.Refresh)
             .Build();

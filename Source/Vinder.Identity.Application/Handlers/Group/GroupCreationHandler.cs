@@ -9,7 +9,7 @@ public sealed class GroupCreationHandler(IGroupCollection groupCollection, ITena
         var tenant = tenantProvider.GetCurrentTenant();
         var group = GroupMapper.AsGroup(parameters, tenant);
 
-        var filters = new GroupFiltersBuilder()
+        var filters = GroupFilters.WithSpecifications()
             .WithName(group.Name)
             .Build();
 

@@ -6,7 +6,7 @@ public sealed class ListUserAssignedGroupsHandler(IUserCollection collection) :
     public async Task<Result<IReadOnlyCollection<GroupBasicDetailsScheme>>> HandleAsync(
         ListUserAssignedGroupsParameters parameters, CancellationToken cancellation = default)
     {
-        var filters = new UserFiltersBuilder()
+        var filters = UserFilters.WithSpecifications()
             .WithIdentifier(parameters.UserId)
             .Build();
 

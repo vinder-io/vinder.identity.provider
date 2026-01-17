@@ -6,7 +6,7 @@ public sealed class PermissionUpdateHandler(IPermissionCollection collection, IT
     public async Task<Result<PermissionDetailsScheme>> HandleAsync(PermissionUpdateScheme parameters, CancellationToken cancellation = default)
     {
         var tenant = tenantProvider.GetCurrentTenant();
-        var filters = new PermissionFiltersBuilder()
+        var filters = PermissionFilters.WithSpecifications()
             .WithIdentifier(parameters.PermissionId)
             .Build();
 

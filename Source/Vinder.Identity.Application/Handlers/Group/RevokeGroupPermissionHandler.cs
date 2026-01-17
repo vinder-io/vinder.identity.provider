@@ -5,11 +5,11 @@ public sealed class RevokeGroupPermissionHandler(IGroupCollection groupCollectio
 {
     public async Task<Result> HandleAsync(RevokeGroupPermissionScheme parameters, CancellationToken cancellation = default)
     {
-        var permissionFilters = new PermissionFiltersBuilder()
+        var permissionFilters = PermissionFilters.WithSpecifications()
             .WithIdentifier(parameters.PermissionId)
             .Build();
 
-        var groupFilters = new GroupFiltersBuilder()
+        var groupFilters = GroupFilters.WithSpecifications()
             .WithIdentifier(parameters.GroupId)
             .Build();
 

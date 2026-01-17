@@ -6,7 +6,7 @@ public sealed class ListTenantAssignedPermissionsHandler(ITenantCollection colle
     public async Task<Result<IReadOnlyCollection<PermissionDetailsScheme>>> HandleAsync(
         ListTenantAssignedPermissionsParameters parameters, CancellationToken cancellation = default)
     {
-        var filters = new TenantFiltersBuilder()
+        var filters = TenantFilters.WithSpecifications()
             .WithIdentifier(parameters.TenantId)
             .Build();
 

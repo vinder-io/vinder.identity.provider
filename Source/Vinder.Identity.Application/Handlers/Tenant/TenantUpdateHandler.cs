@@ -5,7 +5,7 @@ public sealed class TenantUpdateHandler(ITenantCollection collection) :
 {
     public async Task<Result<TenantDetailsScheme>> HandleAsync(TenantUpdateScheme parameters, CancellationToken cancellation = default)
     {
-        var filters = new TenantFiltersBuilder()
+        var filters = TenantFilters.WithSpecifications()
             .WithIdentifier(parameters.TenantId)
             .Build();
 

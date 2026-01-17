@@ -6,7 +6,7 @@ public sealed class GroupUpdateHandler(IGroupCollection collection) :
     public async Task<Result<GroupDetailsScheme>> HandleAsync(
         GroupUpdateScheme parameters, CancellationToken cancellation = default)
     {
-        var filters = new GroupFiltersBuilder()
+        var filters = GroupFilters.WithSpecifications()
             .WithIdentifier(parameters.GroupId)
             .Build();
 

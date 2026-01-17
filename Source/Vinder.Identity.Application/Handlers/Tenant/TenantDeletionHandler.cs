@@ -4,7 +4,7 @@ public sealed class TenantDeletionHandler(ITenantCollection collection) : IMessa
 {
     public async Task<Result> HandleAsync(TenantDeletionScheme parameters, CancellationToken cancellation = default)
     {
-        var filters = new TenantFiltersBuilder()
+        var filters = TenantFilters.WithSpecifications()
             .WithIdentifier(parameters.TenantId)
             .Build();
 

@@ -20,7 +20,7 @@ public static class BootstrapperExtension
         var tenantCredentials = await credentialsGenerator.GenerateAsync("master", cancellation: default);
 
         var defaultTenant = new Tenant { Name = "master", ClientId = tenantCredentials.ClientId };
-        var tenantFilters = new TenantFiltersBuilder()
+        var tenantFilters = TenantFilters.WithSpecifications()
             .WithName("master")
             .Build();
 
@@ -76,7 +76,7 @@ public static class BootstrapperExtension
         await scopeRepository.InsertManyAsync(scopes);
         await permissionCollection.InsertManyAsync(defaultTenant.Permissions);
 
-        var userFilters = new UserFiltersBuilder()
+        var userFilters = UserFilters.WithSpecifications()
             .WithUsername(settings.Administration.Username)
             .Build();
 

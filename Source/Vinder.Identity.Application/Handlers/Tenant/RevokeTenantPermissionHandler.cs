@@ -5,11 +5,11 @@ public sealed class RevokeTenantPermissionHandler(ITenantCollection tenantCollec
 {
     public async Task<Result> HandleAsync(RevokeTenantPermissionScheme parameters, CancellationToken cancellation = default)
     {
-        var permissionFilters = new PermissionFiltersBuilder()
+        var permissionFilters = PermissionFilters.WithSpecifications()
             .WithIdentifier(parameters.PermissionId)
             .Build();
 
-        var tenantFilters = new TenantFiltersBuilder()
+        var tenantFilters = TenantFilters.WithSpecifications()
             .WithIdentifier(parameters.TenantId)
             .Build();
 

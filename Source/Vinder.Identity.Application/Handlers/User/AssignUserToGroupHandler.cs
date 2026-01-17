@@ -5,7 +5,7 @@ public sealed class AssignUserToGroupHandler(IUserCollection userCollection, IGr
 {
     public async Task<Result> HandleAsync(AssignUserToGroupScheme parameters, CancellationToken cancellation = default)
     {
-        var userFilters = new UserFiltersBuilder()
+        var userFilters = UserFilters.WithSpecifications()
             .WithIdentifier(parameters.UserId)
             .Build();
 
@@ -17,7 +17,7 @@ public sealed class AssignUserToGroupHandler(IUserCollection userCollection, IGr
             return Result.Failure(UserErrors.UserDoesNotExist);
         }
 
-        var groupFilters = new GroupFiltersBuilder()
+        var groupFilters = GroupFilters.WithSpecifications()
             .WithIdentifier(parameters.GroupId)
             .Build();
 

@@ -5,11 +5,11 @@ public sealed class AssignUserPermissionHandler(IUserCollection userCollection, 
 {
     public async Task<Result> HandleAsync(AssignUserPermissionScheme parameters, CancellationToken cancellation = default)
     {
-        var userFilters = new UserFiltersBuilder()
+        var userFilters = UserFilters.WithSpecifications()
             .WithIdentifier(parameters.UserId)
             .Build();
 
-        var permissionFilters = new PermissionFiltersBuilder()
+        var permissionFilters = PermissionFilters.WithSpecifications()
             .WithName(parameters.PermissionName.ToLower())
             .Build();
 

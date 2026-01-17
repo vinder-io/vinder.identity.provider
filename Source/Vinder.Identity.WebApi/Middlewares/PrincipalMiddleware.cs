@@ -1,4 +1,5 @@
 using System.Security.Claims;
+using Vinder.Identity.Domain.Filtering;
 
 namespace Vinder.Identity.WebApi.Middlewares;
 
@@ -28,7 +29,7 @@ public sealed class PrincipalMiddleware(RequestDelegate next)
             return;
         }
 
-        var filters = new UserFiltersBuilder()
+        var filters = UserFilters.WithSpecifications()
             .WithIdentifier(userIdClaim.Value)
             .Build();
 

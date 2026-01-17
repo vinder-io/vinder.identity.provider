@@ -6,7 +6,7 @@ public sealed class PermissionCreationHandler(IPermissionCollection collection, 
     public async Task<Result<PermissionDetailsScheme>> HandleAsync(PermissionCreationScheme parameters, CancellationToken cancellation = default)
     {
         var tenant = tenantProvider.GetCurrentTenant();
-        var filters = new PermissionFiltersBuilder()
+        var filters = PermissionFilters.WithSpecifications()
             .WithName(parameters.Name)
             .Build();
 

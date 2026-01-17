@@ -4,7 +4,7 @@ public sealed class PermissionDeletionHandler(IPermissionCollection collection) 
 {
     public async Task<Result> HandleAsync(PermissionDeletionScheme parameters, CancellationToken cancellation = default)
     {
-        var filters = new PermissionFiltersBuilder()
+        var filters = PermissionFilters.WithSpecifications()
             .WithIdentifier(parameters.PermissionId)
             .Build();
 

@@ -6,7 +6,7 @@ public sealed class TenantCreationHandler(ITenantCollection collection, IClientC
     public async Task<Result<TenantDetailsScheme>> HandleAsync(
         TenantCreationScheme parameters, CancellationToken cancellation = default)
     {
-        var filters = new TenantFiltersBuilder()
+        var filters = TenantFilters.WithSpecifications()
             .WithName(parameters.Name)
             .Build();
 
@@ -23,7 +23,7 @@ public sealed class TenantCreationHandler(ITenantCollection collection, IClientC
             secretHash: credentials.ClientSecret
         );
 
-        var masterFilters = new TenantFiltersBuilder()
+        var masterFilters = TenantFilters.WithSpecifications()
             .WithName("master")
             .Build();
 

@@ -5,11 +5,11 @@ public sealed class RevokeUserPermissionHandler(IUserCollection userCollection, 
 {
     public async Task<Result> HandleAsync(RevokeUserPermissionScheme parameters, CancellationToken cancellation = default)
     {
-        var permissionFilters = new PermissionFiltersBuilder()
+        var permissionFilters = PermissionFilters.WithSpecifications()
             .WithIdentifier(parameters.PermissionId)
             .Build();
 
-        var userFilters = new UserFiltersBuilder()
+        var userFilters = UserFilters.WithSpecifications()
             .WithIdentifier(parameters.UserId)
             .Build();
 

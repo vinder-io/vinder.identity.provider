@@ -5,11 +5,11 @@ public sealed class RemoveUserFromGroupHandler(IUserCollection userCollection, I
 {
     public async Task<Result> HandleAsync(RemoveUserFromGroupScheme parameters, CancellationToken cancellation = default)
     {
-        var userFilters = new UserFiltersBuilder()
+        var userFilters = UserFilters.WithSpecifications()
             .WithIdentifier(parameters.UserId)
             .Build();
 
-        var groupFilters = new GroupFiltersBuilder()
+        var groupFilters = GroupFilters.WithSpecifications()
             .WithIdentifier(parameters.GroupId)
             .Build();
 
