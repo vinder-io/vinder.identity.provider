@@ -1,6 +1,6 @@
 namespace Vinder.Identity.Application.Handlers.Authorization;
 
-public sealed class AuthorizationHandler(ITenantCollection tenantCollection) :
+public sealed class AuthorizationHandler(ITenantCollection tenantCollection, IRedirectUriPolicy redirectUriPolicy) :
     IMessageHandler<AuthorizationParameters, Result<AuthorizationScheme>>
 {
     public async Task<Result<AuthorizationScheme>> HandleAsync(
@@ -16,6 +16,14 @@ public sealed class AuthorizationHandler(ITenantCollection tenantCollection) :
         if (client is null)
             return Result<AuthorizationScheme>.Failure(TenantErrors.TenantDoesNotExist);
 
-        return Result<AuthorizationScheme>.Success(new());
+        var redirectUri = RedirectUriMapper.AsRedirectUri(parameters.RedirectUri);
+
+        var redirectProof = await redirectUriPolicy.EnsureRedirectUriIsAllowedAsync(client, redirectUri, cancellation);
+        if (redirectProof.IsFailure)
+        {
+            return Result<AuthorizationScheme>.Failure(redirectProof.Error);
+        }
+
+        return Result<AuthorizationScheme>.Success(parameters.AsReponse());
     }
 }
