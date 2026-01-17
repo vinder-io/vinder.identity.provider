@@ -2,7 +2,7 @@ namespace Vinder.Identity.Application.Handlers.User;
 
 public sealed class UserDeletionHandler(IUserCollection collection) : IMessageHandler<UserDeletionScheme, Result>
 {
-    public async Task<Result> HandleAsync(UserDeletionScheme parameters, CancellationToken cancellation)
+    public async Task<Result> HandleAsync(UserDeletionScheme parameters, CancellationToken cancellation = default)
     {
         var filters = new UserFiltersBuilder()
             .WithIdentifier(parameters.UserId)

@@ -6,7 +6,7 @@ public sealed class ClientAuthenticationHandler(
 ) : IMessageHandler<ClientAuthenticationCredentials, Result<ClientAuthenticationResult>>
 {
     public async Task<Result<ClientAuthenticationResult>> HandleAsync(
-        ClientAuthenticationCredentials parameters, CancellationToken cancellation)
+        ClientAuthenticationCredentials parameters, CancellationToken cancellation = default)
     {
         var filters = new TenantFiltersBuilder()
             .WithClientId(parameters.ClientId)

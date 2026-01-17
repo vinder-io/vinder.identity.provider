@@ -3,7 +3,7 @@ namespace Vinder.Identity.Application.Handlers.Tenant;
 public sealed class TenantUpdateHandler(ITenantCollection collection) :
     IMessageHandler<TenantUpdateScheme, Result<TenantDetailsScheme>>
 {
-    public async Task<Result<TenantDetailsScheme>> HandleAsync(TenantUpdateScheme parameters, CancellationToken cancellation)
+    public async Task<Result<TenantDetailsScheme>> HandleAsync(TenantUpdateScheme parameters, CancellationToken cancellation = default)
     {
         var filters = new TenantFiltersBuilder()
             .WithIdentifier(parameters.TenantId)

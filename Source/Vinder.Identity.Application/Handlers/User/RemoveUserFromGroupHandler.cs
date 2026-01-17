@@ -3,7 +3,7 @@ namespace Vinder.Identity.Application.Handlers.User;
 public sealed class RemoveUserFromGroupHandler(IUserCollection userCollection, IGroupCollection groupCollection) :
     IMessageHandler<RemoveUserFromGroupScheme, Result>
 {
-    public async Task<Result> HandleAsync(RemoveUserFromGroupScheme parameters, CancellationToken cancellation)
+    public async Task<Result> HandleAsync(RemoveUserFromGroupScheme parameters, CancellationToken cancellation = default)
     {
         var userFilters = new UserFiltersBuilder()
             .WithIdentifier(parameters.UserId)

@@ -4,17 +4,17 @@ public sealed class FetchGroupsHandler(IGroupCollection collection) :
     IMessageHandler<GroupsFetchParameters, Result<Pagination<GroupDetailsScheme>>>
 {
     public async Task<Result<Pagination<GroupDetailsScheme>>> HandleAsync(
-        GroupsFetchParameters parameters, CancellationToken cancellationToken)
+        GroupsFetchParameters parameters, CancellationToken cancellation = default)
     {
         var filters = GroupMapper.AsFilters(parameters);
 
-        var groups = await collection.GetGroupsAsync(filters, cancellation: cancellationToken);
-        var totalGroups = await collection.CountAsync(filters, cancellation: cancellationToken);
+        var groups = await collection.GetGroupsAsync(filters, cancellation: cancellation);
+        var totalGroups = await collection.CountAsync(filters, cancellation: cancellation);
 
         var pagination = new Pagination<GroupDetailsScheme>
         {
             Items = [.. groups.Select(group => GroupMapper.AsResponse(group))],
-            Total = (int) totalGroups,
+            Total = (int)totalGroups,
             PageNumber = parameters.Pagination?.PageNumber ?? 1,
             PageSize = parameters.Pagination?.PageSize ?? 20
         };

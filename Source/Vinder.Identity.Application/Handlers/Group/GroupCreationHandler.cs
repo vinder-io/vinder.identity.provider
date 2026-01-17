@@ -4,7 +4,7 @@ public sealed class GroupCreationHandler(IGroupCollection groupCollection, ITena
     IMessageHandler<GroupCreationScheme, Result<GroupDetailsScheme>>
 {
     public async Task<Result<GroupDetailsScheme>> HandleAsync(
-        GroupCreationScheme parameters, CancellationToken cancellation)
+        GroupCreationScheme parameters, CancellationToken cancellation = default)
     {
         var tenant = tenantProvider.GetCurrentTenant();
         var group = GroupMapper.AsGroup(parameters, tenant);

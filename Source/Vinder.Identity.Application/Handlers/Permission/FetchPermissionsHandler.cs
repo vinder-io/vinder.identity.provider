@@ -4,7 +4,7 @@ public sealed class FetchPermissionsHandler(IPermissionCollection collection) :
     IMessageHandler<PermissionsFetchParameters, Result<Pagination<PermissionDetailsScheme>>>
 {
     public async Task<Result<Pagination<PermissionDetailsScheme>>> HandleAsync(
-        PermissionsFetchParameters parameters, CancellationToken cancellation)
+        PermissionsFetchParameters parameters, CancellationToken cancellation = default)
     {
         var filters = PermissionMapper.AsFilters(parameters);
 

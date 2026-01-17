@@ -3,7 +3,7 @@ namespace Vinder.Identity.Application.Handlers.Scope;
 public sealed class ScopeCreationHandler(IScopeCollection scopeCollection, ITenantCollection tenantCollection, ITenantProvider tenantProvider) :
     IMessageHandler<ScopeCreationScheme, Result<ScopeDetailsScheme>>
 {
-    public async Task<Result<ScopeDetailsScheme>> HandleAsync(ScopeCreationScheme parameters, CancellationToken cancellation)
+    public async Task<Result<ScopeDetailsScheme>> HandleAsync(ScopeCreationScheme parameters, CancellationToken cancellation = default)
     {
         var tenant = tenantProvider.GetCurrentTenant();
         var filters = new ScopeFiltersBuilder()

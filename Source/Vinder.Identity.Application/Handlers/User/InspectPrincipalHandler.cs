@@ -4,7 +4,7 @@ public sealed class InspectPrincipalHandler(IPrincipalProvider principalProvider
     IMessageHandler<InspectPrincipalParameters, Result<PrincipalDetailsScheme>>
 {
     public Task<Result<PrincipalDetailsScheme>> HandleAsync(
-        InspectPrincipalParameters parameters, CancellationToken cancellation)
+        InspectPrincipalParameters parameters, CancellationToken cancellation = default)
     {
         var user = principalProvider.GetCurrentPrincipal();
 

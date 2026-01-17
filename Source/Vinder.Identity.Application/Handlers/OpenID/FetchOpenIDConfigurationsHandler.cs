@@ -4,7 +4,7 @@ public sealed class FetchOpenIDConfigurationHandler(IHostInformationProvider hos
     IMessageHandler<FetchOpenIDConfigurationParameters, Result<OpenIDConfigurationScheme>>
 {
     public Task<Result<OpenIDConfigurationScheme>> HandleAsync(
-        FetchOpenIDConfigurationParameters parameters, CancellationToken cancellation)
+        FetchOpenIDConfigurationParameters parameters, CancellationToken cancellation = default)
     {
         var configuration = OpenIDMapper.AsConfiguration(host.Address);
 

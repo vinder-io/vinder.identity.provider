@@ -3,7 +3,7 @@ namespace Vinder.Identity.Application.Handlers.Permission;
 public sealed class PermissionUpdateHandler(IPermissionCollection collection, ITenantProvider tenantProvider) :
     IMessageHandler<PermissionUpdateScheme, Result<PermissionDetailsScheme>>
 {
-    public async Task<Result<PermissionDetailsScheme>> HandleAsync(PermissionUpdateScheme parameters, CancellationToken cancellation)
+    public async Task<Result<PermissionDetailsScheme>> HandleAsync(PermissionUpdateScheme parameters, CancellationToken cancellation = default)
     {
         var tenant = tenantProvider.GetCurrentTenant();
         var filters = new PermissionFiltersBuilder()

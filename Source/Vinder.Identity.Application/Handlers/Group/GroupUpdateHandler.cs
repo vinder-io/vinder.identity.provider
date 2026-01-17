@@ -4,7 +4,7 @@ public sealed class GroupUpdateHandler(IGroupCollection collection) :
     IMessageHandler<GroupUpdateScheme, Result<GroupDetailsScheme>>
 {
     public async Task<Result<GroupDetailsScheme>> HandleAsync(
-        GroupUpdateScheme parameters, CancellationToken cancellation)
+        GroupUpdateScheme parameters, CancellationToken cancellation = default)
     {
         var filters = new GroupFiltersBuilder()
             .WithIdentifier(parameters.GroupId)

@@ -2,7 +2,7 @@ namespace Vinder.Identity.Application.Handlers.Permission;
 
 public sealed class PermissionDeletionHandler(IPermissionCollection collection) : IMessageHandler<PermissionDeletionScheme, Result>
 {
-    public async Task<Result> HandleAsync(PermissionDeletionScheme parameters, CancellationToken cancellation)
+    public async Task<Result> HandleAsync(PermissionDeletionScheme parameters, CancellationToken cancellation = default)
     {
         var filters = new PermissionFiltersBuilder()
             .WithIdentifier(parameters.PermissionId)

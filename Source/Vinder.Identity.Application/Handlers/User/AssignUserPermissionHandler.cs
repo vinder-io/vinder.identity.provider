@@ -3,7 +3,7 @@ namespace Vinder.Identity.Application.Handlers.User;
 public sealed class AssignUserPermissionHandler(IUserCollection userCollection, IPermissionCollection permissionCollection) :
     IMessageHandler<AssignUserPermissionScheme, Result>
 {
-    public async Task<Result> HandleAsync(AssignUserPermissionScheme parameters, CancellationToken cancellation)
+    public async Task<Result> HandleAsync(AssignUserPermissionScheme parameters, CancellationToken cancellation = default)
     {
         var userFilters = new UserFiltersBuilder()
             .WithIdentifier(parameters.UserId)

@@ -4,7 +4,7 @@ public sealed class FetchUsersHandler(IUserCollection collection) :
     IMessageHandler<UsersFetchParameters, Result<Pagination<UserDetailsScheme>>>
 {
     public async Task<Result<Pagination<UserDetailsScheme>>> HandleAsync(
-        UsersFetchParameters parameters, CancellationToken cancellation)
+        UsersFetchParameters parameters, CancellationToken cancellation = default)
     {
         var filters = UserMapper.AsFilters(parameters);
 

@@ -2,7 +2,7 @@ namespace Vinder.Identity.Application.Handlers.Group;
 
 public sealed class GroupDeletionHandler(IGroupCollection collection) : IMessageHandler<GroupDeletionScheme, Result>
 {
-    public async Task<Result> HandleAsync(GroupDeletionScheme parameters, CancellationToken cancellation)
+    public async Task<Result> HandleAsync(GroupDeletionScheme parameters, CancellationToken cancellation = default)
     {
         var filters = new GroupFiltersBuilder()
             .WithIdentifier(parameters.GroupId)

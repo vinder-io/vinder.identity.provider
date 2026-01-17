@@ -4,7 +4,7 @@ public sealed class AssignPermissionToGroupHandler(IGroupCollection groupCollect
     IMessageHandler<AssignGroupPermissionScheme, Result<GroupDetailsScheme>>
 {
     public async Task<Result<GroupDetailsScheme>> HandleAsync(
-        AssignGroupPermissionScheme parameters, CancellationToken cancellationToken)
+        AssignGroupPermissionScheme parameters, CancellationToken cancellation = default)
     {
         var groupFilters = new GroupFiltersBuilder()
             .WithIdentifier(parameters.GroupId)
@@ -14,7 +14,7 @@ public sealed class AssignPermissionToGroupHandler(IGroupCollection groupCollect
             .WithName(parameters.PermissionName.ToLower())
             .Build();
 
-        var groups = await groupCollection.GetGroupsAsync(groupFilters, cancellation: cancellationToken);
+        var groups = await groupCollection.GetGroupsAsync(groupFilters, cancellation: cancellation);
         var group = groups.FirstOrDefault();
 
         if (group is null)
@@ -22,7 +22,7 @@ public sealed class AssignPermissionToGroupHandler(IGroupCollection groupCollect
             return Result<GroupDetailsScheme>.Failure(GroupErrors.GroupDoesNotExist);
         }
 
-        var permissions = await permissionCollection.GetPermissionsAsync(permissionFilters, cancellation: cancellationToken);
+        var permissions = await permissionCollection.GetPermissionsAsync(permissionFilters, cancellation: cancellation);
         var existingPermission = permissions.FirstOrDefault();
 
         if (existingPermission is null)
@@ -37,7 +37,7 @@ public sealed class AssignPermissionToGroupHandler(IGroupCollection groupCollect
 
         group.Permissions.Add(existingPermission);
 
-        await groupCollection.UpdateAsync(group, cancellation: cancellationToken);
+        await groupCollection.UpdateAsync(group, cancellation: cancellation);
 
         return Result<GroupDetailsScheme>.Success(GroupMapper.AsResponse(group));
     }

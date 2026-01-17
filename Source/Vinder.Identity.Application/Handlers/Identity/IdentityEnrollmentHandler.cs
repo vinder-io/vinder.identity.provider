@@ -6,7 +6,7 @@ public sealed class IdentityEnrollmentHandler(
     ITenantProvider tenantProvider
 ) : IMessageHandler<IdentityEnrollmentCredentials, Result<UserDetailsScheme>>
 {
-    public async Task<Result<UserDetailsScheme>> HandleAsync(IdentityEnrollmentCredentials parameters, CancellationToken cancellation)
+    public async Task<Result<UserDetailsScheme>> HandleAsync(IdentityEnrollmentCredentials parameters, CancellationToken cancellation = default)
     {
         var filters = new UserFiltersBuilder()
             .WithUsername(parameters.Username)

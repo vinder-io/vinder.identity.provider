@@ -3,7 +3,7 @@ namespace Vinder.Identity.Application.Handlers.Group;
 public sealed class RevokeGroupPermissionHandler(IGroupCollection groupCollection, IPermissionCollection permissionCollection) :
     IMessageHandler<RevokeGroupPermissionScheme, Result>
 {
-    public async Task<Result> HandleAsync(RevokeGroupPermissionScheme parameters, CancellationToken cancellation)
+    public async Task<Result> HandleAsync(RevokeGroupPermissionScheme parameters, CancellationToken cancellation = default)
     {
         var permissionFilters = new PermissionFiltersBuilder()
             .WithIdentifier(parameters.PermissionId)
