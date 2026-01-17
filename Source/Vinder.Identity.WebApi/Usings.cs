@@ -27,6 +27,7 @@ global using Vinder.Identity.Domain.Errors;
 
 global using Vinder.Identity.Application.Payloads.Group;
 global using Vinder.Identity.Application.Payloads.Identity;
+global using Vinder.Identity.Application.Payloads.Authorization;
 global using Vinder.Identity.Application.Payloads.Permission;
 global using Vinder.Identity.Application.Payloads.Tenant;
 global using Vinder.Identity.Application.Payloads.User;
