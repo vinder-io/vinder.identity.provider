@@ -18,6 +18,15 @@ public sealed class ConnectController(IDispatcher dispatcher) : ControllerBase
             { IsFailure: true } when result.Error == AuthenticationErrors.ClientNotFound =>
                 StatusCode(StatusCodes.Status401Unauthorized, result.Error),
 
+            { IsFailure: true } when result.Error == AuthenticationErrors.InvalidAuthorizationCode =>
+                StatusCode(StatusCodes.Status401Unauthorized, result.Error),
+
+            { IsFailure: true } when result.Error == AuthenticationErrors.AuthorizationCodeExpired =>
+                StatusCode(StatusCodes.Status401Unauthorized, result.Error),
+
+            { IsFailure: true } when result.Error == AuthenticationErrors.InvalidCodeVerifier =>
+                StatusCode(StatusCodes.Status401Unauthorized, result.Error),
+
             { IsFailure: true } when result.Error == AuthenticationErrors.InvalidClientCredentials =>
                 StatusCode(StatusCodes.Status401Unauthorized, result.Error),
         };
