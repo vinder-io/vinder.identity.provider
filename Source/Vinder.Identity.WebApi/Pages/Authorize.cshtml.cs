@@ -1,6 +1,12 @@
 namespace Vinder.Identity.WebApi.Pages;
 
-public sealed class AuthorizePage(IDispatcher dispatcher, ITenantCollection tenantCollection, ITokenCollection tokenCollection, ITenantProvider tenantProvider) : PageModel
+public sealed class AuthorizePage(
+    IDispatcher dispatcher,
+    IUserCollection userCollection,
+    ITenantCollection tenantCollection,
+    ITokenCollection tokenCollection,
+    ITenantProvider tenantProvider
+) : PageModel
 {
     [BindProperty(SupportsGet = true)]
     public AuthorizationParameters Parameters { get; set; } = new();
@@ -38,10 +44,24 @@ public sealed class AuthorizePage(IDispatcher dispatcher, ITenantCollection tena
         }
 
         var tenant = tenantProvider.GetCurrentTenant();
+        var filters = new UserFiltersBuilder()
+            .WithUsername(Credentials.Username)
+            .WithTenantId(tenant.Id)
+            .Build();
+
+        var users = await userCollection.GetUsersAsync(filters);
+        var user = users.FirstOrDefault();
+
+        if (user is null)
+        {
+            ModelState.AddModelError(AuthenticationErrors.UserNotFound.Code, AuthenticationErrors.UserNotFound.Description);
+            return Page();
+        }
 
         var code = Guid.NewGuid().ToString("N").ToUpperInvariant();
         var token = new Domain.Aggregates.SecurityToken
         {
+            UserId = user.Id,
             TenantId = tenant.Id,
             Type = TokenType.AuthorizationCode,
             Value = code,
