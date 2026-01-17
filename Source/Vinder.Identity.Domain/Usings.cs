@@ -1,4 +1,5 @@
 global using Vinder.Identity.Domain.Aggregates;
+global using Vinder.Identity.Domain.Concepts;
 global using Vinder.Identity.Domain.Filtering;
 
 global using Vinder.Internal.Essentials.Contracts;
