@@ -17,6 +17,7 @@ global using Vinder.Identity.Domain.Collections;
 
 global using Vinder.Identity.Application.Payloads.Common;
 global using Vinder.Identity.Application.Payloads.Identity;
+global using Vinder.Identity.Application.Payloads.Authorization;
 global using Vinder.Identity.Application.Payloads.Group;
 global using Vinder.Identity.Application.Payloads.Permission;
 global using Vinder.Identity.Application.Payloads.Tenant;
