@@ -1,4 +1,4 @@
-namespace Vinder.Identity.TestSuite.IntegrationTests.Fixtures;
+namespace Vinder.Identity.TestSuite.Integration.Fixtures;
 
 public sealed class WebApplicationFixture : IAsyncLifetime
 {

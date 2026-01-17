@@ -1,4 +1,4 @@
-namespace Vinder.Identity.TestSuite.IntegrationTests.Endpoints;
+namespace Vinder.Identity.TestSuite.Integration.Endpoints;
 
 public sealed class WellKnownEndpointTests(IntegrationEnvironmentFixture factory) :
     IClassFixture<IntegrationEnvironmentFixture>

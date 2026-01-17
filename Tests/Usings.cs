@@ -1,5 +1,3 @@
-/* global using for System namespaces here */
-
 global using System.Net;
 global using System.Net.Http.Headers;
 global using System.Net.Http.Json;
@@ -8,13 +6,9 @@ global using System.IdentityModel.Tokens.Jwt;
 global using System.Security.Cryptography;
 global using System.Security.Claims;
 
-/* global using for Microsoft namespaces here */
-
 global using Microsoft.AspNetCore.Mvc.Testing;
 global using Microsoft.IdentityModel.Tokens;
 global using Microsoft.Extensions.DependencyInjection;
-
-/* global using for Vinder namespaces here */
 
 global using Vinder.Internal.Essentials.Filtering;
 global using Vinder.Internal.Essentials.Patterns;
@@ -45,9 +39,7 @@ global using Vinder.Identity.Domain.Errors;
 global using Vinder.Identity.WebApi;
 
 global using Vinder.Identity.TestSuite.Extensions;
-global using Vinder.Identity.TestSuite.IntegrationTests.Fixtures;
-
-/* global usings for third-party namespaces here */
+global using Vinder.Identity.TestSuite.Integration.Fixtures;
 
 global using Xunit;
 global using DotNet.Testcontainers.Builders;
