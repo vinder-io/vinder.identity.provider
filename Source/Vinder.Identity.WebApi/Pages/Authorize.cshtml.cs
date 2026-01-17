@@ -1,6 +1,6 @@
 namespace Vinder.Identity.WebApi.Pages;
 
-public sealed class AuthorizePage(IDispatcher dispatcher, ITenantCollection tenantCollection, ITenantProvider tenantProvider) : PageModel
+public sealed class AuthorizePage(IDispatcher dispatcher, ITenantCollection tenantCollection, ITokenCollection tokenCollection, ITenantProvider tenantProvider) : PageModel
 {
     [BindProperty(SupportsGet = true)]
     public AuthorizationParameters Parameters { get; set; } = new();
@@ -37,6 +37,24 @@ public sealed class AuthorizePage(IDispatcher dispatcher, ITenantCollection tena
             return Page();
         }
 
-        return Redirect($"{Parameters.RedirectUri}?code=CODE&state={Parameters.State}");
+        var tenant = tenantProvider.GetCurrentTenant();
+
+        var code = Guid.NewGuid().ToString("N").ToUpperInvariant();
+        var token = new Domain.Aggregates.SecurityToken
+        {
+            TenantId = tenant.Id,
+            Type = TokenType.AuthorizationCode,
+            Value = code,
+            ExpiresAt = DateTime.UtcNow.AddMinutes(5),
+            Metadata = new Dictionary<string, string>
+            {
+                { "code.challenge", Parameters.CodeChallenge ?? string.Empty },
+                { "code.challenge.method", Parameters.CodeChallengeMethod ?? string.Empty }
+            }
+        };
+
+        await tokenCollection.InsertAsync(token);
+
+        return Redirect($"{Parameters.RedirectUri}?code={code}&state={Parameters.State}");
     }
 }
