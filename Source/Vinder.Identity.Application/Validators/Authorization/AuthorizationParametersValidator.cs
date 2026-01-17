@@ -30,7 +30,7 @@ public sealed class AuthorizationParametersValidator : AbstractValidator<Authori
         RuleFor(parameters => parameters.CodeChallengeMethod)
             .NotNull()
             .NotEmpty()
-            .Must(method => method is not null && method == "S256")
-            .WithMessage("code challenge method must be 'S256'.");
+            .Must(method => method is not null && (method == "S256" || method == "plain"))
+            .WithMessage("code challenge method must be 'S256' or 'plain'.");
     }
 }

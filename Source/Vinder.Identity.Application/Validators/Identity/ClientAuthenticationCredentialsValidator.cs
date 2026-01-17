@@ -7,10 +7,10 @@ public sealed class ClientAuthenticationCredentialsValidator : AbstractValidator
         RuleFor(credential => credential.GrantType)
             .NotEmpty()
             .WithMessage("grant type must not be empty.")
-            .Must(grant => grant == "client_credentials" || grant == "authorization_code")
+            .Must(grant => grant == SupportedGrantType.ClientCredentials || grant == SupportedGrantType.AuthorizationCode)
             .WithMessage("grant type must be either 'client_credentials' or 'authorization_code'.");
 
-        When(credential => credential.GrantType == "client_credentials", () =>
+        When(credential => credential.GrantType == SupportedGrantType.ClientCredentials, () =>
         {
             RuleFor(credential => credential.ClientId)
             .NotEmpty()
@@ -25,7 +25,7 @@ public sealed class ClientAuthenticationCredentialsValidator : AbstractValidator
             .WithMessage("client secret must be at most 500 characters long.");
         });
 
-        When(credential => credential.GrantType == "authorization_code", () =>
+        When(credential => credential.GrantType == SupportedGrantType.AuthorizationCode, () =>
         {
             RuleFor(credential => credential.Code)
                 .NotEmpty()
