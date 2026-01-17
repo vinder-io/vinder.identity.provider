@@ -7,4 +7,5 @@ public sealed record TenantDetailsScheme
     public string? Description { get; init; } = default!;
     public string ClientId { get; init; } = default!;
     public string ClientSecret { get; init; } = default!;
+    public IReadOnlyList<string> AllowedRedirectUris { get; init; } = [];
 }

@@ -26,11 +26,14 @@ public static class TenantMapper
 
     public static TenantDetailsScheme AsResponse(Tenant tenant) => new()
     {
-        Id = tenant.Id.ToString(),
+        Id = tenant.Id,
         Name = tenant.Name,
         Description = tenant.Description,
         ClientId = tenant.ClientId,
-        ClientSecret = tenant.SecretHash
+        ClientSecret = tenant.SecretHash,
+        AllowedRedirectUris = tenant.RedirectUris
+            .Select(uri => uri.Address)
+            .ToList()
     };
 
     public static TenantFilters AsFilters(TenantFetchParameters parameters) => new()
