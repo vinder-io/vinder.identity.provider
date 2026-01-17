@@ -1,12 +1,6 @@
 namespace Vinder.Identity.WebApi.Pages;
 
-public sealed class AuthorizePage(
-    IDispatcher dispatcher,
-    IUserCollection userCollection,
-    ITenantCollection tenantCollection,
-    ITokenCollection tokenCollection,
-    ITenantProvider tenantProvider
-) : PageModel
+public sealed class AuthorizePage(IDispatcher dispatcher, IUserCollection userCollection, ITenantCollection tenantCollection, ITokenCollection tokenCollection, ITenantProvider tenantProvider) : PageModel
 {
     [BindProperty(SupportsGet = true)]
     public AuthorizationParameters Parameters { get; set; } = new();
