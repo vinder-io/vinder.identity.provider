@@ -1,5 +1,3 @@
-using Microsoft.IdentityModel.Tokens;
-
 namespace Vinder.Identity.Application.Mappers;
 
 public static class JsonWebKeysMapper
@@ -12,8 +10,8 @@ public static class JsonWebKeysMapper
         return new JsonWebKeyScheme
         {
             Identifier = secret.Id,
-            Exponent = Base64UrlEncoder.Encode(parameters.Exponent!),
-            Modulus = Base64UrlEncoder.Encode(parameters.Modulus!)
+            Exponent = Utilities.Base64UrlEncoder.Encode(parameters.Exponent!),
+            Modulus = Utilities.Base64UrlEncoder.Encode(parameters.Modulus!)
         };
     }
 
