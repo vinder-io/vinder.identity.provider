@@ -33,6 +33,8 @@ global using Vinder.Identity.Application.Payloads.User;
 global using Vinder.Identity.Application.Payloads.Scope;
 global using Vinder.Identity.Application.Payloads.Tenant;
 global using Vinder.Identity.Application.Payloads.Permission;
+global using Vinder.Identity.Application.Payloads.Group;
+global using Vinder.Identity.Application.Payloads.Common;
 
 global using Vinder.Identity.Infrastructure.Persistence;
 global using Vinder.Identity.Infrastructure.Security;
@@ -46,6 +48,7 @@ global using Vinder.Identity.TestSuite.IntegrationTests.Fixtures;
 
 /* global usings for third-party namespaces here */
 
+global using Xunit;
 global using DotNet.Testcontainers.Builders;
 global using DotNet.Testcontainers.Containers;
 global using MongoDB.Driver;
