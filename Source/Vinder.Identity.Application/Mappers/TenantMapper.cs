@@ -15,6 +15,10 @@ public static class TenantMapper
         tenant.Name = payload.Name;
         tenant.Description = payload.Description ?? tenant.Description;
 
+        tenant.RedirectUris = payload.AllowedRedirectUris
+            .Select(uri => RedirectUriMapper.AsRedirectUri(uri))
+            .ToList() ?? tenant.RedirectUris;
+
         tenant.MarkAsUpdated();
 
         return tenant;
