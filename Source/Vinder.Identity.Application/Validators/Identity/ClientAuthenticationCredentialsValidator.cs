@@ -29,7 +29,7 @@ public sealed class ClientAuthenticationCredentialsValidator : AbstractValidator
         {
             RuleFor(credential => credential.Code)
                 .NotEmpty()
-                .WithMessage("authorization code must not be empty.");
+                .WithMessage("code must not be empty.");
 
             RuleFor(credential => credential.CodeVerifier)
                 .NotEmpty()
