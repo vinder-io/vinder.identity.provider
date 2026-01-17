@@ -1,0 +1,57 @@
+namespace Vinder.Identity.Application.Handlers.Identity;
+
+public sealed class AuthorizationCodeGrantHandler(ITenantCollection tenantCollection, ISecurityTokenService tokenService, ITokenCollection tokenCollection) : IAuthorizationFlowHandler
+{
+    public async Task<Result<ClientAuthenticationResult>> HandleAsync(
+        ClientAuthenticationCredentials parameters, CancellationToken cancellation = default)
+    {
+        var filters = new TokenFiltersBuilder()
+            .WithValue(parameters.Code)
+            .WithType(TokenType.AuthorizationCode)
+            .Build();
+
+        var tokens = await tokenCollection.GetTokensAsync(filters, cancellation: cancellation);
+        var token = tokens.FirstOrDefault();
+
+        if (token is null)
+        {
+            return Result<ClientAuthenticationResult>.Failure(AuthenticationErrors.InvalidAuthorizationCode);
+        }
+
+        if (token.IsExpired)
+        {
+            return Result<ClientAuthenticationResult>.Failure(AuthenticationErrors.AuthorizationCodeExpired);
+        }
+
+        var tenantFilters = new TenantFiltersBuilder()
+            .WithIdentifier(token.TenantId)
+            .Build();
+
+        var tenants = await tenantCollection.GetTenantsAsync(tenantFilters, cancellation: cancellation);
+        var tenant = tenants.FirstOrDefault();
+
+        if (tenant is null)
+        {
+            return Result<ClientAuthenticationResult>.Failure(AuthenticationErrors.ClientNotFound);
+        }
+
+        var codeChallenge = token.Metadata.GetValueOrDefault("code.challenge")!;
+        var codeChallengeMethod = token.Metadata.GetValueOrDefault("code.challenge.method")!;
+
+        if (!PkceCodeVerifier.Validate(parameters.CodeVerifier, codeChallenge, codeChallengeMethod))
+        {
+            return Result<ClientAuthenticationResult>.Failure(AuthenticationErrors.InvalidCodeVerifier);
+        }
+
+        var tokenResult = await tokenService.GenerateAccessTokenAsync(tenant, cancellation);
+        if (tokenResult.IsFailure || tokenResult.Data is null)
+        {
+            return Result<ClientAuthenticationResult>.Failure(tokenResult.Error);
+        }
+
+        return Result<ClientAuthenticationResult>.Success(new()
+        {
+            AccessToken = tokenResult.Data.Value
+        });
+    }
+}
