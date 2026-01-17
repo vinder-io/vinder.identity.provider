@@ -1,6 +1,7 @@
 /* global usings for System namespaces here */
 
 global using System.Text.Json.Serialization;
+global using System.Security.Cryptography;
 
 /* global usings for Vinder namespaces here */
 
@@ -31,6 +32,7 @@ global using Vinder.Identity.Application.Payloads.OpenID;
 global using Vinder.Identity.Application.Services;
 global using Vinder.Identity.Application.Providers;
 global using Vinder.Identity.Application.Mappers;
+global using Vinder.Identity.Application.Utilities;
 
 /* global usings for third-party namespaces here */
 
