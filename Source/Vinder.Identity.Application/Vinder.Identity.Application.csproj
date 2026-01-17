@@ -4,6 +4,11 @@
     <TargetFramework>net9.0</TargetFramework>
     <ImplicitUsings>enable</ImplicitUsings>
     <Nullable>enable</Nullable>
+    <!--
+        Disabled CS8509 to allow switch expressions without a default case,
+        assuming exhaustiveness is guaranteed by controlled types
+    -->
+    <NoWarn>CS8509</NoWarn>
   </PropertyGroup>
 
   <ItemGroup>
