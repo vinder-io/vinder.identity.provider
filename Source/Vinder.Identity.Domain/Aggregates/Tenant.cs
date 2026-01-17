@@ -9,5 +9,6 @@ public sealed class Tenant : Aggregate
     public string SecretHash { get; set; } = default!;
 
     public ICollection<Permission> Permissions { get; set; } = [];
+    public ICollection<RedirectUri> RedirectUris { get; set; } = [];
     public ICollection<Scope> Scopes { get; set; } = [];
 }
