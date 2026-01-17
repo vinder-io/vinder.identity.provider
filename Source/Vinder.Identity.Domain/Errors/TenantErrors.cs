@@ -31,4 +31,9 @@ public static class TenantErrors
         Code: "#VINDER-IDP-ERR-TNT-416",
         Description: "The tenant does not have the specified permission assigned. See https://bit.ly/errors-reference for more details."
     );
+
+    public static readonly Error RedirectUriNotAllowed = new(
+        Code: "#VINDER-IDP-ERR-TNT-421",
+        Description: "The specified redirect URI is not registered or allowed for this tenant. See https://bit.ly/errors-reference for more details."
+    );
 }
