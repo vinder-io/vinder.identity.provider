@@ -1,4 +1,4 @@
-# this service provisions a MongoDB container for local development and testing,
+# this service provisions a mongo database container for local development and testing,
 # using environment variables defined in .env to set up authentication.
 
 services:
@@ -14,21 +14,6 @@ services:
       MONGO_INITDB_ROOT_PASSWORD: ${MONGO_INITDB_ROOT_PASSWORD}
     volumes:
       - vinder.identity.provider.infrastructure.mongo.database:/data/db
-
-  vinder.identity.provider:
-    container_name: "vinder.identity.provider.webapi"
-    build:
-      context: .
-      dockerfile: Dockerfile
-    ports:
-      - "8080:8080"
-    environment:
-      Settings__Database__ConnectionString: ${MONGO_CONNECTIONSTRING}
-      Settings__Database__DatabaseName: ${MONGO_DATABASENAME}
-      Settings__Administration__Username: ${VINDER_IDENTITY_PROVIDER_ADMIN_USERNAME}
-      Settings__Administration__Password: ${VINDER_IDENTITY_PROVIDER_ADMIN_PASSWORD}
-    depends_on:
-      - vinder.identity.provider.infrastructure.mongo.database
 
 volumes:
   vinder.identity.provider.infrastructure.mongo.database:
