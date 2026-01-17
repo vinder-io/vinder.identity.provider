@@ -8,8 +8,7 @@ public sealed class AuthorizePage(IDispatcher dispatcher, ITenantCollection tena
     [BindProperty]
     public AuthenticationCredentials Credentials { get; set; } = new();
 
-    public async Task<IActionResult> OnGetAsync() => Page();
-    public async Task<IActionResult> OnPostAsync()
+    public async Task<IActionResult> OnGetAsync()
     {
         var filters = new TenantFiltersBuilder()
             .WithClientId(Parameters.ClientId)
@@ -26,6 +25,11 @@ public sealed class AuthorizePage(IDispatcher dispatcher, ITenantCollection tena
 
         tenantProvider.SetTenant(tenant);
 
+        return Page();
+    }
+
+    public async Task<IActionResult> OnPostAsync()
+    {
         var result = await dispatcher.DispatchAsync(Credentials);
         if (result.IsFailure)
         {
