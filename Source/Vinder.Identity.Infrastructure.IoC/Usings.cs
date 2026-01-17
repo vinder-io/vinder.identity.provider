@@ -28,6 +28,7 @@ global using Vinder.Identity.Application.Payloads.Scope;
 global using Vinder.Identity.Application.Validators.Permission;
 global using Vinder.Identity.Application.Validators.Group;
 global using Vinder.Identity.Application.Validators.Identity;
+global using Vinder.Identity.Application.Validators.Authorization;
 global using Vinder.Identity.Application.Validators.Tenant;
 global using Vinder.Identity.Application.Validators.User;
 global using Vinder.Identity.Application.Validators.Scope;
