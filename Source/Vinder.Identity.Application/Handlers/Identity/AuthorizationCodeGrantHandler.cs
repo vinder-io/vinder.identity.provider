@@ -1,6 +1,6 @@
 namespace Vinder.Identity.Application.Handlers.Identity;
 
-public sealed class AuthorizationCodeGrantHandler(ITenantCollection tenantCollection, ISecurityTokenService tokenService, ITokenCollection tokenCollection) : IAuthorizationFlowHandler
+public sealed class AuthorizationCodeGrantHandler(ITenantCollection tenantCollection, IUserCollection userCollection, ISecurityTokenService tokenService, ITokenCollection tokenCollection) : IAuthorizationFlowHandler
 {
     public async Task<Result<ClientAuthenticationResult>> HandleAsync(
         ClientAuthenticationCredentials parameters, CancellationToken cancellation = default)
@@ -43,7 +43,19 @@ public sealed class AuthorizationCodeGrantHandler(ITenantCollection tenantCollec
             return Result<ClientAuthenticationResult>.Failure(AuthenticationErrors.InvalidCodeVerifier);
         }
 
-        var tokenResult = await tokenService.GenerateAccessTokenAsync(tenant, cancellation);
+        var userFilters = new UserFiltersBuilder()
+            .WithIdentifier(token.UserId)
+            .Build();
+
+        var users = await userCollection.GetUsersAsync(userFilters, cancellation: cancellation);
+        var user = users.FirstOrDefault();
+
+        if (user is null)
+        {
+            return Result<ClientAuthenticationResult>.Failure(AuthenticationErrors.UserNotFound);
+        }
+
+        var tokenResult = await tokenService.GenerateAccessTokenAsync(user, cancellation);
         if (tokenResult.IsFailure || tokenResult.Data is null)
         {
             return Result<ClientAuthenticationResult>.Failure(tokenResult.Error);
