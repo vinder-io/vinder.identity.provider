@@ -11,6 +11,7 @@ public static class WebInfrastructureExtension
         services.AddCorsConfiguration();
         services.AddJwtAuthentication();
         services.AddMemoryCache();
+        services.AddProviders();
         services.AddOpenApiSpecification();
     }
 }
