@@ -6,4 +6,5 @@ public sealed record TenantUpdateScheme : IMessage<Result<TenantDetailsScheme>>
     public string TenantId { get; init; } = default!;
     public string Name { get; init; } = default!;
     public string? Description { get; init; } = default!;
+    public IReadOnlyCollection<string> AllowedRedirectUris { get; init; } = [];
 }
