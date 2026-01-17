@@ -22,7 +22,10 @@ public sealed class AuthorizationParametersValidator : AbstractValidator<Authori
 
         RuleFor(parameters => parameters.CodeChallenge)
             .NotNull()
-            .NotEmpty();
+            .NotEmpty()
+            .MinimumLength(43).WithMessage("code challenge must be at least 43 characters for S256.")
+            .MaximumLength(128).WithMessage("code challenge must be at most 128 characters for S256.")
+            .Matches("^[a-zA-Z0-9_-]+$").WithMessage("code challenge must be base64url encoded.");
 
         RuleFor(parameters => parameters.CodeChallengeMethod)
             .NotNull()
