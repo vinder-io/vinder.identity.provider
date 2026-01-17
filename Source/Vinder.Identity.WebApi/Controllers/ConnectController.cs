@@ -6,9 +6,7 @@ public sealed class ConnectController(IDispatcher dispatcher) : ControllerBase
 {
     [HttpPost("token")]
     public async Task<IActionResult> AuthenticateClientAsync(
-        [FromSnakeCaseForm] ClientAuthenticationCredentials request,
-        CancellationToken cancellation
-    )
+        [FromSnakeCaseForm] ClientAuthenticationCredentials request, CancellationToken cancellation)
     {
         var result = await dispatcher.DispatchAsync(request, cancellation);
 
