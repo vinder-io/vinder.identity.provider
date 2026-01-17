@@ -1,56 +1,68 @@
 @page "/federation/authorize"
 @model Vinder.Identity.WebApi.Pages.AuthorizePage
 
-@{
-    ViewData["Title"] = "Authorize";
-}
-
 <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet">
 
 <div class="min-h-screen flex items-center justify-center bg-white px-4">
     <div class="w-full max-w-sm">
-        <div class="mb-8">
-            <h1 class="text-xl font-semibold text-black">Welcome Back!</h1>
-            <p class="text-gray-500 text-sm mt-1">authorize access to your account</p>
-        </div>
-
-        <form method="post" class="space-y-4">
-            @Html.AntiForgeryToken()
-
-            <input type="hidden" asp-for="Parameters.RedirectUri" />
-            <input type="hidden" asp-for="Parameters.State" />
-
-            <div>
-                <label for="username" class="block text-sm font-medium text-black mb-1.5">
-                    Username
-                </label>
-                <input name="Credentials.Username" id="username" type="text" autocomplete="username"
-                    class="w-full px-3 py-2 bg-white border border-gray-300 rounded-md text-black placeholder-gray-400 focus:outline-none focus:ring-1 focus:ring-black focus:border-black transition-colors"
-                    placeholder="Enter your username" required />
+        @if (ViewData.ModelState.ContainsKey(TenantErrors.TenantDoesNotExist.Code))
+        {
+            <div class="mb-8 p-6 flex flex-col items-center">
+                <svg xmlns="http://www.w3.org/2000/svg" class="h-10 w-10 text-black mb-3" fill="none" viewBox="0 0 24 24"
+                    stroke="currentColor">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5"
+                        d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z" />
+                </svg>
+                <h1 class="text-xl font-semibold text-black mb-2 text-center">Unable to connect</h1>
+                <p class="text-gray-500 text-center text-sm">We couldn't connect with the partner application.</p>
+                <p class="text-gray-400 text-center text-xs mt-1">Please check the link or contact support if the problem persists.</p>
+            </div>
+        }
+        else
+        {
+            <div class="mb-8">
+                <h1 class="text-xl font-semibold text-black">Welcome Back!</h1>
+                <p class="text-gray-500 text-sm mt-1">authorize access to your account</p>
             </div>
 
-            <div>
-                <label for="password" class="block text-sm font-medium text-black mb-1.5">
-                    Password
-                </label>
-                <input name="Credentials.Password" id="password" type="password" autocomplete="current-password"
-                    class="w-full px-3 py-2 bg-white border border-gray-300 rounded-md text-black placeholder-gray-400 focus:outline-none focus:ring-1 focus:ring-black focus:border-black transition-colors"
-                    placeholder="Enter your password" required />
-            </div>
+            <form method="post" class="space-y-4">
+                @Html.AntiForgeryToken()
 
-            <button type="submit"
-                class="w-full bg-black text-white font-medium py-2 px-4 rounded-md hover:bg-gray-900 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-black transition-colors">
-                Continue
-            </button>
-        </form>
+                <input type="hidden" asp-for="Parameters.RedirectUri" />
+                <input type="hidden" asp-for="Parameters.State" />
 
-        <p class="text-xs text-gray-400 mt-6 text-center flex items-center justify-center gap-1">
-            <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 text-gray-400" fill="none" viewBox="0 0 24 24"
-                stroke="currentColor">
-                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                    d="M12 3l7 4v5c0 5.25-3.5 9.74-7 11-3.5-1.26-7-5.75-7-11V7l7-4z" />
-            </svg>
-            protected by OAuth 2.0
-        </p>
+                <div>
+                    <label for="username" class="block text-sm font-medium text-black mb-1.5">
+                        Username
+                    </label>
+                    <input name="Credentials.Username" id="username" type="text" autocomplete="username"
+                        class="w-full px-3 py-2 bg-white border border-gray-300 rounded-md text-black placeholder-gray-400 focus:outline-none focus:ring-1 focus:ring-black focus:border-black transition-colors"
+                        placeholder="Enter your username" required />
+                </div>
+
+                <div>
+                    <label for="password" class="block text-sm font-medium text-black mb-1.5">
+                        Password
+                    </label>
+                    <input name="Credentials.Password" id="password" type="password" autocomplete="current-password"
+                        class="w-full px-3 py-2 bg-white border border-gray-300 rounded-md text-black placeholder-gray-400 focus:outline-none focus:ring-1 focus:ring-black focus:border-black transition-colors"
+                        placeholder="Enter your password" required />
+                </div>
+
+                <button type="submit"
+                    class="w-full bg-black text-white font-medium py-2 px-4 rounded-md hover:bg-gray-900 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-black transition-colors">
+                    Continue
+                </button>
+            </form>
+
+            <p class="text-xs text-gray-400 mt-6 text-center flex items-center justify-center gap-1">
+                <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 text-gray-400" fill="none" viewBox="0 0 24 24"
+                    stroke="currentColor">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                        d="M12 3l7 4v5c0 5.25-3.5 9.74-7 11-3.5-1.26-7-5.75-7-11V7l7-4z" />
+                </svg>
+                protected by OAuth 2.0
+            </p>
+        }
     </div>
 </div>
