@@ -1,6 +1,6 @@
 namespace Vinder.Identity.Application.Handlers.Identity;
 
-public sealed class ClientAuthenticationHandler(ITenantCollection tenantCollection, ITokenCollection tokenCollection, ISecurityTokenService tokenService) :
+public sealed class ClientAuthenticationHandler(ITenantCollection tenantCollection, IUserCollection userCollection, ITokenCollection tokenCollection, ISecurityTokenService tokenService) :
     IMessageHandler<ClientAuthenticationCredentials, Result<ClientAuthenticationResult>>
 {
     public async Task<Result<ClientAuthenticationResult>> HandleAsync(
@@ -8,7 +8,7 @@ public sealed class ClientAuthenticationHandler(ITenantCollection tenantCollecti
     {
         IAuthorizationFlowHandler handler = parameters.GrantType switch
         {
-            SupportedGrantType.AuthorizationCode => new AuthorizationCodeGrantHandler(tenantCollection, tokenService, tokenCollection),
+            SupportedGrantType.AuthorizationCode => new AuthorizationCodeGrantHandler(tenantCollection, userCollection, tokenService, tokenCollection),
             SupportedGrantType.ClientCredentials => new ClientCredentialsGrantHandler(tenantCollection, tokenService),
         };
 
