@@ -42,6 +42,7 @@ global using Vinder.Identity.WebApi.Extensions;
 global using Vinder.Identity.WebApi.Middlewares;
 global using Vinder.Identity.WebApi.Attributes;
 global using Vinder.Identity.WebApi.Binders;
+global using Vinder.Identity.WebApi.Providers;
 global using Vinder.Identity.WebApi.Constants;
 
 global using Vinder.Internal.Essentials.Utilities;
