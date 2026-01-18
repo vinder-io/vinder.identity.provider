@@ -36,7 +36,7 @@ public sealed class JwtSecurityTokenServiceTests : IClassFixture<MongoDatabaseFi
 
         _groupCollection
             .Setup(collection => collection.GetGroupsAsync(It.IsAny<GroupFilters>(), It.IsAny<CancellationToken>()))
-            .ReturnsAsync([  ]);
+            .ReturnsAsync([]);
 
         _secretCollection
             .Setup(collection => collection.GetSecretAsync(It.IsAny<CancellationToken>()))
