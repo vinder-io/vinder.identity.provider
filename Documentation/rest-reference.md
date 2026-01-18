@@ -43,3 +43,11 @@ Our API is fully documented using the **OpenAPI 3 (OAS3) standard**.
 This means you can explore all available endpoints, request/response schemas requirements programmatically or using tools like **Swagger UI**, **Postman**, or any OpenAPI-compatible client.
 
 You can access the OpenAPI JSON directly at: `https://<your-host>/openapi/v1.json`
+
+# Accessing the OpenAPI Specification via /scalar
+
+You can also access and interact with the OpenAPI documentation using the `/scalar` endpoint:
+
+- `https://<your-host>/scalar`
+
+This endpoint provides a user-friendly interface for exploring, testing, and visualizing all available API endpoints and schemas directly in your browser. Tools like Swagger UI or Scalar UI can be used for this purpose, making integration and discovery even easier for developers.
