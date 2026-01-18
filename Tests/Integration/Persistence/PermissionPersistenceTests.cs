@@ -30,7 +30,7 @@ public sealed class PermissionPersistenceTests : IClassFixture<MongoDatabaseFixt
             .With(permission => permission.TenantId, tenant.Id)
             .Create();
 
-        var filters = new PermissionFiltersBuilder()
+        var filters = PermissionFilters.WithSpecifications()
             .WithName(permission.Name)
             .Build();
 
@@ -71,7 +71,7 @@ public sealed class PermissionPersistenceTests : IClassFixture<MongoDatabaseFixt
 
         await _permissionCollection.UpdateAsync(permission);
 
-        var filters = new PermissionFiltersBuilder()
+        var filters = PermissionFilters.WithSpecifications()
             .WithName(newName)
             .Build();
 
@@ -102,7 +102,7 @@ public sealed class PermissionPersistenceTests : IClassFixture<MongoDatabaseFixt
 
         await _permissionCollection.InsertAsync(permission);
 
-        var filters = new PermissionFiltersBuilder()
+        var filters = PermissionFilters.WithSpecifications()
             .WithName(permission.Name)
             .Build();
 
@@ -115,7 +115,7 @@ public sealed class PermissionPersistenceTests : IClassFixture<MongoDatabaseFixt
         Assert.DoesNotContain(resultAfterDelete, permission => permission.Id == permission.Id);
 
         /* arrange: prepare filters including deleted permissions */
-        var filtersWithDeleted = new PermissionFiltersBuilder()
+        var filtersWithDeleted = PermissionFilters.WithSpecifications()
             .WithName(permission.Name)
             .WithIsDeleted(true)
             .Build();
@@ -154,7 +154,7 @@ public sealed class PermissionPersistenceTests : IClassFixture<MongoDatabaseFixt
         await _permissionCollection.InsertAsync(permission1);
         await _permissionCollection.InsertAsync(permission2);
 
-        var filters = new PermissionFiltersBuilder()
+        var filters = PermissionFilters.WithSpecifications()
             .WithName("filter1")
             .Build();
 
@@ -189,7 +189,7 @@ public sealed class PermissionPersistenceTests : IClassFixture<MongoDatabaseFixt
         }
 
         /* arrange: prepare filters for page 1 with page size 5 */
-        var filtersPage1 = new PermissionFiltersBuilder()
+        var filtersPage1 = PermissionFilters.WithSpecifications()
             .WithPagination(PaginationFilters.From(pageNumber: 1, pageSize: 5))
             .Build();
 
@@ -200,7 +200,7 @@ public sealed class PermissionPersistenceTests : IClassFixture<MongoDatabaseFixt
         Assert.Equal(5, page1Results.Count);
 
         /* arrange: prepare filters for page 2 with page size 5 */
-        var filtersPage2 = new PermissionFiltersBuilder()
+        var filtersPage2 = PermissionFilters.WithSpecifications()
             .WithPagination(PaginationFilters.From(pageNumber: 2, pageSize: 5))
             .Build();
 
@@ -234,7 +234,7 @@ public sealed class PermissionPersistenceTests : IClassFixture<MongoDatabaseFixt
         }
 
         /* arrange: prepare filters with IsDeleted = false */
-        var filters = new PermissionFiltersBuilder()
+        var filters = PermissionFilters.WithSpecifications()
             .Build();
 
         /* act: count permissions matching filters */

@@ -30,7 +30,7 @@ public sealed class TokenPersistenceTests : IClassFixture<MongoDatabaseFixture>,
             .With(token => token.TenantId, tenant.Id)
             .Create();
 
-        var filters = new TokenFiltersBuilder()
+        var filters = TokenFilters.WithSpecifications()
             .WithValue(token.Value)
             .Build();
 
@@ -70,7 +70,7 @@ public sealed class TokenPersistenceTests : IClassFixture<MongoDatabaseFixture>,
 
         await _tokenCollection.UpdateAsync(token);
 
-        var filters = new TokenFiltersBuilder()
+        var filters = TokenFilters.WithSpecifications()
             .WithValue(newValue)
             .Build();
 
@@ -101,7 +101,7 @@ public sealed class TokenPersistenceTests : IClassFixture<MongoDatabaseFixture>,
 
         await _tokenCollection.InsertAsync(token);
 
-        var filters = new TokenFiltersBuilder()
+        var filters = TokenFilters.WithSpecifications()
             .WithValue(token.Value)
             .Build();
 
@@ -114,7 +114,7 @@ public sealed class TokenPersistenceTests : IClassFixture<MongoDatabaseFixture>,
         Assert.DoesNotContain(resultAfterDelete, token => token.Id == token.Id);
 
         /* arrange: prepare filters including deleted tokens */
-        var filtersWithDeleted = new TokenFiltersBuilder()
+        var filtersWithDeleted = TokenFilters.WithSpecifications()
             .WithValue(token.Value)
             .WithIsDeleted(true)
             .Build();
@@ -153,7 +153,7 @@ public sealed class TokenPersistenceTests : IClassFixture<MongoDatabaseFixture>,
         await _tokenCollection.InsertAsync(token1);
         await _tokenCollection.InsertAsync(token2);
 
-        var filters = new TokenFiltersBuilder()
+        var filters = TokenFilters.WithSpecifications()
             .WithValue("filter1-token")
             .Build();
 
@@ -188,7 +188,7 @@ public sealed class TokenPersistenceTests : IClassFixture<MongoDatabaseFixture>,
         }
 
         /* arrange: prepare filters for page 1 with page size 5 */
-        var filtersPage1 = new TokenFiltersBuilder()
+        var filtersPage1 = TokenFilters.WithSpecifications()
             .WithPagination(PaginationFilters.From(pageNumber: 1, pageSize: 5))
             .Build();
 
@@ -199,7 +199,7 @@ public sealed class TokenPersistenceTests : IClassFixture<MongoDatabaseFixture>,
         Assert.Equal(5, page1Results.Count);
 
         /* arrange: prepare filters for page 2 with page size 5 */
-        var filtersPage2 = new TokenFiltersBuilder()
+        var filtersPage2 = TokenFilters.WithSpecifications()
             .WithPagination(PaginationFilters.From(pageNumber: 2, pageSize: 5))
             .Build();
 
@@ -227,7 +227,7 @@ public sealed class TokenPersistenceTests : IClassFixture<MongoDatabaseFixture>,
 
         await _tokenCollection.InsertAsync(token);
 
-        var filters = new TokenFiltersBuilder()
+        var filters = TokenFilters.WithSpecifications()
             .WithTenantId(tenant.Id)
             .WithValue(token.Value)
             .Build();
@@ -277,7 +277,7 @@ public sealed class TokenPersistenceTests : IClassFixture<MongoDatabaseFixture>,
         await _tokenCollection.InsertAsync(matchingToken);
         await _tokenCollection.InsertAsync(nonMatchingToken);
 
-        var filters = new TokenFiltersBuilder()
+        var filters = TokenFilters.WithSpecifications()
             .WithType(type)
             .Build();
 
@@ -311,7 +311,7 @@ public sealed class TokenPersistenceTests : IClassFixture<MongoDatabaseFixture>,
 
         await _tokenCollection.InsertAsync(token);
 
-        var filters = new TokenFiltersBuilder()
+        var filters = TokenFilters.WithSpecifications()
             .WithUserId(userId)
             .WithValue(token.Value)
             .Build();
@@ -358,7 +358,7 @@ public sealed class TokenPersistenceTests : IClassFixture<MongoDatabaseFixture>,
         }
 
         /* act: count tokens filtered by tenant1 and IsDeleted = false */
-        var filters = new TokenFiltersBuilder()
+        var filters = TokenFilters.WithSpecifications()
             .WithTenantId(tenant.Id)
             .WithIsDeleted(false)
             .Build();

@@ -30,7 +30,7 @@ public sealed class GroupPersistenceTests : IClassFixture<MongoDatabaseFixture>,
             .With(group => group.TenantId, tenant.Id)
             .Create();
 
-        var filters = new GroupFiltersBuilder()
+        var filters = GroupFilters.WithSpecifications()
             .WithName(group.Name)
             .Build();
 
@@ -71,7 +71,7 @@ public sealed class GroupPersistenceTests : IClassFixture<MongoDatabaseFixture>,
 
         await _groupCollection.UpdateAsync(group);
 
-        var filters = new GroupFiltersBuilder()
+        var filters = GroupFilters.WithSpecifications()
             .WithName(newName)
             .Build();
 
@@ -102,7 +102,7 @@ public sealed class GroupPersistenceTests : IClassFixture<MongoDatabaseFixture>,
 
         await _groupCollection.InsertAsync(group);
 
-        var filters = new GroupFiltersBuilder()
+        var filters = GroupFilters.WithSpecifications()
             .WithName(group.Name)
             .Build();
 
@@ -115,7 +115,7 @@ public sealed class GroupPersistenceTests : IClassFixture<MongoDatabaseFixture>,
         Assert.DoesNotContain(resultAfterDelete, g => g.Id == group.Id);
 
         /* arrange: prepare filters including deleted groups */
-        var filtersWithDeleted = new GroupFiltersBuilder()
+        var filtersWithDeleted = GroupFilters.WithSpecifications()
             .WithName(group.Name)
             .WithIsDeleted(true)
             .Build();
@@ -152,7 +152,7 @@ public sealed class GroupPersistenceTests : IClassFixture<MongoDatabaseFixture>,
         await _groupCollection.InsertAsync(group1);
         await _groupCollection.InsertAsync(group2);
 
-        var filters = new GroupFiltersBuilder()
+        var filters = GroupFilters.WithSpecifications()
             .WithIdentifier(group1.Id)
             .Build();
 
@@ -185,7 +185,7 @@ public sealed class GroupPersistenceTests : IClassFixture<MongoDatabaseFixture>,
         await _groupCollection.InsertAsync(group1);
         await _groupCollection.InsertAsync(group2);
 
-        var filters = new GroupFiltersBuilder()
+        var filters = GroupFilters.WithSpecifications()
             .WithTenantId(tenant.Id)
             .Build();
 
@@ -221,7 +221,7 @@ public sealed class GroupPersistenceTests : IClassFixture<MongoDatabaseFixture>,
         await _groupCollection.InsertAsync(group1);
         await _groupCollection.InsertAsync(group2);
 
-        var filters = new GroupFiltersBuilder()
+        var filters = GroupFilters.WithSpecifications()
             .WithName("filter1")
             .Build();
 
@@ -256,7 +256,7 @@ public sealed class GroupPersistenceTests : IClassFixture<MongoDatabaseFixture>,
         }
 
         /* arrange: prepare filters for page 1 with page size 5 */
-        var filtersPage1 = new GroupFiltersBuilder()
+        var filtersPage1 = GroupFilters.WithSpecifications()
             .WithPagination(PaginationFilters.From(pageNumber: 1, pageSize: 5))
             .Build();
 
@@ -267,7 +267,7 @@ public sealed class GroupPersistenceTests : IClassFixture<MongoDatabaseFixture>,
         Assert.Equal(5, page1Results.Count);
 
         /* arrange: prepare filters for page 2 with page size 5 */
-        var filtersPage2 = new GroupFiltersBuilder()
+        var filtersPage2 = GroupFilters.WithSpecifications()
             .WithPagination(PaginationFilters.From(pageNumber: 2, pageSize: 5))
             .Build();
 
@@ -301,7 +301,7 @@ public sealed class GroupPersistenceTests : IClassFixture<MongoDatabaseFixture>,
         }
 
         /* arrange: prepare filters with IsDeleted = false */
-        var filters = new GroupFiltersBuilder()
+        var filters = GroupFilters.WithSpecifications()
             .WithIsDeleted(false)
             .Build();
 
@@ -335,7 +335,7 @@ public sealed class GroupPersistenceTests : IClassFixture<MongoDatabaseFixture>,
         }
 
         /* arrange: prepare filters with IsDeleted = true */
-        var filters = new GroupFiltersBuilder()
+        var filters = GroupFilters.WithSpecifications()
             .WithIsDeleted(true)
             .Build();
 

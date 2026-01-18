@@ -23,7 +23,7 @@ public sealed class TenantPersistenceTests : IClassFixture<MongoDatabaseFixture>
             .With(tenant => tenant.IsDeleted, false)
             .Create();
 
-        var filters = new TenantFiltersBuilder()
+        var filters = TenantFilters.WithSpecifications()
             .WithName(tenant.Name)
             .Build();
 
@@ -57,7 +57,7 @@ public sealed class TenantPersistenceTests : IClassFixture<MongoDatabaseFixture>
 
         await _tenantCollection.UpdateAsync(tenant);
 
-        var filters = new TenantFiltersBuilder()
+        var filters = TenantFilters.WithSpecifications()
             .WithName(newName)
             .Build();
 
@@ -82,7 +82,7 @@ public sealed class TenantPersistenceTests : IClassFixture<MongoDatabaseFixture>
 
         await _tenantCollection.InsertAsync(tenant);
 
-        var filters = new TenantFiltersBuilder()
+        var filters = TenantFilters.WithSpecifications()
             .WithName(tenant.Name)
             .Build();
 
@@ -95,7 +95,7 @@ public sealed class TenantPersistenceTests : IClassFixture<MongoDatabaseFixture>
         Assert.DoesNotContain(resultAfterDelete, t => t.Id == tenant.Id);
 
         /* arrange: prepare filters including deleted tenants */
-        var filtersWithDeleted = new TenantFiltersBuilder()
+        var filtersWithDeleted = TenantFilters.WithSpecifications()
             .WithName(tenant.Name)
             .WithIsDeleted(true)
             .Build();
@@ -127,7 +127,7 @@ public sealed class TenantPersistenceTests : IClassFixture<MongoDatabaseFixture>
         await _tenantCollection.InsertAsync(tenant1);
         await _tenantCollection.InsertAsync(tenant2);
 
-        var filters = new TenantFiltersBuilder()
+        var filters = TenantFilters.WithSpecifications()
             .WithName("filter1")
             .Build();
 
@@ -156,7 +156,7 @@ public sealed class TenantPersistenceTests : IClassFixture<MongoDatabaseFixture>
         }
 
         /* arrange: prepare filters for page 1 with page size 5 */
-        var filtersPage1 = new TenantFiltersBuilder()
+        var filtersPage1 = TenantFilters.WithSpecifications()
             .WithPagination(PaginationFilters.From(pageNumber: 1, pageSize: 5))
             .Build();
 
@@ -167,7 +167,7 @@ public sealed class TenantPersistenceTests : IClassFixture<MongoDatabaseFixture>
         Assert.Equal(5, page1Results.Count);
 
         /* arrange: prepare filters for page 2 with page size 5 */
-        var filtersPage2 = new TenantFiltersBuilder()
+        var filtersPage2 = TenantFilters.WithSpecifications()
             .WithPagination(PaginationFilters.From(pageNumber: 2, pageSize: 5))
             .Build();
 
@@ -192,7 +192,7 @@ public sealed class TenantPersistenceTests : IClassFixture<MongoDatabaseFixture>
 
         await _tenantCollection.InsertAsync(tenant);
 
-        var filters = new TenantFiltersBuilder()
+        var filters = TenantFilters.WithSpecifications()
             .WithClientId(clientId)
             .WithName(tenant.Name)
             .Build();
@@ -232,7 +232,7 @@ public sealed class TenantPersistenceTests : IClassFixture<MongoDatabaseFixture>
         }
 
         /* act: count tenants filtered by clientId1 and IsDeleted = false */
-        var filters = new TenantFiltersBuilder()
+        var filters = TenantFilters.WithSpecifications()
             .WithClientId(clientId1)
             .WithIsDeleted(false)
             .Build();

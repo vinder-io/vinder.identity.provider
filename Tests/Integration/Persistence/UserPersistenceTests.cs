@@ -30,7 +30,7 @@ public sealed class UserPersistenceTests : IClassFixture<MongoDatabaseFixture>, 
             .With(user => user.TenantId, tenant.Id)
             .Create();
 
-        var filters = new UserFiltersBuilder()
+        var filters = UserFilters.WithSpecifications()
             .WithUsername(user.Username)
             .Build();
 
@@ -70,7 +70,7 @@ public sealed class UserPersistenceTests : IClassFixture<MongoDatabaseFixture>, 
 
         await _userCollection.UpdateAsync(user);
 
-        var filters = new UserFiltersBuilder()
+        var filters = UserFilters.WithSpecifications()
             .WithUsername(newUsername)
             .Build();
 
@@ -101,7 +101,7 @@ public sealed class UserPersistenceTests : IClassFixture<MongoDatabaseFixture>, 
 
         await _userCollection.InsertAsync(user);
 
-        var filters = new UserFiltersBuilder()
+        var filters = UserFilters.WithSpecifications()
             .WithUsername(user.Username)
             .Build();
 
@@ -114,7 +114,7 @@ public sealed class UserPersistenceTests : IClassFixture<MongoDatabaseFixture>, 
         Assert.DoesNotContain(resultAfterDelete, user => user.Id == user.Id);
 
         /* arrange: prepare filters including deleted users */
-        var filtersWithDeleted = new UserFiltersBuilder()
+        var filtersWithDeleted = UserFilters.WithSpecifications()
             .WithUsername(user.Username)
             .WithIsDeleted(true)
             .Build();
@@ -153,7 +153,7 @@ public sealed class UserPersistenceTests : IClassFixture<MongoDatabaseFixture>, 
         await _userCollection.InsertAsync(user1);
         await _userCollection.InsertAsync(user2);
 
-        var filters = new UserFiltersBuilder()
+        var filters = UserFilters.WithSpecifications()
             .WithUsername("filter1@coding.com")
             .Build();
 
@@ -188,7 +188,7 @@ public sealed class UserPersistenceTests : IClassFixture<MongoDatabaseFixture>, 
         }
 
         /* arrange: prepare filters for page 1 with page size 5 */
-        var filtersPage1 = new UserFiltersBuilder()
+        var filtersPage1 = UserFilters.WithSpecifications()
             .WithPagination(PaginationFilters.From(pageNumber: 1, pageSize: 5))
             .Build();
 
@@ -199,7 +199,7 @@ public sealed class UserPersistenceTests : IClassFixture<MongoDatabaseFixture>, 
         Assert.Equal(5, page1Results.Count);
 
         /* arrange: prepare filters for page 2 with page size 5 */
-        var filtersPage2 = new UserFiltersBuilder()
+        var filtersPage2 = UserFilters.WithSpecifications()
             .WithPagination(PaginationFilters.From(pageNumber: 2, pageSize: 5))
             .Build();
 
@@ -227,7 +227,7 @@ public sealed class UserPersistenceTests : IClassFixture<MongoDatabaseFixture>, 
 
         await _userCollection.InsertAsync(user);
 
-        var filters = new UserFiltersBuilder()
+        var filters = UserFilters.WithSpecifications()
             .WithTenantId(tenant.Id)
             .WithUsername(user.Username)
             .Build();
@@ -270,7 +270,7 @@ public sealed class UserPersistenceTests : IClassFixture<MongoDatabaseFixture>, 
         }
 
         /* act: count users filtered by tenant1 and IsDeleted = false */
-        var filters = new UserFiltersBuilder()
+        var filters = UserFilters.WithSpecifications()
             .WithTenantId(tenant1.Id)
             .WithIsDeleted(false)
             .Build();
