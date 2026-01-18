@@ -13,7 +13,7 @@ public static class SpecificationsExtension
             options.HideModels = true;
             options.HideSearch = true;
 
-            options.WithTitle("Vinder Identity | Reference");
+            options.WithTitle("Vinder Federation | Reference");
             options.WithClassicLayout();
             options.ExpandAllTags();
             options.AddPreferredSecuritySchemes(SecuritySchemes.Bearer);
