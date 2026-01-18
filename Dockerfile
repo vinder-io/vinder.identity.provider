@@ -1,40 +1,38 @@
-# use ASP.NET Core 9.0 runtime image as base
-FROM mcr.microsoft.com/dotnet/aspnet:9.0 AS base
+# use ASP.NET Core 9.0 runtime image (alpine) as base
+FROM mcr.microsoft.com/dotnet/aspnet:9.0-alpine AS base
 WORKDIR /app
 EXPOSE 8080
 
-# use SDK image for build
-FROM mcr.microsoft.com/dotnet/sdk:9.0 AS build
+# use SDK image (Alpine) for build
+FROM mcr.microsoft.com/dotnet/sdk:9.0-alpine AS build
 WORKDIR /src
 
-# copy project files to restore dependencies
+# copy only csproj and sln to restore as early as possible
 COPY ["Source/Vinder.Federation.WebApi/Vinder.Federation.WebApi.csproj", "Vinder.Federation.WebApi/"]
-
-# copy the entire solution 'n related projects
 COPY ["Vinder.Federation.sln", "./"]
 
-# restore dependencies for the project
+# restore dependencies
 RUN dotnet restore "Vinder.Federation.WebApi/Vinder.Federation.WebApi.csproj"
 
-# copy all source code into the container
+# copy the rest of the source code
 COPY Source/ ./Source/
 
-# set working directory to the web project
 WORKDIR "/src/Source/Vinder.Federation.WebApi"
 
 # build in Release mode
 RUN dotnet build "Vinder.Federation.WebApi.csproj" -c Release -o /app/build
 
 # publish the project for production
-FROM build AS publish
 RUN dotnet publish "Vinder.Federation.WebApi.csproj" -c Release -o /app/publish /p:UseAppHost=false
 
 # final image to run the app
 FROM base AS final
 WORKDIR /app
 
-# copy published files from the publish stage
-COPY --from=publish /app/publish .
+ENV ASPNETCORE_URLS=http://+:8080
+ENV DOTNET_SYSTEM_GLOBALIZATION_INVARIANT=true
 
-# set the command to start the application
+# copy published files from the build stage
+COPY --from=build /app/publish .
+
 ENTRYPOINT ["dotnet", "Vinder.Federation.WebApi.dll"]
