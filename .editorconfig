@@ -1,0 +1,36 @@
+root = true
+
+[*]
+indent_style = space
+indent_size = 4
+trim_trailing_whitespace = true
+insert_final_newline = true
+end_of_line = crlf
+
+[*.cs]
+dotnet_diagnostic.IDE0055.severity = error
+dotnet_diagnostic.IDE0029.severity = error
+dotnet_diagnostic.IDE0051.severity = error
+dotnet_diagnostic.IDE0059.severity = error
+dotnet_diagnostic.IDE0060.severity = error
+dotnet_diagnostic.IDE0074.severity = error
+dotnet_diagnostic.IDE2000.severity = error
+dotnet_diagnostic.IDE2001.severity = error
+dotnet_diagnostic.IDE2002.severity = error
+
+# unnecessary usings (https://learn.microsoft.com/en-us/dotnet/fundamentals/code-analysis/style-rules/ide0005)
+dotnet_diagnostic.IDE0005.severity = error
+
+# unused variables (https://learn.microsoft.com/en-us/dotnet/csharp/misc/cs0168)
+dotnet_diagnostic.CS0168.severity = error
+
+# assigned but never used (https://learn.microsoft.com/en-us/dotnet/csharp/misc/cs0219)
+dotnet_diagnostic.CS0219.severity = error
+
+[*.json]
+indent_style = space
+indent_size = 4
+trim_trailing_whitespace = true
+
+[*.{cs,json}]
+trim_trailing_whitespace = true
