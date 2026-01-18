@@ -1,5 +1,4 @@
-using Vinder.Identity.Domain.Filtering;
-using Vinder.Identity.WebApi.Middlewares;
+namespace Vinder.Identity.WebApi.Middlewares;
 
 public sealed class TenantMiddleware(IMemoryCache cache, RequestDelegate next)
 {

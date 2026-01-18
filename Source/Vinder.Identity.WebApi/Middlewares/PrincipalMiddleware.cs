@@ -1,6 +1,3 @@
-using System.Security.Claims;
-using Vinder.Identity.Domain.Filtering;
-
 namespace Vinder.Identity.WebApi.Middlewares;
 
 public sealed class PrincipalMiddleware(RequestDelegate next)
