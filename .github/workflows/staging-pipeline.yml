@@ -45,7 +45,7 @@ jobs:
         run: |
           sudo apt-get install -y lftp
           lftp -u ${{ secrets.FTP_USER }},${{ secrets.FTP_PASSWORD }} vinder-io-identity-provider.somee.com <<EOF
-          cd /www.vinder-io-identity-provider.somee.com/
+          cd /www.vinder-federation.somee.com/
           put app_offline.htm
           quit
           EOF
@@ -61,7 +61,7 @@ jobs:
           set mirror:set-permissions false
           set mirror:use-pget-n false
 
-          mirror -R ./publish /www.vinder-io-identity-provider.somee.com \
+          mirror -R ./publish /www.vinder-federation.somee.com \
             --only-newer \
             --verbose
 
@@ -71,7 +71,7 @@ jobs:
       - name: remove app_offline.htm
         run: |
           lftp -u ${{ secrets.FTP_USER }},${{ secrets.FTP_PASSWORD }} vinder-io-identity-provider.somee.com <<EOF
-          cd /www.vinder-io-identity-provider.somee.com/
+          cd /www.vinder-federation.somee.com/
           rm app_offline.htm
           quit
           EOF
