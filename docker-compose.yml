@@ -2,8 +2,8 @@
 # using environment variables defined in .env to set up authentication.
 
 services:
-  vinder.identity.provider.infrastructure.mongo.database:
-    container_name: "vinder.identity.provider.database"
+  vinder.federation.infrastructure.mongo.database:
+    container_name: "vinder.federation.database"
     image: mongo:latest
     env_file:
       - .env
@@ -13,7 +13,7 @@ services:
       MONGO_INITDB_ROOT_USERNAME: ${MONGO_INITDB_ROOT_USERNAME}
       MONGO_INITDB_ROOT_PASSWORD: ${MONGO_INITDB_ROOT_PASSWORD}
     volumes:
-      - vinder.identity.provider.infrastructure.mongo.database:/data/db
+      - vinder.federation.infrastructure.mongo.database:/data/db
 
 volumes:
-  vinder.identity.provider.infrastructure.mongo.database:
+  vinder.federation.infrastructure.mongo.database:

@@ -1,6 +1,3 @@
-# this pipeline deploys the application to the staging environment on every push to main branch
-# it uses FTP to upload the published files to the somee.com server
-
 # we stop the application by uploading an app_offline.htm file
 # then we wait for a few seconds to let IIS unload the application and release file locks
 
@@ -27,7 +24,7 @@ jobs:
 
       - name: publish application
         run: |
-          dotnet publish Source/Vinder.Identity.WebApi \
+          dotnet publish Source/Vinder.Federation.WebApi \
             -c Release \
             -r win-x64 \
             -o ./publish
@@ -44,8 +41,8 @@ jobs:
       - name: upload app_offline.htm
         run: |
           sudo apt-get install -y lftp
-          lftp -u ${{ secrets.FTP_USER }},${{ secrets.FTP_PASSWORD }} vinder-io-identity-provider.somee.com <<EOF
-          cd /www.vinder-io-identity-provider.somee.com/
+          lftp -u ${{ secrets.FTP_USER }},${{ secrets.FTP_PASSWORD }} vinder-federation.somee.com <<EOF
+          cd /www.vinder-federation.somee.com/
           put app_offline.htm
           quit
           EOF
@@ -55,13 +52,13 @@ jobs:
 
       - name: deploy publish via FTP (no delete)
         run: |
-          lftp -u ${{ secrets.FTP_USER }},${{ secrets.FTP_PASSWORD }} vinder-io-identity-provider.somee.com <<EOF
+          lftp -u ${{ secrets.FTP_USER }},${{ secrets.FTP_PASSWORD }} vinder-federation.somee.com <<EOF
           set ftp:ssl-allow no
           set ftp:chmod false
           set mirror:set-permissions false
           set mirror:use-pget-n false
 
-          mirror -R ./publish /www.vinder-io-identity-provider.somee.com \
+          mirror -R ./publish /www.vinder-federation.somee.com \
             --only-newer \
             --verbose
 
@@ -70,8 +67,8 @@ jobs:
 
       - name: remove app_offline.htm
         run: |
-          lftp -u ${{ secrets.FTP_USER }},${{ secrets.FTP_PASSWORD }} vinder-io-identity-provider.somee.com <<EOF
-          cd /www.vinder-io-identity-provider.somee.com/
+          lftp -u ${{ secrets.FTP_USER }},${{ secrets.FTP_PASSWORD }} vinder-federation.somee.com <<EOF
+          cd /www.vinder-federation.somee.com/
           rm app_offline.htm
           quit
           EOF

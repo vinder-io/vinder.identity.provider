@@ -1,4 +1,4 @@
-namespace Vinder.Identity.TestSuite.Integration.Endpoints;
+namespace Vinder.Federation.TestSuite.Integration.Endpoints;
 
 public sealed class ConnectEndpointTests(IntegrationEnvironmentFixture factory) :
     IClassFixture<IntegrationEnvironmentFixture>
@@ -48,7 +48,7 @@ public sealed class ConnectEndpointTests(IntegrationEnvironmentFixture factory) 
         var connectClient = factory.HttpClient;
 
         /* act: send POST request to token endpoint */
-        var response = await connectClient.PostAsync("api/v1/openid/connect/token", content);
+        var response = await connectClient.PostAsync("api/v1/protocol/open-id/connect/token", content);
         var grantedToken = await response.Content.ReadFromJsonAsync<ClientAuthenticationResult>();
 
         /* assert: response should be 200 OK */
@@ -72,7 +72,7 @@ public sealed class ConnectEndpointTests(IntegrationEnvironmentFixture factory) 
         var content = new FormUrlEncodedContent(credentials);
 
         /* act: send POST request with non-existent client */
-        var response = await httpClient.PostAsync("api/v1/openid/connect/token", content);
+        var response = await httpClient.PostAsync("api/v1/protocol/open-id/connect/token", content);
         var error = await response.Content.ReadFromJsonAsync<Error>();
 
         /* assert: response should be 401 Unauthorized */
@@ -124,7 +124,7 @@ public sealed class ConnectEndpointTests(IntegrationEnvironmentFixture factory) 
         var content = new FormUrlEncodedContent(credentials);
         var connectClient = factory.HttpClient;
 
-        var response = await connectClient.PostAsync("api/v1/openid/connect/token", content);
+        var response = await connectClient.PostAsync("api/v1/protocol/open-id/connect/token", content);
         var error = await response.Content.ReadFromJsonAsync<Error>();
 
         /* assert: response should be 401 Unauthorized */
@@ -148,7 +148,7 @@ public sealed class ConnectEndpointTests(IntegrationEnvironmentFixture factory) 
         /* act: send POST request without grant_type */
 
         var content = new FormUrlEncodedContent(credentials);
-        var response = await httpClient.PostAsync("api/v1/openid/connect/token", content);
+        var response = await httpClient.PostAsync("api/v1/protocol/open-id/connect/token", content);
 
         /* assert: response should be 400 Bad Request */
         Assert.Equal(HttpStatusCode.BadRequest, response.StatusCode);
@@ -168,7 +168,7 @@ public sealed class ConnectEndpointTests(IntegrationEnvironmentFixture factory) 
         /* act: send POST request without client_id */
 
         var content = new FormUrlEncodedContent(credentials);
-        var response = await httpClient.PostAsync("api/v1/openid/connect/token", content);
+        var response = await httpClient.PostAsync("api/v1/protocol/open-id/connect/token", content);
 
         /* assert: response should be 400 Bad Request */
         Assert.Equal(HttpStatusCode.BadRequest, response.StatusCode);
@@ -188,7 +188,7 @@ public sealed class ConnectEndpointTests(IntegrationEnvironmentFixture factory) 
         /* act: send POST request without client_secret */
 
         var content = new FormUrlEncodedContent(credentials);
-        var response = await httpClient.PostAsync("api/v1/openid/connect/token", content);
+        var response = await httpClient.PostAsync("api/v1/protocol/open-id/connect/token", content);
 
         /* assert: response should be 400 Bad Request */
         Assert.Equal(HttpStatusCode.BadRequest, response.StatusCode);

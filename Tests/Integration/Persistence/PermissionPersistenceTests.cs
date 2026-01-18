@@ -1,4 +1,4 @@
-namespace Vinder.Identity.TestSuite.Integration.Persistence;
+namespace Vinder.Federation.TestSuite.Integration.Persistence;
 
 public sealed class PermissionPersistenceTests : IClassFixture<MongoDatabaseFixture>, IAsyncLifetime
 {
