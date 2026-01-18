@@ -1,8 +1,4 @@
-/* global usings for System namespaces here */
-
 global using System.Text.Json.Serialization;
-
-/* global usings for Vinder namespaces here */
 
 global using Vinder.Internal.Essentials.Patterns;
 global using Vinder.Internal.Essentials.Filtering;
@@ -28,8 +24,6 @@ global using Vinder.Identity.Application.Payloads.OpenID;
 global using Vinder.Identity.Application.Services;
 global using Vinder.Identity.Application.Providers;
 global using Vinder.Identity.Application.Mappers;
-
-/* global usings for third-party namespaces here */
 
 global using FluentValidation;
 global using Vinder.Dispatcher.Contracts;

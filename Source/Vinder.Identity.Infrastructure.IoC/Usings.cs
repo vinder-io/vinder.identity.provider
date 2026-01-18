@@ -1,15 +1,9 @@
-/* global usings for System namespaces here */
-
 global using System.Diagnostics.CodeAnalysis;
 global using System.Security.Cryptography;
-
-/* global usings for Microsoft namespaces here */
 
 global using Microsoft.Extensions.DependencyInjection;
 global using Microsoft.Extensions.Configuration;
 global using Microsoft.Extensions.Hosting;
-
-/* global usings for Vinder namespaces here */
 
 global using Vinder.Identity.Common.Configuration;
 global using Vinder.Identity.Domain.Collections;
@@ -36,8 +30,6 @@ global using Vinder.Identity.Infrastructure.Providers;
 global using Vinder.Identity.Infrastructure.Persistence;
 global using Vinder.Identity.Infrastructure.Security;
 global using Vinder.Dispatcher.Extensions;
-
-/* global usings for third-party namespaces here */
 
 global using MongoDB.Driver;
 global using FluentValidation;

@@ -1,14 +1,8 @@
-/* global usings for System namespaces here */
-
 global using System.IdentityModel.Tokens.Jwt;
 global using System.Security.Claims;
 global using System.Security.Cryptography;
 
-/* global usings for Microsoft namespaces here */
-
 global using Microsoft.IdentityModel.Tokens;
-
-/* global usings for Vinder namespaces here */
 
 global using Vinder.Internal.Infrastructure.Persistence;
 global using Vinder.Internal.Infrastructure.Persistence.Pipelines;
@@ -29,8 +23,6 @@ global using Vinder.Identity.Application.Providers;
 global using Vinder.Identity.Application.Payloads.Client;
 
 global using SecurityToken = Vinder.Identity.Domain.Aggregates.SecurityToken;
-
-/* global usings for third-party namespaces here */
 
 global using MongoDB.Driver;
 global using MongoDB.Bson;
