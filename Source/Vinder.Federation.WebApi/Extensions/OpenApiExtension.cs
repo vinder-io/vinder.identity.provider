@@ -57,6 +57,12 @@ public static class OpenApiExtension
                     Url = new Uri("https://github.com/vinder-io/vinder.identity.provider")
                 };
 
+                document.Info.License = new OpenApiLicense
+                {
+                    Name = "MIT",
+                    Url = new Uri("https://github.com/vinder-io/vinder.identity.provider/blob/master/LICENSE")
+                };
+
                 return Task.CompletedTask;
             });
         });
