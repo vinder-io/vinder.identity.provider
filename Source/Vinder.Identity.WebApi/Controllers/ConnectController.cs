@@ -1,7 +1,7 @@
 namespace Vinder.Identity.WebApi.Controllers;
 
 [ApiController]
-[Route("api/v1/openid/connect")]
+[Route("api/v1/protocol/open-id/connect")]
 public sealed class ConnectController(IDispatcher dispatcher) : ControllerBase
 {
     [HttpPost("token")]
