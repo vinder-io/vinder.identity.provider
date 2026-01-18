@@ -1,6 +1,3 @@
-# this pipeline deploys the application to the staging environment on every push to main branch
-# it uses FTP to upload the published files to the somee.com server
-
 # we stop the application by uploading an app_offline.htm file
 # then we wait for a few seconds to let IIS unload the application and release file locks
 
