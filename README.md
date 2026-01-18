@@ -18,4 +18,6 @@ Have you ever stopped to look at a JWT token issued by Keycloak? How many of tho
 
 Ideal for small to medium projects, startups, or teams that need a customizable identity solution without heavy overhead. Not intended to replace enterprise-grade providers in large-scale scenarios, but designed for teams focused on delivering value quickly with minimal complexity.
 
-Specifically, this provider is ideal for server-to-server scenarios, where one application needs to authenticate and consume APIs of another application. By only supporting the `client_credentials` flow, we are intentionally limiting the supported flows. This is fully valid for server-to-server use cases (e.g., microservices consuming APIs protected by the identity provider).
+And to make your life even easier, we provide a .NET SDK that's super simple to consume and integrate. Want to see how it works? Check out the repository here:
+
+https://github.com/vinder-io/vinder.federation.sdk.dotnet
