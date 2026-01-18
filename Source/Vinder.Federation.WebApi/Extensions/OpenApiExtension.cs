@@ -37,7 +37,7 @@ public static class OpenApiExtension
                     {
                         ClientCredentials = new OpenApiOAuthFlow
                         {
-                            TokenUrl = new Uri(host.Address.ToString() + "api/v1/openid/connect/token")
+                            TokenUrl = new Uri(host.Address.ToString() + "api/v1/protocol/open-id/connect/token")
                         }
                     }
                 };
