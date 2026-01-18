@@ -117,7 +117,7 @@ public sealed class JwtSecurityTokenServiceTests : IClassFixture<MongoDatabaseFi
         Assert.True(validationResult.IsSuccess);
 
         /* assert: refresh token must be persisted in the database */
-        var filters = new TokenFiltersBuilder()
+        var filters = TokenFilters.WithSpecifications()
             .WithValue(result.Data.Value)
             .Build();
 
@@ -211,7 +211,7 @@ public sealed class JwtSecurityTokenServiceTests : IClassFixture<MongoDatabaseFi
         Assert.True(revokeResult.IsSuccess);
 
         /* assert: refresh token must be marked as revoked and deleted in the database */
-        var filters = new TokenFiltersBuilder()
+        var filters = TokenFilters.WithSpecifications()
             .WithValue(refreshToken.Value)
             .WithIsDeleted(true)
             .Build();
