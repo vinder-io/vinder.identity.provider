@@ -49,6 +49,14 @@ public static class OpenApiExtension
                     [document.Components.SecuritySchemes[Headers.Tenant]] = Array.Empty<string>()
                 });
 
+                #pragma warning disable S1075
+                document.Info.Contact = new OpenApiContact
+                {
+                    Name = "Richard Garcia",
+                    Email = "vinder.desenvolvimento@gmail.com",
+                    Url = new Uri("https://github.com/vinder-io/vinder.identity.provider")
+                };
+
                 return Task.CompletedTask;
             });
         });
