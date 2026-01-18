@@ -44,7 +44,7 @@ jobs:
       - name: upload app_offline.htm
         run: |
           sudo apt-get install -y lftp
-          lftp -u ${{ secrets.FTP_USER }},${{ secrets.FTP_PASSWORD }} vinder-io-identity-provider.somee.com <<EOF
+          lftp -u ${{ secrets.FTP_USER }},${{ secrets.FTP_PASSWORD }} vinder-federation.somee.com <<EOF
           cd /www.vinder-federation.somee.com/
           put app_offline.htm
           quit
@@ -55,7 +55,7 @@ jobs:
 
       - name: deploy publish via FTP (no delete)
         run: |
-          lftp -u ${{ secrets.FTP_USER }},${{ secrets.FTP_PASSWORD }} vinder-io-identity-provider.somee.com <<EOF
+          lftp -u ${{ secrets.FTP_USER }},${{ secrets.FTP_PASSWORD }} vinder-federation.somee.com <<EOF
           set ftp:ssl-allow no
           set ftp:chmod false
           set mirror:set-permissions false
@@ -70,7 +70,7 @@ jobs:
 
       - name: remove app_offline.htm
         run: |
-          lftp -u ${{ secrets.FTP_USER }},${{ secrets.FTP_PASSWORD }} vinder-io-identity-provider.somee.com <<EOF
+          lftp -u ${{ secrets.FTP_USER }},${{ secrets.FTP_PASSWORD }} vinder-federation.somee.com <<EOF
           cd /www.vinder-federation.somee.com/
           rm app_offline.htm
           quit
