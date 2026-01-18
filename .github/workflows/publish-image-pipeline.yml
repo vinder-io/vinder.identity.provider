@@ -19,7 +19,7 @@ jobs:
           password: ${{ secrets.DOCKER_PASSWORD }}
 
       - name: build docker image
-        run: docker build -t vinderio/identity.provider:latest .
+        run: docker build -t vinderio/federation:latest .
 
       - name: push docker image
-        run: docker push vinderio/identity.provider:latest
+        run: docker push vinderio/federation:latest

@@ -1,4 +1,4 @@
-namespace Vinder.Identity.TestSuite.Integration.Security;
+namespace Vinder.Federation.TestSuite.Integration.Security;
 
 public sealed class JwtSecurityTokenServiceTests : IClassFixture<MongoDatabaseFixture>, IAsyncLifetime
 {

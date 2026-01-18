@@ -1,4 +1,4 @@
-namespace Vinder.Identity.TestSuite.Integration.Endpoints;
+namespace Vinder.Federation.TestSuite.Integration.Endpoints;
 
 public sealed class GroupEndpointTests(IntegrationEnvironmentFixture factory) :
     IClassFixture<IntegrationEnvironmentFixture>

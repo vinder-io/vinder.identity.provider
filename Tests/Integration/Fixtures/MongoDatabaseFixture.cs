@@ -1,4 +1,4 @@
-namespace Vinder.Identity.TestSuite.Integration.Fixtures;
+namespace Vinder.Federation.TestSuite.Integration.Fixtures;
 
 public sealed class MongoDatabaseFixture : IAsyncLifetime
 {
