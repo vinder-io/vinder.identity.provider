@@ -1,8 +1,12 @@
 namespace Vinder.Federation.WebApi.Binders;
 
+// oauth 2.0 requires form parameters to be sent in snake_case.
+// this binder converts snake_case form fields into pascal case model properties.
+
+// https://www.rfc-editor.org/rfc/rfc6749#section-4.4.2
+
 public sealed class SnakeCaseFormModelBinder : IModelBinder
 {
-    #pragma warning disable S2325
     public async Task BindModelAsync(ModelBindingContext bindingContext)
     {
         if (!bindingContext.HttpContext.Request.HasFormContentType)
@@ -36,8 +40,7 @@ public sealed class SnakeCaseFormModelBinder : IModelBinder
         bindingContext.Result = ModelBindingResult.Success(model);
     }
 
-    private static string ToSnakeCase(string input)
-    {
-        return Regex.Replace(input, @"([a-z0-9])([A-Z])", "$1_$2").ToLowerInvariant();
-    }
+    private static string ToSnakeCase(string input) => Regex
+        .Replace(input, @"([a-z0-9])([A-Z])", "$1_$2")
+        .ToLowerInvariant();
 }
