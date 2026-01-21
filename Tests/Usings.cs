@@ -16,7 +16,6 @@ global using Vinder.Internal.Essentials.Utilities;
 
 global using Vinder.Federation.Domain.Aggregates;
 global using Vinder.Federation.Domain.Filtering;
-global using Vinder.Federation.Domain.Filtering.Builders;
 global using Vinder.Federation.Domain.Collections;
 
 global using Vinder.Federation.Application.Services;
@@ -29,7 +28,7 @@ global using Vinder.Federation.Application.Payloads.Tenant;
 global using Vinder.Federation.Application.Payloads.Permission;
 global using Vinder.Federation.Application.Payloads.Group;
 global using Vinder.Federation.Application.Payloads.Common;
-global using Vinder.Federation.Application.Payloads.OpenID;
+global using Vinder.Federation.Application.Payloads.Connect;
 
 global using Vinder.Federation.Infrastructure.Persistence;
 global using Vinder.Federation.Infrastructure.Security;

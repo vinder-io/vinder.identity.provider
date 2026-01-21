@@ -1,3 +1,5 @@
+using Vinder.Federation.Application.Payloads.Connect;
+
 namespace Vinder.Federation.TestSuite.Integration.Endpoints;
 
 public sealed class WellKnownEndpointTests(IntegrationEnvironmentFixture factory) :

@@ -1,6 +1,6 @@
 namespace Vinder.Federation.Application.Mappers;
 
-public static class OpenIDMapper
+public static class ConnectMapper
 {
     public static OpenIDConfigurationScheme AsConfiguration(Uri baseUri)
     {

@@ -1,4 +1,4 @@
-namespace Vinder.Federation.Application.Handlers.OpenID;
+namespace Vinder.Federation.Application.Handlers.Connect;
 
 public sealed class FetchOpenIDConfigurationHandler(IHostInformationProvider host) :
     IMessageHandler<FetchOpenIDConfigurationParameters, Result<OpenIDConfigurationScheme>>
@@ -6,7 +6,7 @@ public sealed class FetchOpenIDConfigurationHandler(IHostInformationProvider hos
     public Task<Result<OpenIDConfigurationScheme>> HandleAsync(
         FetchOpenIDConfigurationParameters parameters, CancellationToken cancellation = default)
     {
-        var configuration = OpenIDMapper.AsConfiguration(host.Address);
+        var configuration = ConnectMapper.AsConfiguration(host.Address);
 
         return Task.FromResult(Result<OpenIDConfigurationScheme>.Success(configuration));
     }

@@ -19,7 +19,7 @@ global using Vinder.Federation.Application.Payloads.Tenant;
 global using Vinder.Federation.Application.Payloads.User;
 global using Vinder.Federation.Application.Payloads.Scope;
 global using Vinder.Federation.Application.Payloads.Client;
-global using Vinder.Federation.Application.Payloads.OpenID;
+global using Vinder.Federation.Application.Payloads.Connect;
 
 global using Vinder.Federation.Application.Services;
 global using Vinder.Federation.Application.Providers;

@@ -1,4 +1,4 @@
-namespace Vinder.Federation.Application.Handlers.OpenID;
+namespace Vinder.Federation.Application.Handlers.Connect;
 
 public sealed class FetchJsonWebKeysHandler(ISecretCollection collection) :
     IMessageHandler<FetchJsonWebKeysParameters, Result<JsonWebKeySetScheme>>

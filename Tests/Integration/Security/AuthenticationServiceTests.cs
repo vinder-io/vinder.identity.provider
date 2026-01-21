@@ -29,7 +29,7 @@ public sealed class AuthenticationServiceTests :
         var secret = new Secret
         {
             PrivateKey = Convert.ToBase64String(_rsa.ExportRSAPrivateKey()),
-            PublicKey  = Convert.ToBase64String(_rsa.ExportRSAPublicKey())
+            PublicKey = Convert.ToBase64String(_rsa.ExportRSAPublicKey())
         };
 
         var tenant = _fixture.Create<Tenant>();
@@ -40,7 +40,7 @@ public sealed class AuthenticationServiceTests :
 
         _groupCollection
             .Setup(collection => collection.GetGroupsAsync(It.IsAny<GroupFilters>(), It.IsAny<CancellationToken>()))
-            .ReturnsAsync([  ]);
+            .ReturnsAsync([]);
 
         _hostProvider.Setup(provider => provider.Address)
             .Returns(new Uri("http://localhost:5078"));

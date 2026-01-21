@@ -1,4 +1,4 @@
-namespace Vinder.Federation.Application.Payloads.OpenID;
+namespace Vinder.Federation.Application.Payloads.Connect;
 
 public sealed record JsonWebKeyScheme
 {

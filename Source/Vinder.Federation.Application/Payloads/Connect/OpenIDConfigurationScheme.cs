@@ -1,4 +1,4 @@
-namespace Vinder.Federation.Application.Payloads.OpenID;
+namespace Vinder.Federation.Application.Payloads.Connect;
 
 // https://openid.net/specs/openid-connect-discovery-1_0.html
 // using JsonPropertyName attributes to serialize properties in snake_case as required by
