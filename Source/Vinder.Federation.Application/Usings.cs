@@ -4,6 +4,8 @@ global using Vinder.Internal.Essentials.Patterns;
 global using Vinder.Internal.Essentials.Filtering;
 
 global using Vinder.Federation.Domain.Errors;
+global using Vinder.Federation.Domain.Policies;
+global using Vinder.Federation.Domain.Concepts;
 global using Vinder.Federation.Common.Constants;
 
 global using Vinder.Federation.Domain.Aggregates;
