@@ -1,4 +1,5 @@
 global using Vinder.Federation.Domain.Aggregates;
+global using Vinder.Federation.Domain.Concepts;
 global using Vinder.Federation.Domain.Filtering;
 global using Vinder.Federation.Domain.Filtering.Builders;
 
