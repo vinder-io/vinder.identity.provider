@@ -1,4 +1,5 @@
 global using System.Text.Json.Serialization;
+global using System.Security.Cryptography;
 
 global using Vinder.Internal.Essentials.Patterns;
 global using Vinder.Internal.Essentials.Filtering;
