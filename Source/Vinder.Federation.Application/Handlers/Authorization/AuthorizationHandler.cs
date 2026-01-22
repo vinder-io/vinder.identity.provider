@@ -18,6 +18,11 @@ public sealed class AuthorizationHandler(ITenantCollection tenantCollection, IRe
             return Result<AuthorizationScheme>.Failure(TenantErrors.TenantDoesNotExist);
         }
 
+        var redirectUri = parameters.RedirectUri.AsUri();
+
+        // according to oauth 2.0 spec (RFC 6749, section 3.1.2.3):
+        // https://datatracker.ietf.org/doc/html/rfc6749#section-3.1.2.3
+
         var redirectProof = await redirectUriPolicy.EnsureRedirectUriIsAllowedAsync(client, redirectUri, cancellation);
         if (redirectProof.IsFailure)
         {
