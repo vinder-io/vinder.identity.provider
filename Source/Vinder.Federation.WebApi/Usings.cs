@@ -6,11 +6,14 @@ global using System.Security.Claims;
 
 global using Microsoft.AspNetCore.Mvc;
 global using Microsoft.AspNetCore.Mvc.ModelBinding;
+global using Microsoft.AspNetCore.Mvc.RazorPages;
+
 global using Microsoft.AspNetCore.Authorization;
 global using Microsoft.AspNetCore.Authentication.JwtBearer;
 global using Microsoft.Extensions.Caching.Memory;
-global using Microsoft.IdentityModel.Tokens;
+
 global using Microsoft.OpenApi.Models;
+global using Microsoft.IdentityModel.Tokens;
 
 global using Vinder.Federation.Domain.Aggregates;
 global using Vinder.Federation.Domain.Filtering;
