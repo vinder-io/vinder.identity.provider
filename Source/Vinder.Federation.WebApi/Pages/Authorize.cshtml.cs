@@ -50,7 +50,9 @@ public sealed class AuthorizePage : PageModel
             return Page();
         }
 
-        var result = await _dispatcher.DispatchAsync(Credentials);
+        _tenantProvider.SetTenant(tenant);
+
+        var result = await _dispatcher.DispatchAsync(Parameters);
         if (result.IsFailure)
         {
             ModelState.AddModelError(
@@ -60,8 +62,6 @@ public sealed class AuthorizePage : PageModel
 
             return Page();
         }
-
-        _tenantProvider.SetTenant(tenant);
 
         return Page();
     }
