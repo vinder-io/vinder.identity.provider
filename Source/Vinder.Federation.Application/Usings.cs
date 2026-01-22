@@ -15,6 +15,7 @@ global using Vinder.Federation.Domain.Collections;
 
 global using Vinder.Federation.Application.Payloads.Common;
 global using Vinder.Federation.Application.Payloads.Identity;
+global using Vinder.Federation.Application.Payloads.Authorization;
 global using Vinder.Federation.Application.Payloads.Group;
 global using Vinder.Federation.Application.Payloads.Permission;
 global using Vinder.Federation.Application.Payloads.Tenant;
