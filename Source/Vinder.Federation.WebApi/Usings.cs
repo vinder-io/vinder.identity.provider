@@ -22,6 +22,7 @@ global using Vinder.Federation.Domain.Errors;
 
 global using Vinder.Federation.Application.Payloads.Group;
 global using Vinder.Federation.Application.Payloads.Identity;
+global using Vinder.Federation.Application.Payloads.Authorization;
 global using Vinder.Federation.Application.Payloads.Permission;
 global using Vinder.Federation.Application.Payloads.Tenant;
 global using Vinder.Federation.Application.Payloads.User;
