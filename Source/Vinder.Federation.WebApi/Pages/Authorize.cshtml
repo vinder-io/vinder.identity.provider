@@ -5,7 +5,10 @@
 
 <div class="min-h-screen flex items-center justify-center bg-white px-4">
     <div class="w-full max-w-sm">
-        @if (ViewData.ModelState.ContainsKey(TenantErrors.TenantDoesNotExist.Code))
+        @if (
+            ViewData.ModelState.ContainsKey(TenantErrors.TenantDoesNotExist.Code) ||
+            ViewData.ModelState.ContainsKey(AuthorizationErrors.RedirectUriNotAllowed.Code)
+        )
         {
             <div class="mb-8 p-6 flex flex-col items-center">
                 <svg xmlns="http://www.w3.org/2000/svg" class="h-10 w-10 text-black mb-3" fill="none" viewBox="0 0 24 24"
