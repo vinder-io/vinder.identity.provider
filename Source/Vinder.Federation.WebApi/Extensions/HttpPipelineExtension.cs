@@ -18,6 +18,7 @@ public static class HttpPipelineExtension
         app.UseEndpoints(endpoints =>
         {
             endpoints.MapControllers();
+            endpoints.MapRazorPages();
         });
     }
 }
