@@ -26,8 +26,11 @@ global using Vinder.Federation.Application.Payloads.Client;
 global using Vinder.Federation.Application.Payloads.Connect;
 
 global using Vinder.Federation.Application.Services;
+global using Vinder.Federation.Application.Contracts;
 global using Vinder.Federation.Application.Providers;
 global using Vinder.Federation.Application.Mappers;
+global using Vinder.Federation.Application.Utilities;
+global using Vinder.Federation.Application.Handlers.Authorization;
 
 global using FluentValidation;
 global using Vinder.Dispatcher.Contracts;
