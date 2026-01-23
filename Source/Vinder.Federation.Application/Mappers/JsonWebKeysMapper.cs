@@ -1,6 +1,3 @@
-using Microsoft.IdentityModel.Tokens;
-using Vinder.Federation.Application.Payloads.Connect;
-
 namespace Vinder.Federation.Application.Mappers;
 
 public static class JsonWebKeysMapper
