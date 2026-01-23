@@ -20,6 +20,12 @@ public sealed class ConnectController(IDispatcher dispatcher) : ControllerBase
 
             { IsFailure: true } when result.Error == AuthenticationErrors.InvalidClientCredentials =>
                 StatusCode(StatusCodes.Status401Unauthorized, result.Error),
+
+            { IsFailure: true } when result.Error == AuthorizationErrors.InvalidAuthorizationCode =>
+                StatusCode(StatusCodes.Status400BadRequest, result.Error),
+
+            { IsFailure: true } when result.Error == AuthorizationErrors.InvalidCodeVerifier =>
+                StatusCode(StatusCodes.Status400BadRequest, result.Error)
         };
     }
 }
