@@ -103,7 +103,7 @@ public sealed class ConnectEndpointTests(IntegrationEnvironmentFixture factory) 
         /* arrange: create a tenant */
         var payload = _fixture.Build<TenantCreationScheme>()
             .With(tenant => tenant.Name, $"test-tenant-{Guid.NewGuid()}")
-            .With(tenant => tenant.Description, $"test-description-{Guid.NewGuid()}.com")
+            .With(tenant => tenant.Description, $"test-description-{Guid.NewGuid()}")
             .Create();
 
         var httpResponse = await httpClient.PostAsJsonAsync("api/v1/tenants", payload);
@@ -201,13 +201,13 @@ public sealed class ConnectEndpointTests(IntegrationEnvironmentFixture factory) 
         var tokenCollection = factory.Services.GetRequiredService<ITokenCollection>();
         var userCollection = factory.Services.GetRequiredService<IUserCollection>();
 
+        // arrange: authenticate as master to create tenant
         var masterClient = factory.HttpClient.WithTenantHeader("master");
         var masterCredentials = new AuthenticationCredentials
         {
             Username = "vinder.testing.user",
             Password = "vinder.testing.password"
         };
-
         var authentication = await masterClient.PostAsJsonAsync("api/v1/identity/authenticate", masterCredentials);
         var grantedToken = await authentication.Content.ReadFromJsonAsync<AuthenticationResult>();
 
@@ -216,6 +216,7 @@ public sealed class ConnectEndpointTests(IntegrationEnvironmentFixture factory) 
 
         masterClient.WithAuthorization(grantedToken.AccessToken);
 
+        // arrange: create tenant
         var payload = _fixture.Build<TenantCreationScheme>()
             .With(tenant => tenant.Name, $"test-tenant-{Guid.NewGuid()}")
             .With(tenant => tenant.Description, $"test-description-{Guid.NewGuid()}")
@@ -227,6 +228,7 @@ public sealed class ConnectEndpointTests(IntegrationEnvironmentFixture factory) 
         Assert.NotNull(tenant);
         Assert.Equal(HttpStatusCode.Created, tenantResponse.StatusCode);
 
+        // arrange: create user for tenant
         var credentials = new IdentityEnrollmentCredentials
         {
             Username = $"user.{Guid.NewGuid()}@email.com",
@@ -241,6 +243,7 @@ public sealed class ConnectEndpointTests(IntegrationEnvironmentFixture factory) 
         Assert.NotNull(identity);
         Assert.Equal(HttpStatusCode.Created, enrollment.StatusCode);
 
+        // arrange: authenticate new user
         var authenticationCredentials = new AuthenticationCredentials
         {
             Username = credentials.Username,
@@ -255,10 +258,12 @@ public sealed class ConnectEndpointTests(IntegrationEnvironmentFixture factory) 
 
         tenantClient.WithAuthorization(authenticationResult.AccessToken);
 
+        // arrange: generate PKCE
         var codeVerifier = Guid.NewGuid().ToString("N") + Guid.NewGuid().ToString("N");
         var codeChallenge = Application.Utilities.Base64UrlEncoder.Encode(SHA256.HashData(System.Text.Encoding.ASCII.GetBytes(codeVerifier)));
         var codeChallengeMethod = "S256";
 
+        // arrange: get user from db
         var filters = UserFilters.WithSpecifications()
             .WithUsername(credentials.Username)
             .Build();
@@ -269,6 +274,7 @@ public sealed class ConnectEndpointTests(IntegrationEnvironmentFixture factory) 
         Assert.NotEmpty(users);
         Assert.NotNull(user);
 
+        // arrange: create authorization code token
         var authorizationCode = Guid.NewGuid().ToString("N");
         var token = new Domain.Aggregates.SecurityToken
         {
@@ -286,6 +292,7 @@ public sealed class ConnectEndpointTests(IntegrationEnvironmentFixture factory) 
 
         await tokenCollection.InsertAsync(token);
 
+        // arrange: prepare authorization_code grant request
         var parameters = new Dictionary<string, string>
         {
             { "grant_type", "authorization_code" },
