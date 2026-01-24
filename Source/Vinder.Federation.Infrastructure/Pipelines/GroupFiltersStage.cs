@@ -10,7 +10,7 @@ public static class GroupFiltersStage
         {
             FilterDefinitions.MatchIfNotEmpty(Documents.Group.Id, filters.Id),
             FilterDefinitions.MatchIfNotEmpty(Documents.Group.Name, filters.Name),
-            FilterDefinitions.MatchIfNotEmpty(Documents.Group.TenantId, tenant.Id),
+            FilterDefinitions.MatchIfNotEmpty(Documents.Group.TenantId, tenant?.Id),
             FilterDefinitions.MatchBool(Documents.Group.IsDeleted, filters.IsDeleted),
         };
 
