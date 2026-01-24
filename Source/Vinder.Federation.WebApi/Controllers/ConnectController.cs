@@ -5,6 +5,7 @@ namespace Vinder.Federation.WebApi.Controllers;
 public sealed class ConnectController(IDispatcher dispatcher) : ControllerBase
 {
     [HttpPost("token")]
+    [Stability(Stability.Stable)]
     public async Task<IActionResult> AuthenticateClientAsync(
         [FromSnakeCaseForm] ClientAuthenticationCredentials request, CancellationToken cancellation)
     {
@@ -20,6 +21,12 @@ public sealed class ConnectController(IDispatcher dispatcher) : ControllerBase
 
             { IsFailure: true } when result.Error == AuthenticationErrors.InvalidClientCredentials =>
                 StatusCode(StatusCodes.Status401Unauthorized, result.Error),
+
+            { IsFailure: true } when result.Error == AuthorizationErrors.InvalidAuthorizationCode =>
+                StatusCode(StatusCodes.Status400BadRequest, result.Error),
+
+            { IsFailure: true } when result.Error == AuthorizationErrors.InvalidCodeVerifier =>
+                StatusCode(StatusCodes.Status400BadRequest, result.Error)
         };
     }
 }

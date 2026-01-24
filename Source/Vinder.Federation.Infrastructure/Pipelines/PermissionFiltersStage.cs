@@ -8,7 +8,7 @@ public static class PermissionFiltersStage
         var tenant = tenantProvider.GetCurrentTenant();
         var definitions = new List<FilterDefinition<BsonDocument>>
         {
-            FilterDefinitions.MatchIfNotEmpty(Documents.Permission.TenantId, tenant.Id),
+            FilterDefinitions.MatchIfNotEmpty(Documents.Permission.TenantId, tenant?.Id),
             FilterDefinitions.MatchIfNotEmpty(Documents.Permission.Id, filters.Id),
             FilterDefinitions.MatchIfNotEmpty(Documents.Permission.Name, filters.Name),
             FilterDefinitions.MatchBool(Documents.Permission.IsDeleted, filters.IsDeleted),

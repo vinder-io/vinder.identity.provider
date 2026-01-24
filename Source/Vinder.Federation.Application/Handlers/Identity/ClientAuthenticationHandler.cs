@@ -1,41 +1,17 @@
 namespace Vinder.Federation.Application.Handlers.Identity;
 
-public sealed class ClientAuthenticationHandler(
-    ITenantCollection tenantCollection,
-    ISecurityTokenService tokenService
-) : IMessageHandler<ClientAuthenticationCredentials, Result<ClientAuthenticationResult>>
+public sealed class ClientAuthenticationHandler(ITenantCollection tenantCollection, IUserCollection userCollection, ITokenCollection tokenCollection, ISecurityTokenService tokenService) :
+    IMessageHandler<ClientAuthenticationCredentials, Result<ClientAuthenticationResult>>
 {
     public async Task<Result<ClientAuthenticationResult>> HandleAsync(
         ClientAuthenticationCredentials parameters, CancellationToken cancellation = default)
     {
-        var filters = TenantFilters.WithSpecifications()
-            .WithClientId(parameters.ClientId)
-            .Build();
-
-        var tenants = await tenantCollection.GetTenantsAsync(filters, cancellation: cancellation);
-        var tenant = tenants.FirstOrDefault();
-
-        if (tenant is null)
+        IAuthorizationFlowHandler handler = parameters.GrantType switch
         {
-            return Result<ClientAuthenticationResult>.Failure(AuthenticationErrors.ClientNotFound);
-        }
-
-        if (parameters.ClientSecret != tenant.SecretHash)
-        {
-            return Result<ClientAuthenticationResult>.Failure(AuthenticationErrors.InvalidClientCredentials);
-        }
-
-        var tokenResult = await tokenService.GenerateAccessTokenAsync(tenant, cancellation);
-        if (tokenResult.IsFailure)
-        {
-            return Result<ClientAuthenticationResult>.Failure(tokenResult.Error);
-        }
-
-        var response = new ClientAuthenticationResult
-        {
-            AccessToken = tokenResult.Data!.Value
+            SupportedGrantType.AuthorizationCode => new AuthorizationCodeGrantHandler(tenantCollection, userCollection, tokenService, tokenCollection),
+            SupportedGrantType.ClientCredentials => new ClientCredentialsGrantHandler(tenantCollection, tokenService),
         };
 
-        return Result<ClientAuthenticationResult>.Success(response);
+        return await handler.HandleAsync(parameters, cancellation);
     }
 }

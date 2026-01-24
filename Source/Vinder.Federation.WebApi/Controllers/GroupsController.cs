@@ -7,6 +7,7 @@ public sealed class GroupsController(IDispatcher dispatcher) : ControllerBase
 {
     [HttpGet]
     [Authorize(Roles = Permissions.ViewGroups)]
+    [Stability(Stability.Stable)]
     public async Task<IActionResult> GetGroupsAsync(
         [FromQuery] GroupsFetchParameters request, CancellationToken cancellation)
     {
@@ -22,6 +23,7 @@ public sealed class GroupsController(IDispatcher dispatcher) : ControllerBase
 
     [HttpPost]
     [Authorize(Roles = Permissions.CreateGroup)]
+    [Stability(Stability.Stable)]
     public async Task<IActionResult> CreateGroupAsync(GroupCreationScheme request, CancellationToken cancellation)
     {
         var result = await dispatcher.DispatchAsync(request, cancellation);
@@ -38,6 +40,7 @@ public sealed class GroupsController(IDispatcher dispatcher) : ControllerBase
 
     [HttpPut("{id}")]
     [Authorize(Roles = Permissions.EditGroup)]
+    [Stability(Stability.Stable)]
     public async Task<IActionResult> UpdateGroupAsync(string id, GroupUpdateScheme request, CancellationToken cancellation)
     {
         var result = await dispatcher.DispatchAsync(request with { GroupId = id }, cancellation);
@@ -54,6 +57,7 @@ public sealed class GroupsController(IDispatcher dispatcher) : ControllerBase
 
     [HttpDelete("{id}")]
     [Authorize(Roles = Permissions.DeleteGroup)]
+    [Stability(Stability.Stable)]
     public async Task<IActionResult> DeleteGroupAsync(string id, CancellationToken cancellation)
     {
         var result = await dispatcher.DispatchAsync(new GroupDeletionScheme { GroupId = id }, cancellation);
@@ -70,6 +74,7 @@ public sealed class GroupsController(IDispatcher dispatcher) : ControllerBase
 
     [HttpGet("{id}/permissions")]
     [Authorize(Roles = Permissions.ViewPermissions)]
+    [Stability(Stability.Stable)]
     public async Task<IActionResult> GetGroupsPermissionsAsync(
         [FromRoute] string id,
         [FromQuery] ListGroupAssignedPermissionsParameters request, CancellationToken cancellation
@@ -88,6 +93,7 @@ public sealed class GroupsController(IDispatcher dispatcher) : ControllerBase
 
     [HttpPost("{id}/permissions")]
     [Authorize(Roles = Permissions.AssignPermissions)]
+    [Stability(Stability.Stable)]
     public async Task<IActionResult> AssignPermissionAsync(
         string id, AssignGroupPermissionScheme request, CancellationToken cancellation)
     {
@@ -111,6 +117,7 @@ public sealed class GroupsController(IDispatcher dispatcher) : ControllerBase
 
     [HttpDelete("{id}/permissions/{permissionId}")]
     [Authorize(Roles = Permissions.RevokePermissions)]
+    [Stability(Stability.Stable)]
     public async Task<IActionResult> RevokePermissionAsync(string id, string permissionId, CancellationToken cancellation)
     {
         var request = new RevokeGroupPermissionScheme { GroupId = id, PermissionId = permissionId };

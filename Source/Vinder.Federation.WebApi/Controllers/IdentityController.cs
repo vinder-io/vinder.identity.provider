@@ -7,6 +7,7 @@ public sealed class IdentityController(IDispatcher dispatcher) : ControllerBase
     [HttpGet("principal")]
     [Authorize]
     [TenantRequired]
+    [Stability(Stability.Stable)]
     public async Task<IActionResult> GetPrincipalAsync([FromQuery] InspectPrincipalParameters request, CancellationToken cancellation)
     {
         var result = await dispatcher.DispatchAsync(request, cancellation);
@@ -23,6 +24,7 @@ public sealed class IdentityController(IDispatcher dispatcher) : ControllerBase
 
     [HttpPost]
     [TenantRequired]
+    [Stability(Stability.Stable)]
     public async Task<IActionResult> EnrollIdentityAsync(IdentityEnrollmentCredentials request, CancellationToken cancellation)
     {
         var result = await dispatcher.DispatchAsync(request, cancellation);
@@ -39,6 +41,7 @@ public sealed class IdentityController(IDispatcher dispatcher) : ControllerBase
 
     [HttpPost("authenticate")]
     [TenantRequired]
+    [Stability(Stability.Deprecated)]
     public async Task<IActionResult> AuthenticateAsync(AuthenticationCredentials request, CancellationToken cancellation)
     {
         var result = await dispatcher.DispatchAsync(request, cancellation);
@@ -58,6 +61,7 @@ public sealed class IdentityController(IDispatcher dispatcher) : ControllerBase
 
     [HttpPost("refresh-token")]
     [TenantRequired]
+    [Stability(Stability.Stable)]
     public async Task<IActionResult> RefreshTokenAsync(SessionTokenRenewalScheme request, CancellationToken cancellation)
     {
         var result = await dispatcher.DispatchAsync(request, cancellation);
@@ -86,6 +90,7 @@ public sealed class IdentityController(IDispatcher dispatcher) : ControllerBase
 
     [HttpPost("invalidate-session")]
     [TenantRequired]
+    [Stability(Stability.Stable)]
     public async Task<IActionResult> InvalidateSessionAsync(SessionInvalidationScheme request, CancellationToken cancellation)
     {
         var result = await dispatcher.DispatchAsync(request, cancellation);

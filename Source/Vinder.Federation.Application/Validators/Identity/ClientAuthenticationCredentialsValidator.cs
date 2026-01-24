@@ -6,20 +6,40 @@ public sealed class ClientAuthenticationCredentialsValidator : AbstractValidator
     {
         RuleFor(credential => credential.GrantType)
             .NotEmpty()
-            .WithMessage("Grant type must not be empty.")
-            .Equal("client_credentials")
-            .WithMessage("Grant type must be 'client_credentials'.");
+            .WithMessage("grant type must not be empty.")
+            .Must(grant => grant == SupportedGrantType.ClientCredentials || grant == SupportedGrantType.AuthorizationCode)
+            .WithMessage("grant type must be either 'client_credentials' or 'authorization_code'.");
 
-        RuleFor(credential => credential.ClientId)
+        When(credential => credential.GrantType == SupportedGrantType.ClientCredentials, () =>
+        {
+            RuleFor(credential => credential.ClientId)
             .NotEmpty()
-            .WithMessage("Client ID must not be empty.")
+            .WithMessage("client identifier must not be empty.")
             .MaximumLength(200)
-            .WithMessage("Client ID must be at most 200 characters long.");
+            .WithMessage("client identifier must be at most 200 characters long.");
 
-        RuleFor(credential => credential.ClientSecret)
+            RuleFor(credential => credential.ClientSecret)
             .NotEmpty()
-            .WithMessage("Client secret must not be empty.")
+            .WithMessage("client secret must not be empty.")
             .MaximumLength(500)
-            .WithMessage("Client secret must be at most 500 characters long.");
+            .WithMessage("client secret must be at most 500 characters long.");
+        });
+
+        When(credential => credential.GrantType == SupportedGrantType.AuthorizationCode, () =>
+        {
+            RuleFor(credential => credential.Code)
+                .NotEmpty()
+                .WithMessage("code must not be empty.");
+
+            RuleFor(credential => credential.CodeVerifier)
+                .NotEmpty()
+                .WithMessage("code verifier must not be empty.")
+                .MinimumLength(43)
+                .WithMessage("code verifier must be at least 43 characters.")
+                .MaximumLength(128)
+                .WithMessage("code verifier must be at most 128 characters.")
+                .Matches("^[a-zA-Z0-9_-]+$")
+                .WithMessage("code verifier must be base64url encoded.");
+        });
     }
 }

@@ -12,7 +12,7 @@ public static class TokenFiltersStage
             FilterDefinitions.MatchIfNotEmpty(Documents.SecurityToken.Value, filters.Value),
             FilterDefinitions.MatchIfNotEmpty(Documents.SecurityToken.UserId, filters.UserId),
 
-            FilterDefinitions.MatchIfNotEmpty(Documents.SecurityToken.TenantId, tenant.Id),
+            FilterDefinitions.MatchIfNotEmpty(Documents.SecurityToken.TenantId, tenant?.Id),
             FilterDefinitions.MatchBool(Documents.SecurityToken.IsDeleted, filters.IsDeleted)
         };
 

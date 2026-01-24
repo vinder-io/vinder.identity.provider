@@ -10,7 +10,7 @@ public static class UserFiltersStage
         {
             FilterDefinitions.MatchIfNotEmpty(Documents.User.Id, filters.Id),
             FilterDefinitions.MatchIfNotEmpty(Documents.User.Username, filters.Username),
-            FilterDefinitions.MatchIfNotEmpty(Documents.User.TenantId, tenant.Id),
+            FilterDefinitions.MatchIfNotEmpty(Documents.User.TenantId, tenant?.Id),
             FilterDefinitions.MatchBool(Documents.User.IsDeleted, filters.IsDeleted)
         };
 

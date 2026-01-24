@@ -6,11 +6,14 @@ global using System.Security.Claims;
 
 global using Microsoft.AspNetCore.Mvc;
 global using Microsoft.AspNetCore.Mvc.ModelBinding;
+global using Microsoft.AspNetCore.Mvc.RazorPages;
+
 global using Microsoft.AspNetCore.Authorization;
 global using Microsoft.AspNetCore.Authentication.JwtBearer;
 global using Microsoft.Extensions.Caching.Memory;
-global using Microsoft.IdentityModel.Tokens;
+
 global using Microsoft.OpenApi.Models;
+global using Microsoft.IdentityModel.Tokens;
 
 global using Vinder.Federation.Domain.Aggregates;
 global using Vinder.Federation.Domain.Filtering;
@@ -22,6 +25,7 @@ global using Vinder.Federation.Domain.Errors;
 
 global using Vinder.Federation.Application.Payloads.Group;
 global using Vinder.Federation.Application.Payloads.Identity;
+global using Vinder.Federation.Application.Payloads.Authorization;
 global using Vinder.Federation.Application.Payloads.Permission;
 global using Vinder.Federation.Application.Payloads.Tenant;
 global using Vinder.Federation.Application.Payloads.User;

@@ -13,5 +13,6 @@ public static class WebInfrastructureExtension
         services.AddMemoryCache();
         services.AddProviders();
         services.AddOpenApiSpecification();
+        services.AddRazorPages();
     }
 }

@@ -7,6 +7,7 @@ public sealed class TenantsController(IDispatcher dispatcher) : ControllerBase
 {
     [HttpGet]
     [Authorize(Roles = Permissions.ViewTenants)]
+    [Stability(Stability.Stable)]
     public async Task<IActionResult> GetTenantsAsync([FromQuery] TenantFetchParameters request, CancellationToken cancellation)
     {
         var result = await dispatcher.DispatchAsync(request, cancellation);
@@ -21,6 +22,7 @@ public sealed class TenantsController(IDispatcher dispatcher) : ControllerBase
 
     [HttpPost]
     [Authorize(Roles = Permissions.CreateTenant)]
+    [Stability(Stability.Stable)]
     public async Task<IActionResult> CreateTenantAsync(TenantCreationScheme request, CancellationToken cancellation)
     {
         var result = await dispatcher.DispatchAsync(request, cancellation);
@@ -37,6 +39,7 @@ public sealed class TenantsController(IDispatcher dispatcher) : ControllerBase
 
     [HttpPut("{id}")]
     [Authorize(Roles = Permissions.EditTenant)]
+    [Stability(Stability.Stable)]
     public async Task<IActionResult> UpdateTenantAsync(
         string id, TenantUpdateScheme request, CancellationToken cancellation)
     {
@@ -54,6 +57,7 @@ public sealed class TenantsController(IDispatcher dispatcher) : ControllerBase
 
     [HttpDelete("{id}")]
     [Authorize(Roles = Permissions.DeleteTenant)]
+    [Stability(Stability.Stable)]
     public async Task<IActionResult> DeleteTenantAsync(string id, CancellationToken cancellation)
     {
         var result = await dispatcher.DispatchAsync(new TenantDeletionScheme { TenantId = id }, cancellation);
@@ -70,6 +74,7 @@ public sealed class TenantsController(IDispatcher dispatcher) : ControllerBase
 
     [HttpGet("{id}/permissions")]
     [Authorize(Roles = Permissions.ViewPermissions)]
+    [Stability(Stability.Stable)]
     public async Task<IActionResult> GetTenantPermissionsAsync(
         [FromRoute] string id, [FromQuery] ListTenantAssignedPermissionsParameters request, CancellationToken cancellation
     )
@@ -87,6 +92,7 @@ public sealed class TenantsController(IDispatcher dispatcher) : ControllerBase
 
     [HttpPost("{id}/permissions")]
     [Authorize(Roles = Permissions.AssignPermissions)]
+    [Stability(Stability.Stable)]
     public async Task<IActionResult> AssignPermissionAsync(
         [FromRoute] string id, [FromBody] AssignTenantPermissionScheme request, CancellationToken cancellation)
     {
@@ -110,6 +116,7 @@ public sealed class TenantsController(IDispatcher dispatcher) : ControllerBase
 
     [HttpDelete("{id}/permissions/{permissionId}")]
     [Authorize(Roles = Permissions.RevokePermissions)]
+    [Stability(Stability.Stable)]
     public async Task<IActionResult> RevokePermissionAsync([FromRoute] string id, [FromRoute] string permissionId, CancellationToken cancellation)
     {
         var request = new RevokeTenantPermissionScheme { TenantId = id, PermissionId = permissionId };

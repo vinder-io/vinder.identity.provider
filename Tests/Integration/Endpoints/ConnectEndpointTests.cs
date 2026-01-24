@@ -103,7 +103,7 @@ public sealed class ConnectEndpointTests(IntegrationEnvironmentFixture factory) 
         /* arrange: create a tenant */
         var payload = _fixture.Build<TenantCreationScheme>()
             .With(tenant => tenant.Name, $"test-tenant-{Guid.NewGuid()}")
-            .With(tenant => tenant.Description, $"test-description-{Guid.NewGuid()}.com")
+            .With(tenant => tenant.Description, $"test-description-{Guid.NewGuid()}")
             .Create();
 
         var httpResponse = await httpClient.PostAsJsonAsync("api/v1/tenants", payload);
@@ -192,5 +192,124 @@ public sealed class ConnectEndpointTests(IntegrationEnvironmentFixture factory) 
 
         /* assert: response should be 400 Bad Request */
         Assert.Equal(HttpStatusCode.BadRequest, response.StatusCode);
+    }
+
+    [Fact(DisplayName = "[e2e] - when POST /openid/connect/token with valid authorization_code should return access token")]
+    public async Task WhenPostTokenWithValidAuthorizationCode_ShouldReturnAccessToken()
+    {
+        // arrange: resolve required dependencies
+        var tokenCollection = factory.Services.GetRequiredService<ITokenCollection>();
+        var userCollection = factory.Services.GetRequiredService<IUserCollection>();
+
+        // arrange: authenticate as master to create tenant
+        var masterClient = factory.HttpClient.WithTenantHeader("master");
+        var masterCredentials = new AuthenticationCredentials
+        {
+            Username = "vinder.testing.user",
+            Password = "vinder.testing.password"
+        };
+        var authentication = await masterClient.PostAsJsonAsync("api/v1/identity/authenticate", masterCredentials);
+        var grantedToken = await authentication.Content.ReadFromJsonAsync<AuthenticationResult>();
+
+        Assert.NotNull(grantedToken);
+        Assert.NotEmpty(grantedToken.AccessToken);
+
+        masterClient.WithAuthorization(grantedToken.AccessToken);
+
+        // arrange: create tenant
+        var payload = _fixture.Build<TenantCreationScheme>()
+            .With(tenant => tenant.Name, $"test-tenant-{Guid.NewGuid()}")
+            .With(tenant => tenant.Description, $"test-description-{Guid.NewGuid()}")
+            .Create();
+
+        var tenantResponse = await masterClient.PostAsJsonAsync("api/v1/tenants", payload);
+        var tenant = await tenantResponse.Content.ReadFromJsonAsync<TenantDetailsScheme>();
+
+        Assert.NotNull(tenant);
+        Assert.Equal(HttpStatusCode.Created, tenantResponse.StatusCode);
+
+        // arrange: create user for tenant
+        var credentials = new IdentityEnrollmentCredentials
+        {
+            Username = $"user.{Guid.NewGuid()}@email.com",
+            Password = "TestPassword123!"
+        };
+
+        var tenantClient = factory.HttpClient.WithTenantHeader(tenant.Name);
+
+        var enrollment = await tenantClient.PostAsJsonAsync("api/v1/identity", credentials);
+        var identity = await enrollment.Content.ReadFromJsonAsync<UserDetailsScheme>();
+
+        Assert.NotNull(identity);
+        Assert.Equal(HttpStatusCode.Created, enrollment.StatusCode);
+
+        // arrange: authenticate new user
+        var authenticationCredentials = new AuthenticationCredentials
+        {
+            Username = credentials.Username,
+            Password = credentials.Password
+        };
+
+        var authenticationResponse = await tenantClient.PostAsJsonAsync("api/v1/identity/authenticate", authenticationCredentials);
+        var authenticationResult = await authenticationResponse.Content.ReadFromJsonAsync<AuthenticationResult>();
+
+        Assert.NotNull(authenticationResult);
+        Assert.NotEmpty(authenticationResult.AccessToken);
+
+        tenantClient.WithAuthorization(authenticationResult.AccessToken);
+
+        // arrange: generate PKCE
+        var codeVerifier = Guid.NewGuid().ToString("N") + Guid.NewGuid().ToString("N");
+        var codeChallenge = Application.Utilities.Base64UrlEncoder.Encode(SHA256.HashData(System.Text.Encoding.ASCII.GetBytes(codeVerifier)));
+        var codeChallengeMethod = "S256";
+
+        // arrange: get user from db
+        var filters = UserFilters.WithSpecifications()
+            .WithUsername(credentials.Username)
+            .Build();
+
+        var users = await userCollection.GetUsersAsync(filters);
+        var user = users.FirstOrDefault();
+
+        Assert.NotEmpty(users);
+        Assert.NotNull(user);
+
+        // arrange: create authorization code token
+        var authorizationCode = Guid.NewGuid().ToString("N");
+        var token = new Domain.Aggregates.SecurityToken
+        {
+            Value = authorizationCode,
+            UserId = user.Id,
+            TenantId = tenant.Id,
+            Type = TokenType.AuthorizationCode,
+            ExpiresAt = DateTime.UtcNow.AddMinutes(5),
+            Metadata = new Dictionary<string, string>
+            {
+                ["code.challenge"] = codeChallenge,
+                ["code.challenge.method"] = codeChallengeMethod
+            }
+        };
+
+        await tokenCollection.InsertAsync(token);
+
+        // arrange: prepare authorization_code grant request
+        var parameters = new Dictionary<string, string>
+        {
+            { "grant_type", "authorization_code" },
+            { "code", authorizationCode },
+            { "client_id", tenant.ClientId },
+            { "code_verifier", codeVerifier }
+        };
+
+        var content = new FormUrlEncodedContent(parameters);
+        var connectClient = factory.HttpClient.WithTenantHeader(tenant.Name);
+
+        // act: send POST request to token endpoint
+        var response = await connectClient.PostAsync("api/v1/protocol/open-id/connect/token", content);
+        var grant = await response.Content.ReadFromJsonAsync<ClientAuthenticationResult>();
+
+        // assert: response should be 200 OK
+        Assert.Equal(HttpStatusCode.OK, response.StatusCode);
+        Assert.NotNull(grant);
     }
 }
