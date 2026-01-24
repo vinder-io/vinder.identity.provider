@@ -5,6 +5,7 @@ namespace Vinder.Federation.WebApi.Controllers;
 public sealed class ConnectController(IDispatcher dispatcher) : ControllerBase
 {
     [HttpPost("token")]
+    [Stability(Stability.Stable)]
     public async Task<IActionResult> AuthenticateClientAsync(
         [FromSnakeCaseForm] ClientAuthenticationCredentials request, CancellationToken cancellation)
     {

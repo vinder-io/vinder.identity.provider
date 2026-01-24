@@ -7,6 +7,7 @@ public sealed class PermissionsController(IDispatcher dispatcher) : ControllerBa
 {
     [HttpGet]
     [Authorize]
+    [Stability(Stability.Stable)]
     public async Task<IActionResult> GetPermissionsAsync([FromQuery] PermissionsFetchParameters request, CancellationToken cancellation)
     {
         var result = await dispatcher.DispatchAsync(request, cancellation);
@@ -21,6 +22,7 @@ public sealed class PermissionsController(IDispatcher dispatcher) : ControllerBa
 
     [HttpPost]
     [Authorize(Roles = Permissions.CreatePermission)]
+    [Stability(Stability.Stable)]
     public async Task<IActionResult> CreatePermissionAsync(PermissionCreationScheme request, CancellationToken cancellation)
     {
         var result = await dispatcher.DispatchAsync(request, cancellation);
@@ -37,6 +39,7 @@ public sealed class PermissionsController(IDispatcher dispatcher) : ControllerBa
 
     [HttpPut("{id}")]
     [Authorize(Roles = Permissions.EditPermission)]
+    [Stability(Stability.Stable)]
     public async Task<IActionResult> UpdatePermissionAsync(string id, PermissionUpdateScheme request, CancellationToken cancellation)
     {
         var result = await dispatcher.DispatchAsync(request with { PermissionId = id }, cancellation);
@@ -53,6 +56,7 @@ public sealed class PermissionsController(IDispatcher dispatcher) : ControllerBa
 
     [HttpDelete("{id}")]
     [Authorize(Roles = Permissions.DeletePermission)]
+    [Stability(Stability.Stable)]
     public async Task<IActionResult> DeletePermissionAsync(string id, CancellationToken cancellation)
     {
         var result = await dispatcher.DispatchAsync(new PermissionDeletionScheme { PermissionId = id }, cancellation);

@@ -5,6 +5,7 @@ namespace Vinder.Federation.WebApi.Controllers;
 public sealed class WellKnownController(IDispatcher dispatcher) : ControllerBase
 {
     [HttpGet("openid-configuration")]
+    [Stability(Stability.Stable)]
     public async Task<IActionResult> GetConfigurationAsync(
         [FromQuery] FetchOpenIDConfigurationParameters request, CancellationToken cancellation)
     {
@@ -19,6 +20,7 @@ public sealed class WellKnownController(IDispatcher dispatcher) : ControllerBase
     }
 
     [HttpGet("jwks.json")]
+    [Stability(Stability.Stable)]
     public async Task<IActionResult> GetJsonWebKeysAsync(
         [FromQuery] FetchJsonWebKeysParameters request, CancellationToken cancellation)
     {
